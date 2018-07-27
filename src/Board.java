@@ -63,18 +63,42 @@ public class Board {
         board[loc].connectDiscsUp();
     }
 
+    public int getRows() { return rows; }
+
+    public int getCols() { return cols; }
+
+    public boolean playMove(int row, int col, int player)
+    {
+        if (board[col].getFreeSpace() == 0) { return false; }
+
+        board[col].playMove(row, player);
+
+        return true;
+    }
+
     //TODO: check if necessary! Delete it if not!
     public Col[] getBoard() { return this.board; }
     public void setWinner(int winningPlayer) { this.hasWinner = true; this.winningPlayer = winningPlayer; }
     public boolean isHasWinner() { return this.hasWinner; }
     public int getWinner() { return this.winningPlayer; }
+    public char[][] getBoardAsCharArray()
+    {
+        char[][] res = new char[this.rows][this.cols];
+        for (int i  = 0; i < this.cols; i++)
+        {
+            for (int j = 0; j < this.rows; j++)
+            {
+                res[i][j] = Character.forDigit(board[i].getDiscInCol(j).getPlayerDisc(), 10);
+            }
+        }
+
+        return res;
+    }
 
     static public void main(String[] args)
     {
         int x = 4;
         int y = 5;
         Board b = new Board(x, y);
-
-        x = 6;
     }
 }

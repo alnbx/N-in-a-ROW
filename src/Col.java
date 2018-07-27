@@ -12,6 +12,7 @@ public class Col {
         this.colNumber = colNumber;
         this.discs = new Disc[discsInCol];
         this.freeSpace = discsInCol;
+
         initCol();
     }
 
@@ -21,6 +22,7 @@ public class Col {
     }
 
     public int getFreeSpace() { return this.freeSpace; }
+
     public Disc getDiscInCol(int x) { return this.discs[x]; }
 
     public void connectDiscsLeft(Col left)
@@ -86,4 +88,6 @@ public class Col {
             this.discs[i].setDiscsAround(Directions.DOWN, this.discs[i - 1]);
         }
     }
+
+    public void playMove(int row, int player) { this.discs[row].setDiscOfPlayer(player); }
 }
