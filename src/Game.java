@@ -7,18 +7,27 @@ import java.util.Random;
 public class Game implements gameLogic{
 
     private Board board;
+    private int sequenceNumber;
 
     public Game()
     {
         board = new Board(4,4);
+        this.sequenceNumber = 4;
     }
 
 
     @Override
-    public boolean playHumanPlayer(int row, int col, int player)
+    public boolean playHumanPlayer(int col, int player)
     {
         //TODO: if last move is legal - record it.
-        if (board.playMove(row - 1, col - 1, player)) { return true; }
+        if (board.playMove(col - 1, player))
+        {
+            if (checkWinningMove(col - 1, player)) {
+                board.setWinner(player);
+                board.setHasWinner(true);
+            }
+            return true;
+        }
         return false;
     }
 
@@ -26,8 +35,13 @@ public class Game implements gameLogic{
     public boolean playComputerPlayer(int player)
     {
         Random r = new Random();
+        int rand = r.nextInt(board.getCols());
         //TODO: Change the player number to something valid. We still do not know how to get the player number!
-        board.playMove(r.nextInt(board.getRows()), r.nextInt(board.getCols()), player);
+        board.playMove(rand, player);
+        if (checkWinningMove(rand, player)) {
+            board.setWinner(player);
+            board.setHasWinner(true);
+        }
         return false;
     }
 
@@ -43,14 +57,23 @@ public class Game implements gameLogic{
 
     }
 
+    private boolean checkWinningMove(int col, int player)
+    {
+        //TODO: check how many discs is a win!
+        return  board.leftRightSequence(col, player) == this.sequenceNumber ||
+                board.upDownSequence(col, player) == this.sequenceNumber ||
+                board.diagonalDownSequence(col, player) == this.sequenceNumber ||
+                board.diagonalUpSequence(col, player) == this.sequenceNumber;
+    }
+
     public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }
 
     public static void main(String[] args)
     {
         Game g = new Game();
-        g.playHumanPlayer(1,1,1);
-        g.playHumanPlayer(2,2,2);
-        g.playHumanPlayer(1,2,1);
+        g.playHumanPlayer(1,1);
+        g.playHumanPlayer(2,2);
+        g.playHumanPlayer(2,1);
         char[][] b = g.boardReadyToPrint();
 
         for (int i = 0; i < 4; i++)

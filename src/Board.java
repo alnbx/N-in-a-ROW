@@ -67,11 +67,13 @@ public class Board {
 
     public int getCols() { return cols; }
 
-    public boolean playMove(int row, int col, int player)
+    public void setHasWinner(boolean hasWinner) { this.hasWinner = hasWinner; }
+
+    public boolean playMove(int col, int player)
     {
         if (board[col].getFreeSpace() == 0) { return false; }
 
-        board[col].playMove(row, player);
+        board[col].playMove(player);
 
         return true;
     }
@@ -95,10 +97,40 @@ public class Board {
         return res;
     }
 
-    static public void main(String[] args)
+    public int leftRightSequence(int col, int player)
     {
-        int x = 4;
-        int y = 5;
-        Board b = new Board(x, y);
+        int res = 0;
+        Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
+
+        while (player != d.getPlayerDisc())
+        {
+            d = d.getDiscByDirection(Directions.LEFT);
+            res++;
+        }
+
+        d = board[col].getDiscInCol(board[col].getLastRowInserted());
+
+        while (player != d.getPlayerDisc())
+        {
+            d = d.getDiscByDirection(Directions.RIGHT);
+            res++;
+        }
+
+        return res;
+    }
+
+    public int upDownSequence(int col, int player)
+    {
+        
+    }
+
+    public int diagonalUpSequence(int col, int player)
+    {
+
+    }
+
+    public int diagonalDownSequence(int col, int player)
+    {
+
     }
 }

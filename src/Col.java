@@ -7,11 +7,13 @@ public class Col {
     private int colNumber;
     private int freeSpace;
     private Disc[] discs;
+    private int lastRowInserted;
 
     public Col(int colNumber, int discsInCol) {
         this.colNumber = colNumber;
         this.discs = new Disc[discsInCol];
         this.freeSpace = discsInCol;
+        this.lastRowInserted = -1;
 
         initCol();
     }
@@ -89,5 +91,7 @@ public class Col {
         }
     }
 
-    public void playMove(int row, int player) { this.discs[row].setDiscOfPlayer(player); }
+    public void playMove(int player) { this.discs[lastRowInserted++].setDiscOfPlayer(player); }
+
+    public int getLastRowInserted() { return this.lastRowInserted; }
 }
