@@ -7,22 +7,38 @@ import java.util.Scanner;
 public class ui
 {
     String xmlPath;
+    Menu firstMenu;
+    Menu mainMenu;
+    Menu gameMenu;
+    PrintMessages winningMessage;
+    PrintMessages endGame;
 
-    private Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
 
-    private void showFirstTimeMenu(String xmlPath)
+    public ui(String xmlPath)
     {
-        System.out.println("Hello and welcome to out fabulous N-in-a-Row game!\n");
-        System.out.println("Loading the configuration file...\n");
-        loadFirstXML(xmlPath);
-        //choosePlayersTypes(); //from XML????
-        showMainMenu();
+        this.xmlPath = xmlPath;
+        this.firstMenu = new FirstMenu();
+        this.mainMenu = new PrimaryMenu();
+        this.gameMenu = new GameMenu();
+        this.winningMessage = new WinnerMessage();
+        this.endGame = new EndGameMessage();
+
+        prepareGame();
     }
 
-    private void loadFirstXML(String xmlPath)
+    private void prepareGame()
+    {
+        MenuChoice choice = MenuChoice.INVALIDCHOICE;
+        firstMenu.showMenu();
+        loadFirstXML();
+        handleUserChoicePrimaryMenu(mainMenu.showMenu());
+    }
+
+    private void loadFirstXML()
     {
         do {
-            if (!Engine.load(xmlPath)) {
+            if (!Engine.load(this.xmlPath)) {
                 System.out.println("Sorry to interrupt but the configuration file is invalid");
                 checkAndPrintWhyXMLInvalid();
                 System.out.println("Please provide another XML or type exit if you wish to exit");
@@ -32,40 +48,23 @@ public class ui
         } while (!Engine.configurationLoaded());
     }
 
-    private void showMainMenu()
-    {
-        boolean printAgain = true;
-
-        while (printAgain) {
-            System.out.println("Please type the Number of action you wish to make:");
-            System.out.println("1) Load new configuration XML");
-            System.out.println("2) Start game");
-            System.out.println("3) Exit");
-
-            int userChoice = scanner.nextInt();
-            printAgain = (userChoice > 3 || userChoice < 1);
-            if (printAgain) { System.out.println("Bad choice. Try again!"); }
-        }
-
-        handleUserChoice(userChoice);
-    }
-
-    private void handleUserChoice(int userChoice)
+    private void handleUserChoicePrimaryMenu(MenuChoice userChoice)
     {
         switch (userChoice){
-            case 1:
+            case LOADXML:
                 String path = scanner.nextLine();
                 Engine.load(path) ? System.out.println("New configuration loaded successfully") :
                                     System.out.println("Bad XML was loaded.\nLoaded last legal configuration");
                 break;
 
-            case 2:
+            case STARTGAME:
                 startGame();
                 break;
 
-            case 3:
+            case EXIT:
                 System.out.println("Bye Bye :(");
                 System.exit(0);
+                break;
         }
     }
 
@@ -77,36 +76,24 @@ public class ui
 
     private void playGame()
     {
-        while ((false == Engine.isHasWinner()) && (false == Engine.ifFull())) { showSecondaryMenu(); }
+        while ((false == Engine.isHasWinner()) && (false == Engine.ifFull())) {
+            //TODO: printBoard
+            handleUserChoiceGameMenu(gameMenu.showMenu());
+        }
 
-        Engine.isHasWinner ? printWinningMessage(Engine.getWinner()) : printEndGame();
+        Engine.isHasWinner ? winningMessage.printMessage(Engine.getWinner()) : endGame.printMessage(0);
+
+        //TODO: if Engine.isHasWinner we need to start a new game? show main menu? reset everything?
     }
 
-    private void printEndGame()
+    private void handleUserChoiceGameMenu(MenuChoice userChoice)
     {
-        System.out.println("***************************************************************************************");
-        System.out.println("******************** Game ended. The board is full and no one won. ********************");
-        System.out.println("***************************************************************************************");
-    }
-
-    private void printWinningMessage(int winner)
-    {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("!!!!!!!!!!!!!!!!!!!! WE HAVE A WINNER !!!!!!!!!!!!!!!!!!!!");
-        System.out.println("!!!!!!!!!!!!!!!!!!!! PLAYER:   " + winner + "  WON !!!!!!!!!!!!!!!!!!!!");
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        try { Thread.sleep(1500); }
-        catch (InterruptedException ignored) {}
-        showMainMenu();
-    }
-
-    private void showSecondaryMenu()
-    {
-        int userChoice = 0;
-
-        System.out.println("Please type the Number of action you wish to make:");
-
-
+        switch (userChoice){
+            case GAMESTATS: showGameStats(); break;
+            case MAKETURN: playTurn(); break;
+            case HISTORY: showTurnsHistory(); break;
+            case EXIT: System.out.println("Bye Bye"); System.exit(0);
+        }
     }
 
     private void choosePlayersType()
