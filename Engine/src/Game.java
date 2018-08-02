@@ -1,3 +1,5 @@
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -10,6 +12,8 @@ public class Game implements gameLogic{
     private int sequenceNumber;
     private boolean hasWinner;
     private boolean isFull;
+    private Date startingTime;
+    private boolean isFirstMove;
 
     public Game()
     {
@@ -17,6 +21,7 @@ public class Game implements gameLogic{
         this.sequenceNumber = 4;
         this.hasWinner = false;
         this.isFull = false;
+        this.startingTime = null;
     }
 
 
@@ -33,6 +38,7 @@ public class Game implements gameLogic{
             }
             return true;
         }
+
         return false;
     }
 
@@ -42,20 +48,36 @@ public class Game implements gameLogic{
         Random r = new Random();
         int rand = r.nextInt(board.getCols());
         //TODO: Change the player number to something valid. We still do not know how to get the player number!
-        //TODO: check if it is a legal move or generate new random!
-        board.playMove(rand, player);
-        if (checkWinningMove(rand, player)) {
-            board.setWinner(player);
-            board.setHasWinner(true);
-        }
-        return false;
+
+        while(!board.playMove(rand, player)) { rand = r.nextInt(board.getCols()); }
+
+            if (checkWinningMove(rand, player)) {
+                board.setWinner(player);
+                board.setHasWinner(true);
+            }
+
+        return true;
     }
 
     @Override
-    public Map<Integer, Integer> getGameStats()
-    {
+    //TODO: return real player number!
+    public int getPlayerNumber() { return 1; }
 
-        return null;
+    @Override
+    //TODO: return real player turns!
+    public int playerTurns(int player) { return 1; }
+
+    @Override
+    public String timeFromBegining()
+    {
+        Long diff = 0L;
+        Date now = new Date();
+
+        diff = this.startingTime.getTime() - now.getTime();
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+
+        return String.format("%d:%d", diffMinutes, diffSeconds);
     }
 
     @Override
@@ -68,8 +90,16 @@ public class Game implements gameLogic{
 
         board.decreaseEmptySpace();
         if (board.isFull()) { this.isFull = true; }
+
+        if (!this.isFirstMove) {
+            this.isFirstMove = true;
+            setStartingTime();
+        }
+
         return false;
     }
+
+    private void setStartingTime() { this.startingTime = new Date(); }
 
     @Override
     public void load()

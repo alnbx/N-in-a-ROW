@@ -6,14 +6,16 @@ import java.util.Scanner;
 
 public class ui
 {
-    String xmlPath;
-    Menu firstMenu;
-    Menu mainMenu;
-    Menu gameMenu;
-    PrintMessages winningMessage;
-    PrintMessages endGame;
+    private String xmlPath;
+    private Menu firstMenu;
+    private Menu mainMenu;
+    private Menu gameMenu;
+    private PrintMessages winningMessage;
+    private PrintMessages endGame;
+    private int playerAmmount = 2; //TODO: must be changed???
 
     public static Scanner scanner = new Scanner(System.in);
+    public static final char[] playerDiscs = {'@', '#', '$', '%', '&', '+', '~'};
 
     public ui(String xmlPath)
     {
@@ -94,6 +96,30 @@ public class ui
             case HISTORY: showTurnsHistory(); break;
             case EXIT: System.out.println("Bye Bye"); System.exit(0);
         }
+    }
+
+    private void showGameStats()
+    {
+        int playerNumber = 0;
+
+        playerNumber = Engine.getPlayerNumber();
+
+        System.out.println("========== Game statistics ==========");
+        System.out.println("=== Current Player ==");
+        System.out.println("Current player: " + Engine.getPlayerNumber());
+
+        System.out.println("=== Players discs ===");
+        for (int i = 0; i < this.playerAmmount; i++) {
+            System.out.println(String.format("Player: %d Disc: %c", i+1, playerDiscs[i]));
+        }
+
+        System.out.println("=== Player turns ===");
+        for (int i = 0; i < this.playerAmmount; i++) {
+            System.out.println(String.format("Player: %d Turns: %d", i+1, Engine.playerTurns(i)));
+        }
+
+        System.out.println("=== Elapsed time ===");
+        System.out.println(String.format("Elapsed time: " + Engine.timeFromBegining));
     }
 
     private void playTurn()

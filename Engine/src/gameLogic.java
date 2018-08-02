@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -7,7 +8,9 @@ public interface gameLogic {
     boolean play(int col);
     boolean playHumanPlayer(int col, int player);
     boolean playComputerPlayer(int player);
-    Map<Integer, Integer> getGameStats();
+    int getPlayerNumber();
+    int playerTurns(int player);
+    String timeFromBegining();
     int getCols();
     void load();
     char[][] boardReadyToPrint();
