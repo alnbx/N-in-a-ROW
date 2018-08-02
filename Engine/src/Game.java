@@ -9,12 +9,14 @@ public class Game implements gameLogic{
     private Board board;
     private int sequenceNumber;
     private boolean hasWinner;
+    private boolean isFull;
 
     public Game()
     {
         board = new Board(4,4);
         this.sequenceNumber = 4;
         this.hasWinner = false;
+        this.isFull = false;
     }
 
 
@@ -22,9 +24,9 @@ public class Game implements gameLogic{
     public boolean playHumanPlayer(int col, int player)
     {
         //TODO: if last move is legal - record it.
-        if (board.playMove(col - 1, player))
+        if (board.playMove(col, player))
         {
-            if (checkWinningMove(col - 1, player)) {
+            if (checkWinningMove(col, player)) {
                 board.setWinner(player);
                 board.setHasWinner(true);
                 this.hasWinner = true;
@@ -40,6 +42,7 @@ public class Game implements gameLogic{
         Random r = new Random();
         int rand = r.nextInt(board.getCols());
         //TODO: Change the player number to something valid. We still do not know how to get the player number!
+        //TODO: check if it is a legal move or generate new random!
         board.playMove(rand, player);
         if (checkWinningMove(rand, player)) {
             board.setWinner(player);
@@ -51,13 +54,20 @@ public class Game implements gameLogic{
     @Override
     public Map<Integer, Integer> getGameStats()
     {
+
         return null;
     }
 
     @Override
-    public boolean play()
+    public int getCols() { return this.board.getCols(); }
+
+    @Override
+    public boolean play(int col)
     {
         //TODO: do something
+
+        board.decreaseEmptySpace();
+        if (board.isFull()) { this.isFull = true; }
         return false;
     }
 
@@ -97,4 +107,5 @@ public class Game implements gameLogic{
     }
 
     public boolean isHasWinner() { return this.hasWinner; }
+    public boolean isBoardFull() { return this.isFull; }
 }

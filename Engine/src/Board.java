@@ -8,6 +8,7 @@ public class Board {
     private Col[] board;
     private boolean hasWinner;
     private int winningPlayer;
+    private int emptySpaces;
 
     public Board(int rows, int cols)
     {
@@ -16,6 +17,7 @@ public class Board {
         board = new Col[cols];
         this.hasWinner = false;
         this.winningPlayer = 0;
+        this.emptySpaces = this.rows * this.cols;
 
         initBoard();
     }
@@ -97,24 +99,29 @@ public class Board {
         return res;
     }
 
+    private int getSequenceByDirection(Disc d, int playerDisc, Directions direction)
+    {
+        int res = 0;
+
+        while (playerDisc == d.getPlayerDisc())
+        {
+            d = d.getDiscByDirection(direction);
+            res++;
+            if (null == d) { break; }
+        }
+
+        return res;
+    }
+
     public int leftRightSequence(int col, int player)
     {
         int res = 0;
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
+        Disc temp = d;
 
-        while (player != d.getPlayerDisc())
-        {
-            d = d.getDiscByDirection(Directions.LEFT);
-            res++;
-        }
-
-        d = board[col].getDiscInCol(board[col].getLastRowInserted());
-
-        while (player != d.getPlayerDisc())
-        {
-            d = d.getDiscByDirection(Directions.RIGHT);
-            res++;
-        }
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFT), player, Directions.LEFT);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.RIGHT), player, Directions.RIGHT);
 
         return res;
     }
@@ -122,18 +129,43 @@ public class Board {
     public int upDownSequence(int col, int player)
     {
         //TODO: do something
-        return 0;
+        int res = 0;
+        Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
+        Disc temp = d;
+
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.UP), player, Directions.UP);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.DOWN), player, Directions.DOWN);
+
+        return res;
     }
 
     public int diagonalUpSequence(int col, int player)
     {
-        //TODO: do something
-        return 0;
+        int res = 0;
+        Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
+        Disc temp = d;
+
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.UPRIGHT), player, Directions.UPRIGHT);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFTDOWN), player, Directions.LEFTDOWN);
+
+        return res;
     }
 
     public int diagonalDownSequence(int col, int player)
     {
-        //TODO: do something
-        return 0;
+        int res = 0;
+        Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
+        Disc temp = d;
+
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFTUP), player, Directions.LEFTUP);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.RIGHTDOWN), player, Directions.RIGHTDOWN);
+
+        return res;
     }
+
+    public void decreaseEmptySpace() { this.emptySpaces--; }
+    public boolean isFull() {return this.emptySpaces == 0; }
 }

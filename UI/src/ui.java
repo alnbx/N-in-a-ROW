@@ -96,6 +96,44 @@ public class ui
         }
     }
 
+    private void playTurn()
+    {
+        int col = 0;
+
+        while(true) {
+            if (Engine.playerType == PlayerTypes.HUMAN) { col = getUserInputCol(); }
+
+            if (!Engine.play(col)) {
+                System.out.println("Illigal move. please try again.");
+                col = getUserInputCol();
+            }
+            else { break; }
+        }
+    }
+
+    private int getUserInputCol()
+    {
+        int input = 0;
+
+        while (true) {
+            try {
+                System.out.println("Please enter the col you wish to drop a disc: ");
+                input = Integer.parseInt(ui.scanner.nextLine());
+
+                if (input > Engine.getCols() + 1 || input < 1) {
+                    System.out.println("Out of bound col. Please try again. ");
+                    continue;
+                }
+                else { break; }
+
+            } catch (NumberFormatException nfe) {
+                System.out.println("Not a number. Try again: ");
+            }
+        }
+
+        return input;
+    }
+
     private void choosePlayersType()
     {
         int playersAmount = Engine.getNumberOfPlayers();
