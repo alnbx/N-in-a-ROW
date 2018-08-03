@@ -12,6 +12,6 @@ public interface gameLogic {
     int playerTurns(int player);
     String timeFromBegining();
     int getCols();
-    void load();
+    void load() throws Exception;
     char[][] boardReadyToPrint();
 }

@@ -1,7 +1,10 @@
+//import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.lang.Exception;
 
 /**
  * Created by user on 27/07/2018.
@@ -14,6 +17,7 @@ public class Game implements gameLogic{
     private boolean isFull;
     private Date startingTime;
     private boolean isFirstMove;
+    private GameSettings gameSettings;
 
     public Game()
     {
@@ -23,7 +27,6 @@ public class Game implements gameLogic{
         this.isFull = false;
         this.startingTime = null;
     }
-
 
     @Override
     public boolean playHumanPlayer(int col, int player)
@@ -102,10 +105,18 @@ public class Game implements gameLogic{
     private void setStartingTime() { this.startingTime = new Date(); }
 
     @Override
-    public void load()
+    public void load() throws Exception
     {
-
+        //get file path from user
+        String filePath = "/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-error.xml";
+        gameSettings = new GameSettings(filePath);
+        try {
+            gameSettings.setGameSettings();
+        } catch (Exception e) {
+            throw e;
+        }
     }
+
 
     private boolean checkWinningMove(int col, int player)
     {
@@ -120,6 +131,7 @@ public class Game implements gameLogic{
 
     public static void main(String[] args)
     {
+
         Game g = new Game();
         g.playHumanPlayer(1,1);
         g.playHumanPlayer(2,2);
@@ -134,6 +146,17 @@ public class Game implements gameLogic{
             }
             System.out.print("\n");
         }
+
+        try {
+            g.load();
+            System.out.println((g.getGameSettings()));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public GameSettings getGameSettings() {
+        return gameSettings;
     }
 
     public boolean isHasWinner() { return this.hasWinner; }
