@@ -1,3 +1,5 @@
+package engine;
+
 public class SettingsFileException extends Exception {
     String message;
 

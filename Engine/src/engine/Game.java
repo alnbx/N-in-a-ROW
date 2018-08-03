@@ -1,16 +1,16 @@
-//import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
+package engine;//import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import common.PlayersTypes;
+
+import java.util.*;
 import java.lang.Exception;
 
 /**
  * Created by user on 27/07/2018.
  */
-public class Game implements gameLogic{
+public class Game implements GameLogic {
 
+    final int maxNumOfPlayers = 6;
     private Board board;
     private int sequenceNumber;
     private boolean hasWinner;
@@ -18,6 +18,8 @@ public class Game implements gameLogic{
     private Date startingTime;
     private boolean isFirstMove;
     private GameSettings gameSettings;
+    private ArrayList<Player> players;
+    private Player currentPlayer;
 
     public Game()
     {
@@ -26,6 +28,8 @@ public class Game implements gameLogic{
         this.hasWinner = false;
         this.isFull = false;
         this.startingTime = null;
+        this.players = new ArrayList<Player>(maxNumOfPlayers);
+        this.currentPlayer = null;
     }
 
     @Override
@@ -91,6 +95,9 @@ public class Game implements gameLogic{
     {
         //TODO: do something
 
+        //change current player after turn is completed succefully
+        currentPlayer = players.get((currentPlayer.getId() + 1) % players.size());
+
         board.decreaseEmptySpace();
         if (board.isFull()) { this.isFull = true; }
 
@@ -105,10 +112,8 @@ public class Game implements gameLogic{
     private void setStartingTime() { this.startingTime = new Date(); }
 
     @Override
-    public void load() throws Exception
+    public void load(String filePath) throws Exception
     {
-        //get file path from user
-        String filePath = "/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-error.xml";
         gameSettings = new GameSettings(filePath);
         try {
             gameSettings.setGameSettings();
@@ -131,8 +136,8 @@ public class Game implements gameLogic{
 
     public static void main(String[] args)
     {
-
-        Game g = new Game();
+/*
+        engine.Game g = new engine.Game();
         g.playHumanPlayer(1,1);
         g.playHumanPlayer(2,2);
         g.playHumanPlayer(2,1);
@@ -146,19 +151,32 @@ public class Game implements gameLogic{
             }
             System.out.print("\n");
         }
-
+        */
+        Game g = new Game();
         try {
-            g.load();
+            g.load("./ex1-small.xml");
             System.out.println((g.getGameSettings()));
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
+    // for debug - should be removed
     public GameSettings getGameSettings() {
         return gameSettings;
     }
 
     public boolean isHasWinner() { return this.hasWinner; }
     public boolean isBoardFull() { return this.isFull; }
+
+    public void initPlayer(PlayersTypes playerType, int id, String name) {
+        Player player = new Player(id, playerType, name);
+        players.add(player);
+        if (null == currentPlayer)
+            currentPlayer = player;
+    }
+
+    public PlayersTypes getTypeOfCurrentPlayer() {
+        return currentPlayer.getPlayerType();
+    }
 }

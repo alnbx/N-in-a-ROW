@@ -1,5 +1,9 @@
 import java.util.Scanner;
 
+import common.PlayersTypes;
+import engine.GameLogic;
+import engine.Game;
+
 /**
  * Created by user on 30/07/2018.
  */
@@ -13,6 +17,7 @@ public class ui
     private PrintMessages winningMessage;
     private PrintMessages endGame;
     private int playerAmmount = 2; //TODO: must be changed???
+    private GameLogic gameLogic = new Game();
 
     public static Scanner scanner = new Scanner(System.in);
     public static final char[] playerDiscs = {'@', '#', '$', '%', '&', '+', '~'};
@@ -39,15 +44,31 @@ public class ui
 
     private void loadFirstXML()
     {
+        boolean configurationLoaded = false;
+
+        while (!configurationLoaded) {
+            try {
+                gameLogic.load(this.xmlPath);
+                configurationLoaded = true;
+            } catch (Exception e) {
+                System.out.println("Sorry to interrupt but the configuration file is invalid:\n");
+                System.out.println(e);
+                System.out.println("Please provide another XML or type exit if you wish to exit");
+                xmlPath = scanner.nextLine();
+                if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
+            }
+        }
+        /*
         do {
-            if (!Engine.load(this.xmlPath)) {
+            if (!gameLogic.load(this.xmlPath)) {
                 System.out.println("Sorry to interrupt but the configuration file is invalid");
                 checkAndPrintWhyXMLInvalid();
                 System.out.println("Please provide another XML or type exit if you wish to exit");
                 xmlPath = scanner.nextLine();
                 if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
             }
-        } while (!Engine.configurationLoaded());
+        } while (!gameLogic.configurationLoaded());
+        */
     }
 
     private void handleUserChoicePrimaryMenu(MenuChoice userChoice)
@@ -127,7 +148,8 @@ public class ui
         int col = 0;
 
         while(true) {
-            if (Engine.playerType == PlayerTypes.HUMAN) { col = getUserInputCol(); }
+            //if (Engine.playerType == PlayerTypes.HUMAN) { col = getUserInputCol(); }
+            if (gameLogic.getTypeOfCurrentPlayer() == PlayersTypes.HUMAN) { col = getUserInputCol(); }
 
             if (!Engine.play(col)) {
                 System.out.println("Illigal move. please try again.");
@@ -183,10 +205,14 @@ public class ui
                 }
 
                 if (userChoice.toLowerCase().equals("r")) {
-                    playersType[i] = PlayersTypes.ROBOT;
+                    gameLogic.initPlayer(PlayersTypes.ROBOT, i, "Computer");
+                    //playersType[i] = PlayersTypes.ROBOT;
                     robotsCounter++;
                 } else {
-                    playersType[i] = PlayersTypes.HUMAN;
+                    System.out.print("Please type player's name: ");
+                    String name = scanner.nextLine();
+                    gameLogic.initPlayer(PlayersTypes.ROBOT, i, name);
+                    //playersType[i] = PlayersTypes.HUMAN;
                 }
             }
 
