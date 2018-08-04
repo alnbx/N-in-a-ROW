@@ -25,10 +25,8 @@ public class ui
     //private int playerAmmount = 2; //TODO: must be changed???
     private GameLogic gameLogic;
 
-
     public static Scanner scanner = new Scanner(System.in);
-    public static final char[] playerDiscs = {'@', '#', '$', '%', '&', '+', '~'};
-
+    public static final char[] playerDiscs = {' ', '@', '#', '$', '%', '&', '+', '~'};
 
     public ui(String xmlPath)
     {
@@ -61,7 +59,7 @@ public class ui
                 configurationLoaded = true;
             } catch (Exception e) {
                 System.out.println("Sorry to interrupt but the configuration file is invalid:\n");
-                System.out.println(e);
+                //System.out.println(e.getStackTrace());
                 System.out.println("Please provide another XML or type exit if you wish to exit");
                 xmlPath = scanner.nextLine();
                 if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
@@ -114,12 +112,11 @@ public class ui
 
     private void playGame()
     {
-        while ((false == gameLogic.getHasWinner()) && (false == gameLogic.getIsBoardFull())) {
-            //TODO: printBoard
+        while ((!gameLogic.getHasWinner()) && (!gameLogic.getIsBoardFull())) {
+            printBoard();
             handleUserChoiceGameMenu(gameMenu.showMenu());
         }
 
-        //gameLogic.getHasWinner() ? winningMessage.printMessage(gameLogic.getWinner()) : endGame.printMessage(0);
         if (gameLogic.getHasWinner()) {
             winningMessage.printMessage(gameLogic.getIdOfCurrentPlayer());
         }
@@ -141,9 +138,11 @@ public class ui
         }
     }
 
-    private void showTurnsHistory() {
-        List<Move> movesHistory = gameLogic.getMovesHistory();
-        //TODO: print moves history
+    private void showTurnsHistory()
+    {
+        for (Move m : gameLogic.getMovesHistory()) {
+            System.out.println(String.format("Player %d has thrown a disc to column %d", m.getPlayerId(), m.getCol()));
+        }
     }
 
     private void showGameStats()
@@ -217,7 +216,7 @@ public class ui
         int robotsCounter = 0;
         PlayersTypes[] playersType = new PlayersTypes[playersAmount];
         String userChoice;
-        boolean onceAgain = true;
+        //boolean onceAgain = true;
         int initializedPlayers = 0;
 
         System.out.println("Before the game begins, please enter the types of the players! :)");
@@ -239,14 +238,14 @@ public class ui
                     System.out.println("You chose all players to be robots and that is not legal. Please choose again");
                 }
                 else {
-                    gameLogic.initPlayer(PlayersTypes.ROBOT, initializedPlayers + 1 , "Computer");
+                    this.gameLogic.initPlayer(PlayersTypes.ROBOT, initializedPlayers + 1 , "Computer");
                     robotsCounter++;
                     initializedPlayers++;
                 }
             } else {
                 System.out.print("Please type player's name: ");
                 String name = scanner.nextLine();
-                gameLogic.initPlayer(PlayersTypes.HUMAN, initializedPlayers + 1, name);
+                this.gameLogic.initPlayer(PlayersTypes.HUMAN, initializedPlayers + 1, name);
                 initializedPlayers++;
             }
         }
@@ -283,28 +282,63 @@ public class ui
         */
     }
 
-    private void writeGameToFile() throws IOException {
+    private void writeGameToFile() throws IOException
+    {
         SimpleDateFormat localDateFormat = new SimpleDateFormat("ddMMYY_HHmm");
         String time = localDateFormat.format(new Date());
 
         try (ObjectOutputStream out =
                      new ObjectOutputStream(
                              new FileOutputStream("N-in-a-Row_" + time))) {
-            out.writeObject(gameLogic);
+            out.writeObject(this.gameLogic);
             out.flush();
         }
     }
 
-    private void loadGameFromFile(String gameFile) throws IOException, ClassNotFoundException {
+    private void loadGameFromFile(String gameFile) throws IOException, ClassNotFoundException
+    {
         try (ObjectInputStream in =
                      new ObjectInputStream(
                              new FileInputStream(gameFile))) {
-            gameLogic = (Game)in.readObject();
+            this.gameLogic = (Game)in.readObject();
         }
     }
 
-    public static void main(String[] args) {
-        ui UI = new ui(args[0]);
-
+    private void printLineSeparator(int cols)
+    {
+        for (int i = 0; i < cols * 6; i++) { System.out.print("-"); }
+        System.out.println();
     }
+
+    private void printTopScales(int cols)
+    {
+
+        printLineSeparator(cols);
+
+        System.out.print("|     ");
+        for (int i = 0; i < cols; i++) { System.out.print("|  " + i+1 + "  "); }
+        System.out.println("|");
+
+        printLineSeparator(cols);
+    }
+
+    private void printBoard()
+    {
+        char[][] board = gameLogic.boardReadyToPrint();
+        int cols = gameLogic.getCols();
+
+        printTopScales(cols);
+
+        for(int row = 0; row < board.length; row++ )
+        {
+            System.out.print("|  " + row+1 + "  ");
+            for (int col = 0; col < cols; col++) { System.out.print(playerDiscs[board[row][col]]); }
+            System.out.println("|");
+            printLineSeparator(cols);
+        }
+
+        printLineSeparator(cols);
+    }
+
+    public static void main(String[] args) { ui UI = new ui(args[0]); }
 }
