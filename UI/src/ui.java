@@ -217,7 +217,7 @@ public class ui
                 } else {
                     System.out.print("Please type player's name: ");
                     String name = scanner.nextLine();
-                    gameLogic.initPlayer(PlayersTypes.ROBOT, i + 1, name);
+                    gameLogic.initPlayer(PlayersTypes.HUMAN, i + 1, name);
                     //playersType[i] = PlayersTypes.HUMAN;
                 }
             }
