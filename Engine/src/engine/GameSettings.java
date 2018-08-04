@@ -111,10 +111,10 @@ public class GameSettings {
                 if (rootElement.getNodeType() == Node.ELEMENT_NODE && rootElement.getNodeName() == "GameDescriptor") {
                     NodeList mainElements = rootElement.getChildNodes();
                     if (mainElements != null) {
-                        Node gameTypeNode = getNodeWithNameAndType(mainElements, Node.ELEMENT_NODE, "engine.GameType");
+                        Node gameTypeNode = getNodeWithNameAndType(mainElements, Node.ELEMENT_NODE, "GameType");
                         parseGameTypeNode(gameTypeNode);
 
-                        Node gameNode = getNodeWithNameAndType(mainElements, Node.ELEMENT_NODE, "engine.Game");
+                        Node gameNode = getNodeWithNameAndType(mainElements, Node.ELEMENT_NODE, "Game");
                         parseGameNode(gameNode);
                     }
                     else {
@@ -144,12 +144,12 @@ public class GameSettings {
     private void parseGameNodeChildElements(Node gameNode) throws SettingsFileException {
         NodeList gameNodeChildNodes = gameNode.getChildNodes();
 
-        Node boardNode = getNodeWithNameAndType(gameNodeChildNodes, Node.ELEMENT_NODE, "engine.Board");
+        Node boardNode = getNodeWithNameAndType(gameNodeChildNodes, Node.ELEMENT_NODE, "Board");
         if (boardNode != null) {
             parseBoardNode(boardNode);
         }
         else {
-            throw new SettingsFileException("xml: the engine.Game element has no engine.Board element");
+            throw new SettingsFileException("xml: the Game element has no Board element");
         }
 
         Node variantNode = getNodeWithNameAndType(gameNodeChildNodes, Node.ELEMENT_NODE, "Variant");
@@ -157,7 +157,7 @@ public class GameSettings {
             parseVariantNode(variantNode);
         }
         else {
-            throw new SettingsFileException("xml: the engine.Game element has no Variant element");
+            throw new SettingsFileException("xml: the Game element has no Variant element");
         }
     }
 
@@ -174,7 +174,7 @@ public class GameSettings {
                 }
             }
             if (!isLegalGameVariantVal) {
-                throw new SettingsFileException("xml: value of engine.GameVariant is illegal");
+                throw new SettingsFileException("xml: value of GameVariant is illegal");
             }
         }
         else {
@@ -192,7 +192,7 @@ public class GameSettings {
             parseBoardCols(colsNode);
         }
         else {
-            throw new SettingsFileException("xml: engine.Board element has no attributes");
+            throw new SettingsFileException("xml: Board element has no attributes");
         }
     }
 
@@ -220,7 +220,7 @@ public class GameSettings {
             }
         }
         else {
-            throw new SettingsFileException("xml: engine.Board element has no rows attribute");
+            throw new SettingsFileException("xml: Board element has no rows attribute");
         }
     }
 
@@ -248,7 +248,7 @@ public class GameSettings {
             }
         }
         else {
-            throw new SettingsFileException("xml: engine.Board element has no columns attribute");
+            throw new SettingsFileException("xml: Board element has no columns attribute");
         }
     }
 
@@ -266,11 +266,11 @@ public class GameSettings {
                 }
             }
             else {
-                throw new SettingsFileException("xml: engine.Game element has no target attribute");
+                throw new SettingsFileException("xml: Game element has no target attribute");
             }
         }
         else {
-            throw new SettingsFileException("xml: engine.Game element has no attributes");
+            throw new SettingsFileException("xml: Game element has no attributes");
         }
     }
 
@@ -288,11 +288,11 @@ public class GameSettings {
                     }
                 }
                 if (!isLegalGameTypeVal) {
-                    throw new SettingsFileException("xml: value of engine.GameType is illegal");
+                    throw new SettingsFileException("xml: value of GameType is illegal");
                 }
             }
             else {
-                throw new SettingsFileException("xml: the engine.GameType element has no value");
+                throw new SettingsFileException("xml: the GameType element has no value");
             }
         }
         else {

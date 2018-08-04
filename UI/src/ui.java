@@ -304,7 +304,7 @@ public class ui
     }
 
     public static void main(String[] args) {
-        ui UI = new ui(args[0]);
+        ui UI = new ui("/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-large.xml");
 
     }
 }
