@@ -306,7 +306,7 @@ public class UI
 
     private void printLineSeparator(int cols)
     {
-        for (int i = 0; i < ((cols * 8) - 1); i++) { System.out.print("-"); }
+        for (int i = 0; i < (13 + ((cols - 1) * 6)); i++) { System.out.print("-"); }
         System.out.println();
     }
 
@@ -339,8 +339,6 @@ public class UI
             System.out.println("|");
             printLineSeparator(cols);
         }
-
-        printLineSeparator(cols);
     }
 
     public static void main(String[] args)

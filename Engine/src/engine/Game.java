@@ -26,7 +26,7 @@ public class Game implements GameLogic, Serializable {
 
     public Game()
     {
-        board = new Board(4,4);
+        board = new Board(4,5);
         this.sequenceNumber = 4;
         this.hasWinner = false;
         this.isBoardFull = false;
