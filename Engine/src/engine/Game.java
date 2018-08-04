@@ -26,7 +26,7 @@ public class Game implements GameLogic, Serializable {
 
     public Game()
     {
-        board = new Board(4,4);
+        board = new Board(6,5);
         this.sequenceNumber = 4;
         this.hasWinner = false;
         this.isBoardFull = false;
@@ -136,7 +136,8 @@ public class Game implements GameLogic, Serializable {
                 board.diagonalUpSequence(col, player) == this.sequenceNumber;
     }
 
-    public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }
+    public char[][] boardReadyToPrint() {
+        return board.getBoardAsCharArray(); }
 
     public static void main(String[] args)
     {

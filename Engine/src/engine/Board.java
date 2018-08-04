@@ -99,11 +99,11 @@ public class Board {
     public char[][] getBoardAsCharArray()
     {
         char[][] res = new char[this.rows][this.cols];
-        for (int i  = 0; i < this.cols; i++)
+        for (int i  = 0; i < this.rows; i++)
         {
-            for (int j = 0; j < this.rows; j++)
+            for (int j = 0; j < this.cols; j++)
             {
-                res[i][j] = Character.forDigit(board[i].getDiscInCol(j).getPlayerDisc(), 10);
+                res[i][j] = Character.forDigit(board[j].getDiscInCol(i).getPlayerDisc(), 10);
             }
         }
 
