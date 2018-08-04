@@ -82,6 +82,15 @@ public class Board {
         return true;
     }
 
+    public boolean undoMove(int col)
+    {
+        if (board[col].getLastRowInserted() == -1) { return false; }
+
+        board[col].undoMove();
+
+        return true;
+    }
+
     //TODO: check if necessary! Delete it if not!
     public Col[] getBoard() { return this.board; }
     public void setWinner(int winningPlayer) { this.hasWinner = true; this.winningPlayer = winningPlayer; }

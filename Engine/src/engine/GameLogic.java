@@ -20,4 +20,6 @@ public interface GameLogic {
     char[][] boardReadyToPrint();
     void initPlayer(PlayersTypes playerType, int id, String name);
     PlayersTypes getTypeOfCurrentPlayer();
+    boolean undoLastMove(); // returns false if there are no moves to undo, otherwise returns true
+    void showMovesHistory();
 }

@@ -10,21 +10,28 @@ public class Player {
     private int id;
     private PlayersTypes playerType;
 
+    public String getName() {
+        return name;
+    }
+
     Player(int id, PlayersTypes playerType, String name) {
         this.playerType = playerType;
         this.id = id;
         this.name = name;
+
         numOfTurnsPlayed = 0;
     }
 
     public void increaseNumberOfTurnsPlayed() { numOfTurnsPlayed++; }
 
-    // for UNDO implementaion?
-    public void decreaseNumberOfTurnsPlayed() throws Exception {
-        if (numOfTurnsPlayed > 0)
+    // for UNDO
+    boolean decreaseNumberOfTurnsPlayed(){
+        boolean isLegalDecrease = false;
+        if (numOfTurnsPlayed > 0) {
             numOfTurnsPlayed++;
-        else
-            throw new Exception("player didn't play any turns, so can't decrease turns count");
+            isLegalDecrease = true;
+        }
+        return isLegalDecrease;
     }
 
     @Override

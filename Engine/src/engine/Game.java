@@ -2,8 +2,10 @@ package engine;//import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
 import common.PlayersTypes;
 
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.lang.Exception;
+import java.util.stream.Collectors;
 
 /**
  * Created by user on 27/07/2018.
@@ -18,8 +20,9 @@ public class Game implements GameLogic {
     private Date startingTime;
     private boolean isFirstMove;
     private GameSettings gameSettings;
-    private ArrayList<Player> players;
+    private List<Player> players;
     private Player currentPlayer;
+    private List<Move> playedMoves;
 
     public Game()
     {
@@ -30,14 +33,15 @@ public class Game implements GameLogic {
         this.startingTime = null;
         this.players = new ArrayList<Player>(maxNumOfPlayers);
         this.currentPlayer = null;
+        this.playedMoves = new ArrayList<Move>();
     }
 
     @Override
     public boolean playHumanPlayer(int col, int player)
     {
-        //TODO: if last move is legal - record it.
         if (board.playMove(col, player))
         {
+            playedMoves.add(new Move(currentPlayer.getId(), col));
             if (checkWinningMove(col, player)) {
                 board.setWinner(player);
                 board.setHasWinner(true);
@@ -96,7 +100,7 @@ public class Game implements GameLogic {
         //TODO: do something
 
         //change current player after turn is completed succefully
-        currentPlayer = players.get((currentPlayer.getId() + 1) % players.size());
+        currentPlayer = players.get((currentPlayer.getId() % players.size()) + 1);
 
         board.decreaseEmptySpace();
         if (board.isFull()) { this.isFull = true; }
@@ -178,5 +182,49 @@ public class Game implements GameLogic {
 
     public PlayersTypes getTypeOfCurrentPlayer() {
         return currentPlayer.getPlayerType();
+    }
+
+    public boolean undoLastMove() {
+        if (playedMoves.isEmpty())
+            return false;
+
+        int indexOfLastPlayedMove = playedMoves.size() - 1;
+        Move undoMove = playedMoves.get(indexOfLastPlayedMove);
+
+        playedMoves.remove(indexOfLastPlayedMove);
+        board.undoMove(undoMove.getCol());
+        updatePlayerAfterUndo(undoMove);
+
+        return true;
+    }
+
+    private void updatePlayerAfterUndo(Move undoMove) {
+        int idOfPlayerInUndoMove = undoMove.getPlayerId();
+        Player player = getPlayerById(idOfPlayerInUndoMove);
+
+        if (!player.decreaseNumberOfTurnsPlayed()) {
+            System.out.println(player.getName() + " has no moves to undo");
+        }
+
+        currentPlayer = player;
+    }
+
+    private Player getPlayerById(int playerId) {
+        Player player = null;
+
+        for (Player p : players) {
+            if (p.getId() == playerId) {
+                player = p;
+                break;
+            }
+        }
+        return player;
+    }
+
+    public void showMovesHistory() {
+        for (Move m : playedMoves) {
+            Player player = getPlayerById(m.getPlayerId());
+            System.out.println(player.getName() + " inserted a disc to column nunmer " + m.getCol());
+        }
     }
 }

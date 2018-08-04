@@ -76,8 +76,14 @@ public class ui
         switch (userChoice){
             case LOADXML:
                 String path = scanner.nextLine();
-                Engine.load(path) ? System.out.println("New configuration loaded successfully") :
-                                    System.out.println("Bad XML was loaded.\nLoaded last legal configuration");
+                try {
+                    Engine.load(path);
+                    System.out.println("New configuration loaded successfully");
+                } catch (Exception e){
+                    System.out.println("Bad XML was loaded: " + e + "\nLoaded last legal configuration");
+                }
+                //gameLogic.load(path) ? System.out.println("New configuration loaded successfully") :
+                //                    System.out.println("Bad XML was loaded.\nLoaded last legal configuration");
                 break;
 
             case STARTGAME:
@@ -205,13 +211,13 @@ public class ui
                 }
 
                 if (userChoice.toLowerCase().equals("r")) {
-                    gameLogic.initPlayer(PlayersTypes.ROBOT, i, "Computer");
+                    gameLogic.initPlayer(PlayersTypes.ROBOT, i + 1, "Computer");
                     //playersType[i] = PlayersTypes.ROBOT;
                     robotsCounter++;
                 } else {
                     System.out.print("Please type player's name: ");
                     String name = scanner.nextLine();
-                    gameLogic.initPlayer(PlayersTypes.ROBOT, i, name);
+                    gameLogic.initPlayer(PlayersTypes.ROBOT, i + 1, name);
                     //playersType[i] = PlayersTypes.HUMAN;
                 }
             }

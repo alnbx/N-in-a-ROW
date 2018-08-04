@@ -95,4 +95,6 @@ public class Col {
     public void playMove(int player) { this.discs[lastRowInserted++].setDiscOfPlayer(player); }
 
     public int getLastRowInserted() { return this.lastRowInserted; }
+
+    public void undoMove() { this.discs[--lastRowInserted].setDiscOfPlayer(0); }
 }
