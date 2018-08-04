@@ -23,11 +23,12 @@ public class ui
     private PrintMessages winningMessage;
     private PrintMessages endGame;
     //private int playerAmmount = 2; //TODO: must be changed???
-    private GameLogic gameLogic = new Game();
-    
+    private GameLogic gameLogic;
+
 
     public static Scanner scanner = new Scanner(System.in);
     public static final char[] playerDiscs = {'@', '#', '$', '%', '&', '+', '~'};
+
 
     public ui(String xmlPath)
     {
@@ -37,6 +38,7 @@ public class ui
         this.gameMenu = new GameMenu();
         this.winningMessage = new WinnerMessage();
         this.endGame = new EndGameMessage();
+        this.gameLogic = new Game();
 
         prepareGame();
     }
@@ -293,4 +295,16 @@ public class ui
         }
     }
 
+    private void loadGameFromFile(String gameFile) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream in =
+                     new ObjectInputStream(
+                             new FileInputStream(gameFile))) {
+            gameLogic = (Game)in.readObject();
+        }
+    }
+
+    public static void main(String[] args) {
+        ui UI = new ui(args[0]);
+
+    }
 }
