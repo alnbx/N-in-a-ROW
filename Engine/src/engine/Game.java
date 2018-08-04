@@ -2,10 +2,8 @@ package engine;//import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
 import common.PlayersTypes;
 
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.lang.Exception;
-import java.util.stream.Collectors;
 
 /**
  * Created by user on 27/07/2018.
@@ -16,7 +14,7 @@ public class Game implements GameLogic {
     private Board board;
     private int sequenceNumber;
     private boolean hasWinner;
-    private boolean isFull;
+    private boolean isBoardFull;
     private Date startingTime;
     private boolean isFirstMove;
     private GameSettings gameSettings;
@@ -29,7 +27,7 @@ public class Game implements GameLogic {
         board = new Board(4,4);
         this.sequenceNumber = 4;
         this.hasWinner = false;
-        this.isFull = false;
+        this.isBoardFull = false;
         this.startingTime = null;
         this.players = new ArrayList<Player>(maxNumOfPlayers);
         this.currentPlayer = null;
@@ -103,7 +101,7 @@ public class Game implements GameLogic {
         currentPlayer = players.get((currentPlayer.getId() % players.size()) + 1);
 
         board.decreaseEmptySpace();
-        if (board.isFull()) { this.isFull = true; }
+        if (board.isFull()) { this.isBoardFull = true; }
 
         if (!this.isFirstMove) {
             this.isFirstMove = true;
@@ -140,7 +138,7 @@ public class Game implements GameLogic {
 
     public static void main(String[] args)
     {
-/*
+
         engine.Game g = new engine.Game();
         g.playHumanPlayer(1,1);
         g.playHumanPlayer(2,2);
@@ -155,8 +153,7 @@ public class Game implements GameLogic {
             }
             System.out.print("\n");
         }
-        */
-        Game g = new Game();
+
         try {
             g.load("./ex1-small.xml");
             System.out.println((g.getGameSettings()));
@@ -165,13 +162,17 @@ public class Game implements GameLogic {
         }
     }
 
+    public int getNumberOfPlayers() {
+        return gameSettings.numOfPlayers;
+    }
+
     // for debug - should be removed
     public GameSettings getGameSettings() {
         return gameSettings;
     }
 
-    public boolean isHasWinner() { return this.hasWinner; }
-    public boolean isBoardFull() { return this.isFull; }
+    public boolean getHasWinner() { return this.hasWinner; }
+    public boolean getIsBoardFull() { return this.isBoardFull; }
 
     public void initPlayer(PlayersTypes playerType, int id, String name) {
         Player player = new Player(id, playerType, name);
@@ -226,5 +227,9 @@ public class Game implements GameLogic {
             Player player = getPlayerById(m.getPlayerId());
             System.out.println(player.getName() + " inserted a disc to column nunmer " + m.getCol());
         }
+    }
+
+    public int getIdOfCurrentPlayer() {
+        return currentPlayer.getId();
     }
 }

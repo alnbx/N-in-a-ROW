@@ -16,7 +16,7 @@ public class ui
     private Menu gameMenu;
     private PrintMessages winningMessage;
     private PrintMessages endGame;
-    private int playerAmmount = 2; //TODO: must be changed???
+    //private int playerAmmount = 2; //TODO: must be changed???
     private GameLogic gameLogic = new Game();
 
     public static Scanner scanner = new Scanner(System.in);
@@ -77,7 +77,7 @@ public class ui
             case LOADXML:
                 String path = scanner.nextLine();
                 try {
-                    Engine.load(path);
+                    gameLogic.load(path);
                     System.out.println("New configuration loaded successfully");
                 } catch (Exception e){
                     System.out.println("Bad XML was loaded: " + e + "\nLoaded last legal configuration");
@@ -105,14 +105,21 @@ public class ui
 
     private void playGame()
     {
-        while ((false == Engine.isHasWinner()) && (false == Engine.ifFull())) {
+        while ((false == gameLogic.getHasWinner()) && (false == gameLogic.getIsBoardFull())) {
             //TODO: printBoard
             handleUserChoiceGameMenu(gameMenu.showMenu());
         }
 
-        Engine.isHasWinner ? winningMessage.printMessage(Engine.getWinner()) : endGame.printMessage(0);
+        //gameLogic.getHasWinner() ? winningMessage.printMessage(gameLogic.getWinner()) : endGame.printMessage(0);
+        if (gameLogic.getHasWinner()) {
+            winningMessage.printMessage(gameLogic.getIdOfCurrentPlayer());
+        }
+        else {
+            endGame.printMessage(0);
+        }
 
-        //TODO: if Engine.isHasWinner we need to start a new game? show main menu? reset everything?
+
+        //TODO: if Engine.getHasWinner we need to start a new game? show main menu? reset everything?
     }
 
     private void handleUserChoiceGameMenu(MenuChoice userChoice)
@@ -125,28 +132,34 @@ public class ui
         }
     }
 
+    private void showTurnsHistory() {
+        gameLogic.showMovesHistory();
+    }
+
     private void showGameStats()
     {
-        int playerNumber = 0;
+        //int playerNumber = 0;
 
-        playerNumber = Engine.getPlayerNumber();
+        //playerNumber = gameLogic.getPlayerNumber();
+        int playerAmmount = gameLogic.getNumberOfPlayers();
 
         System.out.println("========== Game statistics ==========");
         System.out.println("=== Current Player ==");
-        System.out.println("Current player: " + Engine.getPlayerNumber());
+        //System.out.println("Current player: " + gameLogic.getPlayerNumber());
+        System.out.println("Current player: " + gameLogic.getIdOfCurrentPlayer());
 
         System.out.println("=== Players discs ===");
-        for (int i = 0; i < this.playerAmmount; i++) {
+        for (int i = 0; i < playerAmmount; i++) {
             System.out.println(String.format("Player: %d Disc: %c", i+1, playerDiscs[i]));
         }
 
         System.out.println("=== Player turns ===");
-        for (int i = 0; i < this.playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Turns: %d", i+1, Engine.playerTurns(i)));
+        for (int i = 0; i < playerAmmount; i++) {
+            System.out.println(String.format("Player: %d Turns: %d", i+1, gameLogic.playerTurns(i)));
         }
 
         System.out.println("=== Elapsed time ===");
-        System.out.println(String.format("Elapsed time: " + Engine.timeFromBegining));
+        System.out.println(String.format("Elapsed time: " + gameLogic.timeFromBegining()));
     }
 
     private void playTurn()
@@ -157,7 +170,7 @@ public class ui
             //if (Engine.playerType == PlayerTypes.HUMAN) { col = getUserInputCol(); }
             if (gameLogic.getTypeOfCurrentPlayer() == PlayersTypes.HUMAN) { col = getUserInputCol(); }
 
-            if (!Engine.play(col)) {
+            if (!gameLogic.play(col)) {
                 System.out.println("Illigal move. please try again.");
                 col = getUserInputCol();
             }
@@ -174,7 +187,7 @@ public class ui
                 System.out.println("Please enter the col you wish to drop a disc: ");
                 input = Integer.parseInt(ui.scanner.nextLine());
 
-                if (input > Engine.getCols() + 1 || input < 1) {
+                if (input > gameLogic.getCols() + 1 || input < 1) {
                     System.out.println("Out of bound col. Please try again. ");
                     continue;
                 }
@@ -190,14 +203,44 @@ public class ui
 
     private void choosePlayersType()
     {
-        int playersAmount = Engine.getNumberOfPlayers();
+        int playersAmount = gameLogic.getNumberOfPlayers();
         int robotsCounter = 0;
         PlayersTypes[] playersType = new PlayersTypes[playersAmount];
         String userChoice;
         boolean onceAgain = true;
+        int initializedPlayers = 0;
 
         System.out.println("Before the game begins, please enter the types of the players! :)");
         System.out.println("Please type h for human player and r for robotic player ");
+
+        while (initializedPlayers < playersAmount) {
+            System.out.print("Please type your choice for player " + initializedPlayers + 1 + ":  ");
+            userChoice = scanner.nextLine();
+            System.out.println();
+
+            while (!(userChoice.toLowerCase().equals("r") || userChoice.toLowerCase().equals("h"))) {
+                System.out.print("Oops, bad choice. Please try again:  ");
+                userChoice = scanner.nextLine();
+                System.out.println();
+            }
+
+            if (userChoice.toLowerCase().equals("r")) {
+                if (robotsCounter == playersAmount) {
+                    System.out.println("You chose all players to be robots and that is not legal. Please choose again");
+                }
+                else {
+                    gameLogic.initPlayer(PlayersTypes.ROBOT, initializedPlayers + 1 , "Computer");
+                    robotsCounter++;
+                    initializedPlayers++;
+                }
+            } else {
+                System.out.print("Please type player's name: ");
+                String name = scanner.nextLine();
+                gameLogic.initPlayer(PlayersTypes.HUMAN, initializedPlayers + 1, name);
+                initializedPlayers++;
+            }
+        }
+        /*
         while (onceAgain) {
             for (int i = 0; i < playersAmount; i++) {
                 System.out.print("Please type your choice for player " + i + ":  ");
@@ -226,6 +269,7 @@ public class ui
             if (onceAgain) { System.out.println("You chose all players to be robots and that is not legal. Please choose again"); }
         }
 
-        for (int i = 0; i < playersAmount; i++) { Engine.setPlayerType(i, playersType[i]); }
+        for (int i = 0; i < playersAmount; i++) { gameLogic.setPlayerType(i, playersType[i]); }
+        */
     }
 }

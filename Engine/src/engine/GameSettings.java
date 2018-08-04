@@ -17,8 +17,10 @@ public class GameSettings {
     GameType gameType;
     File settingsFile;
     String settingsFilePath;
+    int numOfPlayers;
 
     GameSettings(String settingsFilePath) {
+        this.numOfPlayers = 2;
         this.settingsFilePath = settingsFilePath;
     }
 
@@ -60,6 +62,10 @@ public class GameSettings {
 
     public GameType getGameType() {
         return this.gameType;
+    }
+
+    public int getNumOfPlayers() {
+        return numOfPlayers;
     }
 
     public void setGameSettings() throws Exception {

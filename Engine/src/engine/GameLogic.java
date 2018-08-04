@@ -21,5 +21,9 @@ public interface GameLogic {
     void initPlayer(PlayersTypes playerType, int id, String name);
     PlayersTypes getTypeOfCurrentPlayer();
     boolean undoLastMove(); // returns false if there are no moves to undo, otherwise returns true
+    int getNumberOfPlayers();
+    int getIdOfCurrentPlayer();
     void showMovesHistory();
+    boolean getHasWinner();
+    boolean getIsBoardFull();
 }
