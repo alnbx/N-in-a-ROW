@@ -2,13 +2,15 @@ package engine;//import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
 import common.PlayersTypes;
 
+
+import java.io.Serializable;
 import java.util.*;
 import java.lang.Exception;
 
 /**
  * Created by user on 27/07/2018.
  */
-public class Game implements GameLogic {
+public class Game implements GameLogic, Serializable {
 
     final int maxNumOfPlayers = 6;
     private Board board;
@@ -222,14 +224,12 @@ public class Game implements GameLogic {
         return player;
     }
 
-    public void showMovesHistory() {
-        for (Move m : playedMoves) {
-            Player player = getPlayerById(m.getPlayerId());
-            System.out.println(player.getName() + " inserted a disc to column nunmer " + m.getCol());
-        }
+    public List<Move> getMovesHistory() {
+        return playedMoves;
     }
 
     public int getIdOfCurrentPlayer() {
         return currentPlayer.getId();
     }
+
 }

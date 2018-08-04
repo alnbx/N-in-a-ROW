@@ -1,8 +1,14 @@
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.List;
 
 import common.PlayersTypes;
 import engine.GameLogic;
 import engine.Game;
+import engine.Move;
 
 /**
  * Created by user on 30/07/2018.
@@ -18,6 +24,7 @@ public class ui
     private PrintMessages endGame;
     //private int playerAmmount = 2; //TODO: must be changed???
     private GameLogic gameLogic = new Game();
+    
 
     public static Scanner scanner = new Scanner(System.in);
     public static final char[] playerDiscs = {'@', '#', '$', '%', '&', '+', '~'};
@@ -133,7 +140,8 @@ public class ui
     }
 
     private void showTurnsHistory() {
-        gameLogic.showMovesHistory();
+        List<Move> movesHistory = gameLogic.getMovesHistory();
+        //TODO: print moves history
     }
 
     private void showGameStats()
@@ -272,4 +280,17 @@ public class ui
         for (int i = 0; i < playersAmount; i++) { gameLogic.setPlayerType(i, playersType[i]); }
         */
     }
+
+    private void writeGameToFile() throws IOException {
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("ddMMYY_HHmm");
+        String time = localDateFormat.format(new Date());
+
+        try (ObjectOutputStream out =
+                     new ObjectOutputStream(
+                             new FileOutputStream("N-in-a-Row_" + time))) {
+            out.writeObject(gameLogic);
+            out.flush();
+        }
+    }
+
 }

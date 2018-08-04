@@ -3,6 +3,7 @@ package engine;
 import common.PlayersTypes;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public interface GameLogic {
     boolean undoLastMove(); // returns false if there are no moves to undo, otherwise returns true
     int getNumberOfPlayers();
     int getIdOfCurrentPlayer();
-    void showMovesHistory();
+    List<Move> getMovesHistory();
     boolean getHasWinner();
     boolean getIsBoardFull();
 }
