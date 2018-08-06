@@ -35,19 +35,32 @@ public class UI
         this.endGame = new EndGameMessage();
         this.gameLogic = new Game();
 
-        printBoard();
-
         prepareGame();
+        printBoard();
     }
 
     private void prepareGame()
     {
-        MenuChoice choice = MenuChoice.INVALIDCHOICE;
+        //MenuChoice choice = MenuChoice.INVALIDCHOICE;
         firstMenu.showMenu();
-        loadFirstXML();
-        handleUserChoicePrimaryMenu(mainMenu.showMenu());
+        loadXML();
+        //loadFirstXML();
+        //handleUserChoicePrimaryMenu(mainMenu.showMenu());
+        //printBoard();
+        mainGameLoop();
     }
 
+    private void mainGameLoop() {
+        boolean stayInGame = true;
+        while (stayInGame) {
+            stayInGame = handleUserChoicePrimaryMenu(mainMenu.showMenu());
+        }
+
+        System.out.println("Bye Bye :(");
+        System.exit(0);
+    }
+
+    /*
     private void loadFirstXML()
     {
         boolean configurationLoaded = false;
@@ -64,7 +77,7 @@ public class UI
                 if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
             }
         }
-        /*
+
         do {
             if (!gameLogic.load(this.xmlPath)) {
                 System.out.println("Sorry to interrupt but the configuration file is invalid");
@@ -74,44 +87,79 @@ public class UI
                 if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
             }
         } while (!gameLogic.configurationLoaded());
-        */
+
+    }
+    */
+
+    private void loadXML() {
+        boolean configurationLoaded = false;
+
+        while (!configurationLoaded) {
+            try {
+                gameLogic.load(this.xmlPath);
+                configurationLoaded = true;
+                gameLogic.setBoardFromSettings();
+            } catch (Exception e) {
+                System.out.println("Sorry to interrupt but the configuration file is invalid:\n");
+                //System.out.println(e.getStackTrace());
+                System.out.println("Please provide another XML or type exit if you wish to exit");
+                xmlPath = scanner.nextLine();
+                if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
+            }
+        }
     }
 
-    private void handleUserChoicePrimaryMenu(MenuChoice userChoice)
+    private boolean handleUserChoicePrimaryMenu(MenuChoice userChoice)
     {
+        boolean continueGame = true;
         switch (userChoice){
             case LOADXML:
-                String path = scanner.nextLine();
+                System.out.println("Please enter the path to the XML you wish to load: ");
+                this.xmlPath = scanner.nextLine();
+                loadXML();
+                printBoard();
+                /*
                 try {
                     gameLogic.load(path);
                     System.out.println("New configuration loaded successfully");
                 } catch (Exception e){
                     System.out.println("Bad XML was loaded: " + e + "\nLoaded last legal configuration");
                 }
+                */
                 //gameLogic.load(path) ? System.out.println("New configuration loaded successfully") :
                 //                    System.out.println("Bad XML was loaded.\nLoaded last legal configuration");
                 break;
 
             case STARTGAME:
-                startGame();
+                continueGame = startGame();
                 break;
 
+
             case EXIT:
+                continueGame = false;
+                /*
                 System.out.println("Bye Bye :(");
                 System.exit(0);
                 break;
+                */
         }
+
+        return continueGame;
     }
 
-    private void startGame()
+    private boolean startGame()
     {
         choosePlayersType();
-        playGame();
+        boolean continuePlaying = playGame();
+        return continuePlaying;
     }
 
-    private void playGame()
+    private boolean playGame()
     {
-        while ((!gameLogic.getHasWinner()) && (!gameLogic.getIsBoardFull())) {
+        MenuChoice userChoice = gameMenu.showMenu();
+        boolean continuePlaying = true;
+
+        while((!gameLogic.getHasWinner()) && (!gameLogic.getIsBoardFull()) && MenuChoice.EXIT != userChoice) {
             printBoard();
             handleUserChoiceGameMenu(gameMenu.showMenu());
         }
@@ -119,10 +167,14 @@ public class UI
         if (gameLogic.getHasWinner()) {
             winningMessage.printMessage(gameLogic.getIdOfCurrentPlayer());
         }
-        else {
+        else if (gameLogic.getIsBoardFull()) {
             endGame.printMessage(0);
         }
+        else {
+            continuePlaying = false;
+        }
 
+        return continuePlaying;
 
         //TODO: if Engine.getHasWinner/endGame we need to start a new game? show main menu? reset everything?
         //TODO: add function to reset the board.
@@ -134,7 +186,7 @@ public class UI
             case GAMESTATS: showGameStats(); break;
             case MAKETURN: playTurn(); break;
             case HISTORY: showTurnsHistory(); break;
-            case EXIT: System.out.println("Bye Bye"); System.exit(0);
+            //case EXIT: System.out.println("Bye Bye"); System.exit(0);
         }
     }
 
@@ -348,7 +400,7 @@ public class UI
     {
         UI ui;
         //TODO: For debug only!
-        if (args.length == 0) { ui = new UI(" "); }
+        if (args.length == 0) { ui = new UI("/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-small.xml"); }
         else { ui = new UI(args[0]); }
     }
 }

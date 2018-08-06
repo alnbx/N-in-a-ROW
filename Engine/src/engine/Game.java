@@ -14,7 +14,7 @@ public class Game implements GameLogic, Serializable {
 
     final int maxNumOfPlayers = 6;
     private Board board;
-    private int sequenceNumber;
+    //private int sequenceNumber;
     private boolean hasWinner;
     private boolean isBoardFull;
     private Date startingTime;
@@ -26,12 +26,16 @@ public class Game implements GameLogic, Serializable {
 
     public Game()
     {
-        board = new Board(4,5);
-        this.sequenceNumber = 4;
+        //board = new Board(4,5);
+        //this.sequenceNumber = 4;
+        this.players = new ArrayList<Player>(maxNumOfPlayers);
+        this.startingTime = null;
+    }
+
+    public void setBoardFromSettings() {
+        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getBoardNumCols());
         this.hasWinner = false;
         this.isBoardFull = false;
-        this.startingTime = null;
-        this.players = new ArrayList<Player>(maxNumOfPlayers);
         this.currentPlayer = null;
         this.playedMoves = new ArrayList<Move>();
     }
@@ -167,7 +171,7 @@ public class Game implements GameLogic, Serializable {
         }
     */
     public int getNumberOfPlayers() {
-        return gameSettings.numOfPlayers;
+        return players.size();
     }
 
     // for debug - should be removed

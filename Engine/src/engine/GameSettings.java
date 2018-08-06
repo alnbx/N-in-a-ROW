@@ -10,14 +10,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 
 public class GameSettings {
-    int target;
-    int boardNumRows;
-    int boardNumCols;
-    GameVariant gameVariant;
-    GameType gameType;
-    File settingsFile;
-    String settingsFilePath;
-    int numOfPlayers;
+    private int target;
+    private int boardNumRows;
+    private int boardNumCols;
+    private GameVariant gameVariant;
+    private GameType gameType;
+    private File settingsFile;
+    private String settingsFilePath;
+    private int numOfPlayers;
 
     GameSettings(String settingsFilePath) {
         this.numOfPlayers = 2;
