@@ -37,8 +37,10 @@ public class Game implements GameLogic, Serializable {
     }
 
     @Override
-    public boolean playHumanPlayer(int col, int player)
+    public boolean playHumanPlayer(int col)
     {
+        int player = this.currentPlayer.getId();
+
         if (board.playMove(col, player))
         {
             playedMoves.add(new Move(currentPlayer.getId(), col));
@@ -54,11 +56,11 @@ public class Game implements GameLogic, Serializable {
     }
 
     @Override
-    public boolean playComputerPlayer(int player)
+    public boolean playComputerPlayer()
     {
         Random r = new Random();
+        int player = currentPlayer.getId();
         int rand = r.nextInt(board.getCols());
-        //TODO: Change the player number to something valid. We still do not know how to get the player number!
 
         while(!board.playMove(rand, player)) { rand = r.nextInt(board.getCols()); }
 
@@ -71,12 +73,11 @@ public class Game implements GameLogic, Serializable {
     }
 
     @Override
-    //TODO: return real player number!
-    public int getPlayerNumber() { return 1; }
+    //TODO: Needed?
+    public int getPlayerNumber() { return this.currentPlayer.getId(); }
 
     @Override
-    //TODO: return real player turns!
-    public int playerTurns(int player) { return 1; }
+    public int playerTurns(int player) { return getPlayerById(player).getPlayerTurns(); }
 
     @Override
     public String timeFromBegining()
@@ -97,8 +98,8 @@ public class Game implements GameLogic, Serializable {
     @Override
     public boolean play(int col)
     {
-        //TODO: do something
-
+        if (this.currentPlayer.getPlayerType() == PlayersTypes.HUMAN) { playHumanPlayer(col); }
+        else { playComputerPlayer(); }
         //change current player after turn is completed succefully
         currentPlayer = players.get((currentPlayer.getId() % players.size()) + 1);
 
@@ -129,11 +130,12 @@ public class Game implements GameLogic, Serializable {
 
     private boolean checkWinningMove(int col, int player)
     {
-        //TODO: check how many discs is a win!
-        return  board.leftRightSequence(col, player) == this.sequenceNumber ||
-                board.upDownSequence(col, player) == this.sequenceNumber ||
-                board.diagonalDownSequence(col, player) == this.sequenceNumber ||
-                board.diagonalUpSequence(col, player) == this.sequenceNumber;
+        int targetSequence = this.gameSettings.getTarget();
+
+        return  board.leftRightSequence(col, player) == targetSequence    ||
+                board.upDownSequence(col, player) == targetSequence       ||
+                board.diagonalDownSequence(col, player) == targetSequence ||
+                board.diagonalUpSequence(col, player) == targetSequence;
     }
 
     public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }

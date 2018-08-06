@@ -22,6 +22,7 @@ public class Player {
         numOfTurnsPlayed = 0;
     }
 
+    // TODO: Use this function :)
     public void increaseNumberOfTurnsPlayed() { numOfTurnsPlayed++; }
 
     // for UNDO
@@ -54,4 +55,6 @@ public class Player {
     public int getId() {
         return id;
     }
+
+    public int getPlayerTurns() { return this.numOfTurnsPlayed; }
 }

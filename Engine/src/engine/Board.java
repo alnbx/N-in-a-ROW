@@ -101,8 +101,7 @@ public class Board {
         char[][] res = new char[this.rows][this.cols];
         for (int i  = 0; i < this.rows; i++)
         {
-            for (int j = 0; j < this.cols; j++)
-            {
+            for (int j = 0; j < this.cols; j++) {
                 res[i][j] = Character.forDigit(board[j].getDiscInCol(i).getPlayerDisc(), 10);
             }
         }
@@ -139,7 +138,6 @@ public class Board {
 
     public int upDownSequence(int col, int player)
     {
-        //TODO: do something
         int res = 0;
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         Disc temp = d;

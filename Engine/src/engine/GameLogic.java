@@ -11,8 +11,8 @@ import java.util.Map;
  */
 public interface GameLogic {
     boolean play(int col);
-    boolean playHumanPlayer(int col, int player);
-    boolean playComputerPlayer(int player);
+    boolean playHumanPlayer(int col);
+    boolean playComputerPlayer();
     int getPlayerNumber();
     int playerTurns(int player);
     String timeFromBegining();

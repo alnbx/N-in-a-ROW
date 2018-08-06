@@ -20,7 +20,6 @@ public class UI
     private Menu gameMenu;
     private PrintMessages winningMessage;
     private PrintMessages endGame;
-    //private int playerAmmount = 2; //TODO: must be changed???
     private GameLogic gameLogic;
 
     public static Scanner scanner = new Scanner(System.in);
@@ -125,7 +124,8 @@ public class UI
         }
 
 
-        //TODO: if Engine.getHasWinner we need to start a new game? show main menu? reset everything?
+        //TODO: if Engine.getHasWinner/endGame we need to start a new game? show main menu? reset everything?
+        //TODO: add function to reset the board.
     }
 
     private void handleUserChoiceGameMenu(MenuChoice userChoice)
@@ -306,20 +306,21 @@ public class UI
 
     private void printLineSeparator(int cols)
     {
-        for (int i = 0; i < (13 + ((cols - 1) * 6)); i++) { System.out.print("-"); }
+        for (int i = 0; i < (int)(((13 + ((cols - 1) * 6)) / 2.0) + 0.5); i++) { System.out.print("- "); }
         System.out.println();
     }
 
     private void printTopScales(int cols)
     {
 
-        printLineSeparator(cols);
+        //printLineSeparator(cols);
 
-        System.out.print("|     ");
+        System.out.print("      ");
         for (int i = 0; i < cols; i++) { System.out.print(String.format("|  %d  ", i+1)); }
         System.out.println("|");
 
         printLineSeparator(cols);
+        System.out.println("\n");
     }
 
     private void printBoard()
@@ -327,11 +328,11 @@ public class UI
         char[][] board = gameLogic.boardReadyToPrint();
         int cols = gameLogic.getCols();
 
-        printTopScales(cols);
+        System.out.println("\n");
 
         for(int row = 0; row < board.length; row++ )
         {
-            System.out.print(String.format("|  %d  ", row + 1));
+            System.out.print(String.format("   %d  ", row + 1));
             for (int col = 0; col < cols; col++) {
                 int i = board[row][col] - '0';
                 System.out.print(String.format("|  %c  ",playerDiscs[i]));
@@ -339,6 +340,8 @@ public class UI
             System.out.println("|");
             printLineSeparator(cols);
         }
+
+        printTopScales(cols);
     }
 
     public static void main(String[] args)
