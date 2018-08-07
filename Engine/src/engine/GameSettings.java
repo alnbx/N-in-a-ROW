@@ -19,7 +19,7 @@ public class GameSettings {
     private String settingsFilePath;
     private int numOfPlayers;
 
-    GameSettings(String settingsFilePath) {
+    GameSettings() {
         this.numOfPlayers = 2;
         this.settingsFilePath = settingsFilePath;
     }
@@ -68,8 +68,9 @@ public class GameSettings {
         return numOfPlayers;
     }
 
-    public void setGameSettings() throws Exception {
+    public void initGameSettings(String settingsFilePath) throws Exception {
         String extension = "";
+        this.settingsFilePath = settingsFilePath;
         int i = settingsFilePath.lastIndexOf('.');
 
         if (i > 0 && settingsFilePath.substring(i).equals(".xml")) {

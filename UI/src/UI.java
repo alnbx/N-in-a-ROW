@@ -35,10 +35,17 @@ public class UI
         this.endGame = new EndGameMessage();
         this.gameLogic = new Game();
 
-        prepareGame();
-        printBoard();
+        //prepareGame();
+        //printBoard();
     }
 
+    public void playGame() {
+        firstMenu.showMenu();
+        loadXML();
+        mainGameLoop();
+    }
+
+    /*
     private void prepareGame()
     {
         //MenuChoice choice = MenuChoice.INVALIDCHOICE;
@@ -49,9 +56,11 @@ public class UI
         //printBoard();
         mainGameLoop();
     }
+    */
 
     private void mainGameLoop() {
         boolean stayInGame = true;
+        printBoard();
         while (stayInGame) {
             stayInGame = handleUserChoicePrimaryMenu(mainMenu.showMenu());
         }
@@ -67,7 +76,7 @@ public class UI
 
         while (!configurationLoaded) {
             try {
-                gameLogic.load(this.xmlPath);
+                gameLogic.loadSettingsFile(this.xmlPath);
                 configurationLoaded = true;
             } catch (Exception e) {
                 System.out.println("Sorry to interrupt but the configuration file is invalid:\n");
@@ -79,7 +88,7 @@ public class UI
         }
 
         do {
-            if (!gameLogic.load(this.xmlPath)) {
+            if (!gameLogic.loadSettingsFile(this.xmlPath)) {
                 System.out.println("Sorry to interrupt but the configuration file is invalid");
                 checkAndPrintWhyXMLInvalid();
                 System.out.println("Please provide another XML or type exit if you wish to exit");
@@ -96,9 +105,8 @@ public class UI
 
         while (!configurationLoaded) {
             try {
-                gameLogic.load(this.xmlPath);
+                gameLogic.loadSettingsFile(this.xmlPath);
                 configurationLoaded = true;
-                gameLogic.setBoardFromSettings();
             } catch (Exception e) {
                 System.out.println("Sorry to interrupt but the configuration file is invalid:\n");
                 //System.out.println(e.getStackTrace());
@@ -114,19 +122,19 @@ public class UI
         boolean continueGame = true;
         switch (userChoice){
             case LOADXML:
-                System.out.println("Please enter the path to the XML you wish to load: ");
+                System.out.println("Please enter the path to the XML you wish to loadSettingsFile: ");
                 this.xmlPath = scanner.nextLine();
                 loadXML();
                 printBoard();
                 /*
                 try {
-                    gameLogic.load(path);
+                    gameLogic.loadSettingsFile(path);
                     System.out.println("New configuration loaded successfully");
                 } catch (Exception e){
                     System.out.println("Bad XML was loaded: " + e + "\nLoaded last legal configuration");
                 }
                 */
-                //gameLogic.load(path) ? System.out.println("New configuration loaded successfully") :
+                //gameLogic.loadSettingsFile(path) ? System.out.println("New configuration loaded successfully") :
                 //                    System.out.println("Bad XML was loaded.\nLoaded last legal configuration");
                 break;
 
@@ -150,18 +158,19 @@ public class UI
     private boolean startGame()
     {
         choosePlayersType();
-        boolean continuePlaying = playGame();
+        boolean continuePlaying = playSingleRound();
         return continuePlaying;
     }
 
-    private boolean playGame()
+    private boolean playSingleRound()
     {
+        printBoard();
         MenuChoice userChoice = gameMenu.showMenu();
+        handleUserChoiceGameMenu(userChoice);
         boolean continuePlaying = true;
 
         while((!gameLogic.getHasWinner()) && (!gameLogic.getIsBoardFull()) && MenuChoice.EXIT != userChoice) {
             printBoard();
-            handleUserChoiceGameMenu(gameMenu.showMenu());
         }
 
         if (gameLogic.getHasWinner()) {
@@ -402,5 +411,6 @@ public class UI
         //TODO: For debug only!
         if (args.length == 0) { ui = new UI("/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-small.xml"); }
         else { ui = new UI(args[0]); }
+        ui.playGame();
     }
 }

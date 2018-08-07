@@ -17,7 +17,7 @@ public interface GameLogic {
     int playerTurns(int player);
     String timeFromBegining();
     int getCols();
-    void load(String filePath) throws Exception;
+    void loadSettingsFile(String filePath) throws Exception;
     char[][] boardReadyToPrint();
     void initPlayer(PlayersTypes playerType, int id, String name);
     PlayersTypes getTypeOfCurrentPlayer();
@@ -27,5 +27,4 @@ public interface GameLogic {
     List<Move> getMovesHistory();
     boolean getHasWinner();
     boolean getIsBoardFull();
-    void setBoardFromSettings();
 }

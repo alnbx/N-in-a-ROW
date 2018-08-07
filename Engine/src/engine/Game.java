@@ -30,9 +30,11 @@ public class Game implements GameLogic, Serializable {
         //this.sequenceNumber = 4;
         this.players = new ArrayList<Player>(maxNumOfPlayers);
         this.startingTime = null;
+        this.gameSettings = new GameSettings();
+        //this.gameSettings = new GameSettings(xmlPath);
     }
 
-    public void setBoardFromSettings() {
+    private void setBoardFromSettings() {
         this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getBoardNumCols());
         this.hasWinner = false;
         this.isBoardFull = false;
@@ -121,11 +123,11 @@ public class Game implements GameLogic, Serializable {
     private void setStartingTime() { this.startingTime = new Date(); }
 
     @Override
-    public void load(String filePath) throws Exception
+    public void loadSettingsFile(String filePath) throws Exception
     {
-        gameSettings = new GameSettings(filePath);
         try {
-            gameSettings.setGameSettings();
+            gameSettings.initGameSettings(filePath);
+            setBoardFromSettings();
         } catch (Exception e) {
             throw e;
         }
@@ -163,7 +165,7 @@ public class Game implements GameLogic, Serializable {
             }
 
             try {
-                g.load("./ex1-small.xml");
+                g.loadSettingsFile("./ex1-small.xml");
                 System.out.println((g.getGameSettings()));
             } catch (Exception e) {
                 System.out.println(e);
@@ -171,7 +173,7 @@ public class Game implements GameLogic, Serializable {
         }
     */
     public int getNumberOfPlayers() {
-        return players.size();
+        return gameSettings.getNumOfPlayers();
     }
 
     // for debug - should be removed
