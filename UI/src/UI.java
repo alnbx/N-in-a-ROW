@@ -34,71 +34,27 @@ public class UI
         this.winningMessage = new WinnerMessage();
         this.endGame = new EndGameMessage();
         this.gameLogic = new Game();
-
-        //prepareGame();
-        //printBoard();
     }
 
-    public void playGame() {
-        firstMenu.showMenu();
-        loadXML();
-        mainGameLoop();
-    }
-
-    /*
-    private void prepareGame()
+    public void playGame()
     {
-        //MenuChoice choice = MenuChoice.INVALIDCHOICE;
         firstMenu.showMenu();
         loadXML();
-        //loadFirstXML();
-        //handleUserChoicePrimaryMenu(mainMenu.showMenu());
-        //printBoard();
         mainGameLoop();
     }
-    */
 
     private void mainGameLoop() {
         boolean stayInGame = true;
         printBoard();
         while (stayInGame) {
             stayInGame = handleUserChoicePrimaryMenu(mainMenu.showMenu());
+
+            if (stayInGame) { gameLogic.restartGame(); }
         }
 
         System.out.println("Bye Bye :(");
         System.exit(0);
     }
-
-    /*
-    private void loadFirstXML()
-    {
-        boolean configurationLoaded = false;
-
-        while (!configurationLoaded) {
-            try {
-                gameLogic.loadSettingsFile(this.xmlPath);
-                configurationLoaded = true;
-            } catch (Exception e) {
-                System.out.println("Sorry to interrupt but the configuration file is invalid:\n");
-                //System.out.println(e.getStackTrace());
-                System.out.println("Please provide another XML or type exit if you wish to exit");
-                xmlPath = scanner.nextLine();
-                if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
-            }
-        }
-
-        do {
-            if (!gameLogic.loadSettingsFile(this.xmlPath)) {
-                System.out.println("Sorry to interrupt but the configuration file is invalid");
-                checkAndPrintWhyXMLInvalid();
-                System.out.println("Please provide another XML or type exit if you wish to exit");
-                xmlPath = scanner.nextLine();
-                if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
-            }
-        } while (!gameLogic.configurationLoaded());
-
-    }
-    */
 
     private void loadXML() {
         boolean configurationLoaded = false;
@@ -126,30 +82,14 @@ public class UI
                 this.xmlPath = scanner.nextLine();
                 loadXML();
                 printBoard();
-                /*
-                try {
-                    gameLogic.loadSettingsFile(path);
-                    System.out.println("New configuration loaded successfully");
-                } catch (Exception e){
-                    System.out.println("Bad XML was loaded: " + e + "\nLoaded last legal configuration");
-                }
-                */
-                //gameLogic.loadSettingsFile(path) ? System.out.println("New configuration loaded successfully") :
-                //                    System.out.println("Bad XML was loaded.\nLoaded last legal configuration");
                 break;
 
             case STARTGAME:
                 continueGame = startGame();
                 break;
 
-
             case EXIT:
                 continueGame = false;
-                /*
-                System.out.println("Bye Bye :(");
-                System.exit(0);
-                break;
-                */
         }
 
         return continueGame;
@@ -164,13 +104,14 @@ public class UI
 
     private boolean playSingleRound()
     {
-        printBoard();
-        MenuChoice userChoice = gameMenu.showMenu();
-        handleUserChoiceGameMenu(userChoice);
         boolean continuePlaying = true;
+        MenuChoice userChoice = MenuChoice.INVALIDCHOICE;
 
         while((!gameLogic.getHasWinner()) && (!gameLogic.getIsBoardFull()) && MenuChoice.EXIT != userChoice) {
             printBoard();
+            userChoice = gameMenu.showMenu();
+            handleUserChoiceGameMenu(userChoice);
+            if (MenuChoice.EXIT == userChoice) { continuePlaying = false; }
         }
 
         if (gameLogic.getHasWinner()) {
@@ -178,9 +119,6 @@ public class UI
         }
         else if (gameLogic.getIsBoardFull()) {
             endGame.printMessage(0);
-        }
-        else {
-            continuePlaying = false;
         }
 
         return continuePlaying;
@@ -220,16 +158,17 @@ public class UI
 
         System.out.println("=== Players discs ===");
         for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Disc: %c", i+1, playerDiscs[i]));
+            System.out.println(String.format("Player: %d Disc: %c", i+1, playerDiscs[i+1]));
         }
 
         System.out.println("=== Player turns ===");
         for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Turns: %d", i+1, gameLogic.playerTurns(i)));
+            System.out.println(String.format("Player: %d Turns: %d", i+1, gameLogic.playerTurns(i+1)));
         }
 
         System.out.println("=== Elapsed time ===");
-        System.out.println(String.format("Elapsed time: " + gameLogic.timeFromBegining()));
+        String time = gameLogic.timeFromBegining();
+        System.out.println(String.format("Elapsed time: " + time));
     }
 
     private void playTurn()
@@ -241,7 +180,7 @@ public class UI
             if (gameLogic.getTypeOfCurrentPlayer() == PlayersTypes.HUMAN) { col = getUserInputCol(); }
 
             if (!gameLogic.play(col)) {
-                System.out.println("Illigal move. please try again.");
+                System.out.println("Illegal move. please try again.");
                 col = getUserInputCol();
             }
             else { break; }
@@ -284,7 +223,7 @@ public class UI
         System.out.println("Please type h for human player and r for robotic player ");
 
         while (initializedPlayers < playersAmount) {
-            System.out.print("Please type your choice for player " + initializedPlayers + 1 + ":  ");
+            System.out.print(String.format("Please type your choice for player %d: ",  (initializedPlayers + 1)));
             userChoice = scanner.nextLine();
             System.out.println();
 
@@ -374,8 +313,6 @@ public class UI
     private void printTopScales(int cols)
     {
 
-        //printLineSeparator(cols);
-
         System.out.print("      ");
         for (int i = 0; i < cols; i++) { System.out.print(String.format("|  %d  ", i+1)); }
         System.out.println("|");
@@ -409,7 +346,7 @@ public class UI
     {
         UI ui;
         //TODO: For debug only!
-        if (args.length == 0) { ui = new UI("/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-small.xml"); }
+        if (args.length == 0) { ui = new UI("C:\\Users\\user\\Documents\\Computer Science B.S.C\\Java course\\NinaRow\\ex1-small.xml"); }
         else { ui = new UI(args[0]); }
         ui.playGame();
     }

@@ -14,7 +14,6 @@ public class Game implements GameLogic, Serializable {
 
     final int maxNumOfPlayers = 6;
     private Board board;
-    //private int sequenceNumber;
     private boolean hasWinner;
     private boolean isBoardFull;
     private Date startingTime;
@@ -46,6 +45,7 @@ public class Game implements GameLogic, Serializable {
     public boolean playHumanPlayer(int col)
     {
         int player = this.currentPlayer.getId();
+        col--;
 
         if (board.playMove(col, player))
         {
@@ -91,7 +91,7 @@ public class Game implements GameLogic, Serializable {
         Long diff = 0L;
         Date now = new Date();
 
-        diff = this.startingTime.getTime() - now.getTime();
+        diff = ((null == this.startingTime) ? 0 : this.startingTime.getTime() - now.getTime());
         long diffSeconds = diff / 1000 % 60;
         long diffMinutes = diff / (60 * 1000) % 60;
 
@@ -102,12 +102,29 @@ public class Game implements GameLogic, Serializable {
     public int getCols() { return this.board.getCols(); }
 
     @Override
+    public void restartGame()
+    {
+        board.restart();
+        playedMoves.clear();
+
+        for (Player player : players) { player.restart(); }
+
+        this.hasWinner = false;
+        this.isBoardFull = false;
+
+        this.currentPlayer = players.get(0);
+    }
+
+    @Override
     public boolean play(int col)
     {
-        if (this.currentPlayer.getPlayerType() == PlayersTypes.HUMAN) { playHumanPlayer(col); }
+        boolean ret = true;
+
+        if (this.currentPlayer.getPlayerType() == PlayersTypes.HUMAN) { ret = playHumanPlayer(col); }
         else { playComputerPlayer(); }
         //change current player after turn is completed succefully
-        currentPlayer = players.get((currentPlayer.getId() % players.size()) + 1);
+        int test = currentPlayer.getId();
+        currentPlayer = players.get(currentPlayer.getId() % players.size());
 
         board.decreaseEmptySpace();
         if (board.isFull()) { this.isBoardFull = true; }
@@ -117,7 +134,7 @@ public class Game implements GameLogic, Serializable {
             setStartingTime();
         }
 
-        return false;
+        return ret;
     }
 
     private void setStartingTime() { this.startingTime = new Date(); }

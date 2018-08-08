@@ -27,4 +27,5 @@ public interface GameLogic {
     List<Move> getMovesHistory();
     boolean getHasWinner();
     boolean getIsBoardFull();
+    void restartGame();
 }

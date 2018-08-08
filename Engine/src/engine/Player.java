@@ -57,4 +57,6 @@ public class Player {
     }
 
     public int getPlayerTurns() { return this.numOfTurnsPlayed; }
+
+    public void restart() { this.numOfTurnsPlayed = 0; }
 }

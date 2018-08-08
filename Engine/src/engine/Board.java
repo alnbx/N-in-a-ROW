@@ -31,6 +31,13 @@ public class Board {
         connectBoard();
     }
 
+    public void restart()
+    {
+        this.emptySpaces = this.rows * this.cols;
+
+        for (int i = 0; i < this.cols; i++) { board[i].restartCol(); }
+    }
+
     private void connectBoard()
     {
         for (int i = 0; i < this.cols; i++)
@@ -84,7 +91,7 @@ public class Board {
 
     public boolean undoMove(int col)
     {
-        if (board[col].getLastRowInserted() == -1) { return false; }
+        if (board[col].getLastRowInserted() == board[col].getColLength()) { return false; }
 
         board[col].undoMove();
 
@@ -113,11 +120,10 @@ public class Board {
     {
         int res = 0;
 
-        while (playerDisc == d.getPlayerDisc())
+        while ((null != d) && (playerDisc == d.getPlayerDisc()))
         {
             d = d.getDiscByDirection(direction);
             res++;
-            if (null == d) { break; }
         }
 
         return res;

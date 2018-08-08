@@ -9,12 +9,14 @@ public class Col {
     private int freeSpace;
     private Disc[] discs;
     private int lastRowInserted;
+    private int colLength;
 
     public Col(int colNumber, int discsInCol) {
         this.colNumber = colNumber;
         this.discs = new Disc[discsInCol];
         this.freeSpace = discsInCol;
-        this.lastRowInserted = -1;
+        this.lastRowInserted = discs.length;
+        this.colLength = discs.length - 1;
 
         initCol();
     }
@@ -25,7 +27,7 @@ public class Col {
     }
 
     public int getFreeSpace() { return this.freeSpace; }
-
+    public int getColLength() { return this.colLength; }
     public Disc getDiscInCol(int x) { return this.discs[x]; }
 
     public void connectDiscsLeft(Col left)
@@ -36,19 +38,21 @@ public class Col {
         }
     }
 
+    public void restartCol() { for (int i = 0; i < this.discs.length - 1; i++) { this.discs[i].restartDisc(); } }
+
     public void connectDiscsLeftUp(Col leftUp)
     {
-        for (int i = 0; i < this.discs.length - 1; i++)
+        for (int i = 1; i < this.discs.length; i++)
         {
-            this.discs[i].setDiscsAround(Directions.LEFTUP, leftUp.getDiscInCol(i + 1));
+            this.discs[i].setDiscsAround(Directions.LEFTUP, leftUp.getDiscInCol(i - 1));
         }
     }
 
     public void connectDiscsLeftDown(Col leftDown)
     {
-        for (int i = 1; i < this.discs.length; i++)
+        for (int i = 0; i < this.discs.length - 1; i++)
         {
-            this.discs[i].setDiscsAround(Directions.LEFTDOWN, leftDown.getDiscInCol(i - 1));
+            this.discs[i].setDiscsAround(Directions.LEFTDOWN, leftDown.getDiscInCol(i + 1));
         }
     }
 
@@ -62,39 +66,39 @@ public class Col {
 
     public void connectDiscsRightUp(Col rightUp)
     {
-        for (int i = 0; i < this.discs.length-1; i++)
+        for (int i = 1; i < this.discs.length; i++)
         {
-            this.discs[i].setDiscsAround(Directions.UPRIGHT, rightUp.getDiscInCol(i + 1));
+            this.discs[i].setDiscsAround(Directions.UPRIGHT, rightUp.getDiscInCol(i - 1));
         }
     }
 
     public void connectDiscsRightDown (Col rightDown)
     {
-        for (int i = 1; i < this.discs.length; i++)
+        for (int i = 0; i < this.discs.length - 1; i++)
         {
-            this.discs[i].setDiscsAround(Directions.LEFTDOWN, rightDown.getDiscInCol(i - 1));
+            this.discs[i].setDiscsAround(Directions.LEFTDOWN, rightDown.getDiscInCol(i + 1));
         }
     }
 
     public void connectDiscsUp()
     {
-        for (int i = 0; i < this.discs.length - 1; i++)
+        for (int i = 1; i < this.discs.length; i++)
         {
-            this.discs[i].setDiscsAround(Directions.UP, this.discs[i + 1]);
+            this.discs[i].setDiscsAround(Directions.UP, this.discs[i - 1]);
         }
     }
 
     public void connectDiscsDown()
     {
-        for (int i = 1; i < this.discs.length; i++)
+        for (int i = 0; i < this.discs.length - 1; i++)
         {
-            this.discs[i].setDiscsAround(Directions.DOWN, this.discs[i - 1]);
+            this.discs[i].setDiscsAround(Directions.DOWN, this.discs[i + 1]);
         }
     }
 
-    public void playMove(int player) { this.discs[lastRowInserted++].setDiscOfPlayer(player); }
+    public void playMove(int player) { this.discs[--lastRowInserted].setDiscOfPlayer(player); }
 
     public int getLastRowInserted() { return this.lastRowInserted; }
 
-    public void undoMove() { this.discs[--lastRowInserted].setDiscOfPlayer(0); }
+    public void undoMove() { this.discs[lastRowInserted++].setDiscOfPlayer(0); }
 }

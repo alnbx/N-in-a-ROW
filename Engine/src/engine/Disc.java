@@ -36,6 +36,7 @@ public class Disc {
     public void setPosition(Position x) { this.position.setPosition(x.getPositionRow(), x.getPositionCol()); }
     public int getPlayerDisc() { return discOfPlayer; }
     public Disc getDiscByDirection(Directions direction) { return discsAround.get(direction); }
+    public void restartDisc() { this.discOfPlayer = 0; }
 
     public void setDiscOfPlayer(int discOfPlayer) { this.discOfPlayer = discOfPlayer; }
 
