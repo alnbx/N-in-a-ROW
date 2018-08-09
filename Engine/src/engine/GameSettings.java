@@ -8,8 +8,9 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.Serializable;
 
-public class GameSettings {
+public class GameSettings implements Serializable {
     private int target;
     private int boardNumRows;
     private int boardNumCols;

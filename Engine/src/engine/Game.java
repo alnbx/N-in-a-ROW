@@ -25,12 +25,9 @@ public class Game implements GameLogic, Serializable {
 
     public Game()
     {
-        //board = new Board(4,5);
-        //this.sequenceNumber = 4;
         this.players = new ArrayList<Player>(maxNumOfPlayers);
         this.startingTime = null;
         this.gameSettings = new GameSettings();
-        //this.gameSettings = new GameSettings(xmlPath);
     }
 
     private void setBoardFromSettings() {
@@ -44,14 +41,17 @@ public class Game implements GameLogic, Serializable {
     @Override
     public boolean playHumanPlayer(int col)
     {
-        int player = this.currentPlayer.getId();
+        int playerID = this.currentPlayer.getId();
         col--;
 
-        if (board.playMove(col, player))
+        if (board.playMove(col, playerID))
         {
-            playedMoves.add(new Move(currentPlayer.getId(), col));
-            if (checkWinningMove(col, player)) {
-                board.setWinner(player);
+            //record move
+            playedMoves.add(new Move(playerID, col));
+            getPlayerById(playerID).increaseNumberOfTurnsPlayed();
+
+            if (checkWinningMove(col, playerID)) {
+                board.setWinner(playerID);
                 board.setHasWinner(true);
                 this.hasWinner = true;
             }
@@ -65,22 +65,24 @@ public class Game implements GameLogic, Serializable {
     public boolean playComputerPlayer()
     {
         Random r = new Random();
-        int player = currentPlayer.getId();
+        int playerID = currentPlayer.getId();
         int rand = r.nextInt(board.getCols());
 
-        while(!board.playMove(rand, player)) { rand = r.nextInt(board.getCols()); }
+        while(!board.playMove(rand, playerID)) {
+            rand = r.nextInt(board.getCols());
+        }
 
-            if (checkWinningMove(rand, player)) {
-                board.setWinner(player);
-                board.setHasWinner(true);
-            }
+        //record move
+        playedMoves.add(new Move(playerID, rand));
+        getPlayerById(playerID).increaseNumberOfTurnsPlayed();
+
+        if (checkWinningMove(rand, playerID)) {
+            board.setWinner(playerID);
+            board.setHasWinner(true);
+        }
 
         return true;
     }
-
-    @Override
-    //TODO: Needed?
-    public int getPlayerNumber() { return this.currentPlayer.getId(); }
 
     @Override
     public int playerTurns(int player) { return getPlayerById(player).getPlayerTurns(); }
@@ -123,7 +125,6 @@ public class Game implements GameLogic, Serializable {
         if (this.currentPlayer.getPlayerType() == PlayersTypes.HUMAN) { ret = playHumanPlayer(col); }
         else { playComputerPlayer(); }
         //change current player after turn is completed succefully
-        int test = currentPlayer.getId();
         currentPlayer = players.get(currentPlayer.getId() % players.size());
 
         board.decreaseEmptySpace();
@@ -150,7 +151,6 @@ public class Game implements GameLogic, Serializable {
         }
     }
 
-
     private boolean checkWinningMove(int col, int player)
     {
         int targetSequence = this.gameSettings.getTarget();
@@ -162,40 +162,13 @@ public class Game implements GameLogic, Serializable {
     }
 
     public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }
-    /*
-        public static void main(String[] args)
-        {
 
-            engine.Game g = new engine.Game();
-            g.playHumanPlayer(1,1);
-            g.playHumanPlayer(2,2);
-            g.playHumanPlayer(2,1);
-            char[][] b = g.boardReadyToPrint();
-
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    System.out.print(b[i][j]);
-                }
-                System.out.print("\n");
-            }
-
-            try {
-                g.loadSettingsFile("./ex1-small.xml");
-                System.out.println((g.getGameSettings()));
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
-    */
     public int getNumberOfPlayers() {
         return gameSettings.getNumOfPlayers();
     }
 
-    // for debug - should be removed
-    public GameSettings getGameSettings() {
-        return gameSettings;
+    public int getSequenceLength() {
+        return gameSettings.getTarget();
     }
 
     public boolean getHasWinner() { return this.hasWinner; }
@@ -213,17 +186,26 @@ public class Game implements GameLogic, Serializable {
     }
 
     public boolean undoLastMove() {
-        if (playedMoves.isEmpty())
-            return false;
+        boolean isUndoAvailable = true;
 
-        int indexOfLastPlayedMove = playedMoves.size() - 1;
-        Move undoMove = playedMoves.get(indexOfLastPlayedMove);
+        if (!playedMoves.isEmpty()) {
+            //undo in moves list
+            int indexOfLastPlayedMove = playedMoves.size() - 1;
+            Move undoMove = playedMoves.get(indexOfLastPlayedMove);
+            playedMoves.remove(indexOfLastPlayedMove);
 
-        playedMoves.remove(indexOfLastPlayedMove);
-        board.undoMove(undoMove.getCol());
-        updatePlayerAfterUndo(undoMove);
+            //undo in board
+            if (board.undoMove(undoMove.getCol()) ) {
+                //update current player
+                updatePlayerAfterUndo(undoMove);
+            }
+            else
+                isUndoAvailable = false;
+        }
+        else
+            isUndoAvailable = false;
 
-        return true;
+        return isUndoAvailable;
     }
 
     private void updatePlayerAfterUndo(Move undoMove) {

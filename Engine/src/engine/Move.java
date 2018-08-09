@@ -1,8 +1,9 @@
 package engine;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Move {
+public class Move implements Serializable {
     static int movesCount;
     private int moveIndex;
     private int playerId;
@@ -12,6 +13,10 @@ public class Move {
 
     public int getPlayerId() {
         return playerId;
+    }
+
+    public int getMoveIndex() {
+        return moveIndex;
     }
 
     public int getCol() {

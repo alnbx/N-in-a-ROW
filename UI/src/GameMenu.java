@@ -12,7 +12,9 @@ public class GameMenu implements Menu {
             System.out.println("1) Make a move");
             System.out.println("2) Show game statistics");
             System.out.println("3) Show history");
-            System.out.println("4) Exit");
+            System.out.println("4) Undo last move");
+            System.out.println("5) Save game to file");
+            System.out.println("6) Exit");
 
             while (true) {
                 try {
@@ -23,7 +25,7 @@ public class GameMenu implements Menu {
                 }
             }
 
-            printAgain = (userChoice > 4 || userChoice < 1);
+            printAgain = (userChoice > 6 || userChoice < 1);
             if (printAgain) { System.out.println("Bad choice. Try again!"); }
         }
 
@@ -31,7 +33,9 @@ public class GameMenu implements Menu {
             case 1: return MenuChoice.MAKETURN;
             case 2: return MenuChoice.GAMESTATS;
             case 3: return MenuChoice.HISTORY;
-            case 4: return MenuChoice.EXIT;
+            case 4: return MenuChoice.UNDO;
+            case 5: return MenuChoice.SAVEGAME;
+            case 6: return MenuChoice.EXIT;
         }
 
         return MenuChoice.INVALIDCHOICE;

@@ -1,6 +1,7 @@
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 import common.PlayersTypes;
@@ -39,8 +40,8 @@ public class UI
     public void playGame()
     {
         firstMenu.showMenu();
-        loadXML();
-        mainGameLoop();
+        if (loadXML())
+            mainGameLoop();
     }
 
     private void mainGameLoop() {
@@ -53,10 +54,10 @@ public class UI
         }
 
         System.out.println("Bye Bye :(");
-        System.exit(0);
+        //System.exit(0);
     }
 
-    private void loadXML() {
+    private boolean loadXML() {
         boolean configurationLoaded = false;
 
         while (!configurationLoaded) {
@@ -68,9 +69,15 @@ public class UI
                 //System.out.println(e.getStackTrace());
                 System.out.println("Please provide another XML or type exit if you wish to exit");
                 xmlPath = scanner.nextLine();
-                if (xmlPath.toLowerCase().equals("exit")) {System.out.println("ByeBye"); System.exit(0); }
+                if (xmlPath.toLowerCase().equals("exit")) {
+                    break;
+                    //System.out.println("ByeBye");
+                    //System.exit(0);
+                }
             }
         }
+
+        return configurationLoaded;
     }
 
     private boolean handleUserChoicePrimaryMenu(MenuChoice userChoice)
@@ -80,14 +87,18 @@ public class UI
             case LOADXML:
                 System.out.println("Please enter the path to the XML you wish to loadSettingsFile: ");
                 this.xmlPath = scanner.nextLine();
-                loadXML();
+                if (!loadXML()) {
+                    continueGame = false;
+                }
                 printBoard();
                 break;
-
             case STARTGAME:
                 continueGame = startGame();
                 break;
+            case LOADGAME:
+                continueGame = loadGameFromFile();
 
+                break;
             case EXIT:
                 continueGame = false;
         }
@@ -111,18 +122,25 @@ public class UI
             printBoard();
             userChoice = gameMenu.showMenu();
             handleUserChoiceGameMenu(userChoice);
-            if (MenuChoice.EXIT == userChoice) { continuePlaying = false; }
         }
 
-        if (gameLogic.getHasWinner()) {
-            winningMessage.printMessage(gameLogic.getIdOfCurrentPlayer());
+        if (MenuChoice.EXIT == userChoice) {
+            continuePlaying = false;
         }
-        else if (gameLogic.getIsBoardFull()) {
-            endGame.printMessage(0);
+        else {
+            printBoard();
+            if (gameLogic.getHasWinner()) {
+                int idWinner = gameLogic.getIdOfCurrentPlayer() - 1;
+                if (idWinner == 0)
+                    idWinner = gameLogic.getNumberOfPlayers();
+                winningMessage.printMessage(idWinner);
+            }
+            else if (gameLogic.getIsBoardFull()) {
+                endGame.printMessage(0);
+            }
         }
 
         return continuePlaying;
-
         //TODO: if Engine.getHasWinner/endGame we need to start a new game? show main menu? reset everything?
         //TODO: add function to reset the board.
     }
@@ -133,42 +151,49 @@ public class UI
             case GAMESTATS: showGameStats(); break;
             case MAKETURN: playTurn(); break;
             case HISTORY: showTurnsHistory(); break;
-            //case EXIT: System.out.println("Bye Bye"); System.exit(0);
+            case UNDO: undoLastMove(); break;
+            case SAVEGAME: saveGameToFile(); break;
         }
+    }
+
+    private void undoLastMove() {
+        if (!gameLogic.undoLastMove())
+            System.out.println("No Moves to undo");
     }
 
     private void showTurnsHistory()
     {
-        for (Move m : gameLogic.getMovesHistory()) {
-            System.out.println(String.format("Player %d has thrown a disc to column %d", m.getPlayerId(), m.getCol()));
+        List<Move> moves = gameLogic.getMovesHistory();
+
+        if (moves.isEmpty()) {
+            System.out.println("No moves were played");
+        }
+        else {
+            for (Move m : moves) {
+                System.out.println(String.format("%d: Player %d has dropped a disc to column %d\n", m.getMoveIndex(), m.getPlayerId(), m.getCol()));
+            }
         }
     }
 
     private void showGameStats()
     {
-        //int playerNumber = 0;
-
-        //playerNumber = gameLogic.getPlayerNumber();
         int playerAmmount = gameLogic.getNumberOfPlayers();
 
         System.out.println("========== Game statistics ==========");
-        System.out.println("=== Current Player ==");
-        //System.out.println("Current player: " + gameLogic.getPlayerNumber());
+        System.out.println(String.format("Length of winning sequence: " + gameLogic.getSequenceLength()));
         System.out.println("Current player: " + gameLogic.getIdOfCurrentPlayer());
+        String time = gameLogic.timeFromBegining();
+        System.out.println(String.format("Elapsed time: " + time));
 
         System.out.println("=== Players discs ===");
         for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Disc: %c", i+1, playerDiscs[i+1]));
+            System.out.println(String.format("Player: %d Disc: %c", i + 1, playerDiscs[i+1]));
         }
 
         System.out.println("=== Player turns ===");
         for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Turns: %d", i+1, gameLogic.playerTurns(i+1)));
+            System.out.println(String.format("Player: %d Turns: %d", i + 1, gameLogic.playerTurns(i+1)));
         }
-
-        System.out.println("=== Elapsed time ===");
-        String time = gameLogic.timeFromBegining();
-        System.out.println(String.format("Elapsed time: " + time));
     }
 
     private void playTurn()
@@ -176,7 +201,6 @@ public class UI
         int col = 0;
 
         while(true) {
-            //if (Engine.playerType == PlayerTypes.HUMAN) { col = getUserInputCol(); }
             if (gameLogic.getTypeOfCurrentPlayer() == PlayersTypes.HUMAN) { col = getUserInputCol(); }
 
             if (!gameLogic.play(col)) {
@@ -214,9 +238,7 @@ public class UI
     {
         int playersAmount = gameLogic.getNumberOfPlayers();
         int robotsCounter = 0;
-        PlayersTypes[] playersType = new PlayersTypes[playersAmount];
         String userChoice;
-        //boolean onceAgain = true;
         int initializedPlayers = 0;
 
         System.out.println("Before the game begins, please enter the types of the players! :)");
@@ -249,40 +271,9 @@ public class UI
                 initializedPlayers++;
             }
         }
-        /*
-        while (onceAgain) {
-            for (int i = 0; i < playersAmount; i++) {
-                System.out.print("Please type your choice for player " + i + ":  ");
-                userChoice = scanner.nextLine();
-                System.out.println();
-
-                while (!(userChoice.toLowerCase().equals("r") || userChoice.toLowerCase().equals("h"))) {
-                    System.out.print("Oops, bad choice. Please try again:  ");
-                    userChoice = scanner.nextLine();
-                    System.out.println();
-                }
-
-                if (userChoice.toLowerCase().equals("r")) {
-                    gameLogic.initPlayer(PlayersTypes.ROBOT, i + 1, "Computer");
-                    //playersType[i] = PlayersTypes.ROBOT;
-                    robotsCounter++;
-                } else {
-                    System.out.print("Please type player's name: ");
-                    String name = scanner.nextLine();
-                    gameLogic.initPlayer(PlayersTypes.HUMAN, i + 1, name);
-                    //playersType[i] = PlayersTypes.HUMAN;
-                }
-            }
-
-            onceAgain = robotsCounter == playersAmount;
-            if (onceAgain) { System.out.println("You chose all players to be robots and that is not legal. Please choose again"); }
-        }
-
-        for (int i = 0; i < playersAmount; i++) { gameLogic.setPlayerType(i, playersType[i]); }
-        */
     }
 
-    private void writeGameToFile() throws IOException
+    private void saveGameToFile()
     {
         SimpleDateFormat localDateFormat = new SimpleDateFormat("ddMMYY_HHmm");
         String time = localDateFormat.format(new Date());
@@ -293,14 +284,28 @@ public class UI
             out.writeObject(this.gameLogic);
             out.flush();
         }
+        catch (IOException e) {
+            System.out.println("Failed to save game to file");
+        }
     }
 
-    private void loadGameFromFile(String gameFile) throws IOException, ClassNotFoundException
+    private boolean loadGameFromFile()
     {
+        boolean continuePlaying = true;
+
+        System.out.println("Please enter the name of the game file you wish to load");
+        String gameFile = scanner.nextLine();
         try (ObjectInputStream in =
                      new ObjectInputStream(
                              new FileInputStream(gameFile))) {
             this.gameLogic = (Game)in.readObject();
+            continuePlaying = playSingleRound();
+        }
+        catch (Exception e) {
+            System.out.println("Failed to load game from file");
+        }
+        finally {
+            return continuePlaying;
         }
     }
 
@@ -346,7 +351,7 @@ public class UI
     {
         UI ui;
         //TODO: For debug only!
-        if (args.length == 0) { ui = new UI("C:\\Users\\user\\Documents\\Computer Science B.S.C\\Java course\\NinaRow\\ex1-small.xml"); }
+        if (args.length == 0) { ui = new UI("/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-small.xml"); }
         else { ui = new UI(args[0]); }
         ui.playGame();
     }

@@ -1,12 +1,13 @@
 package engine;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by user on 27/07/2018.
  */
-public class Disc {
+public class Disc implements Serializable {
 
     private Position position;
     private int discOfPlayer;
@@ -40,5 +41,7 @@ public class Disc {
 
     public void setDiscOfPlayer(int discOfPlayer) { this.discOfPlayer = discOfPlayer; }
 
-    public void setDiscsAround(Directions direction, Disc disc) { this.discsAround.put(direction, disc); }
+    public void setDiscsAround(Directions direction, Disc disc) {
+        this.discsAround.put(direction, disc);
+    }
 }

@@ -12,7 +12,8 @@ public class PrimaryMenu implements Menu {
             System.out.println("Please type the Number of action you wish to make:");
             System.out.println("1) Load new configuration XML");
             System.out.println("2) Start game");
-            System.out.println("3) Exit");
+            System.out.println("3) Load game from file");
+            System.out.println("4) Exit");
 
             while (true) {
                 try {
@@ -23,14 +24,15 @@ public class PrimaryMenu implements Menu {
                 }
             }
 
-            printAgain = (userChoice > 3 || userChoice < 1);
+            printAgain = (userChoice > 4 || userChoice < 1);
             if (printAgain) { System.out.println("Bad choice. Try again!"); }
         }
 
         switch(userChoice) {
             case 1: return MenuChoice.LOADXML;
             case 2: return MenuChoice.STARTGAME;
-            case 3: return MenuChoice.EXIT;
+            case 3: return MenuChoice.LOADGAME;
+            case 4: return MenuChoice.EXIT;
         }
 
         return MenuChoice.INVALIDCHOICE;

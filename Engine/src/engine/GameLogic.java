@@ -13,7 +13,6 @@ public interface GameLogic {
     boolean play(int col);
     boolean playHumanPlayer(int col);
     boolean playComputerPlayer();
-    int getPlayerNumber();
     int playerTurns(int player);
     String timeFromBegining();
     int getCols();
@@ -28,4 +27,5 @@ public interface GameLogic {
     boolean getHasWinner();
     boolean getIsBoardFull();
     void restartGame();
+    int getSequenceLength();
 }

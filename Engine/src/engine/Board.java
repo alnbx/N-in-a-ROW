@@ -1,9 +1,11 @@
 package engine;
 
+import java.io.Serializable;
+
 /**
  * Created by user on 27/07/2018.
  */
-public class Board {
+public class Board implements Serializable {
 
     private int rows;
     private int cols;
@@ -26,7 +28,9 @@ public class Board {
 
     private void initBoard()
     {
-        for (int i = 0; i < this.cols; i++) { board[i] = new Col(i, this.rows); }
+        for (int i = 0; i < this.cols; i++) {
+            board[i] = new Col(i, this.rows);
+        }
 
         connectBoard();
     }
@@ -91,7 +95,8 @@ public class Board {
 
     public boolean undoMove(int col)
     {
-        if (board[col].getLastRowInserted() == board[col].getColLength()) { return false; }
+        if (board[col].getLastRowInserted() == board[col].getColLength())
+            return false;
 
         board[col].undoMove();
 
@@ -103,6 +108,7 @@ public class Board {
     public void setWinner(int winningPlayer) { this.hasWinner = true; this.winningPlayer = winningPlayer; }
     public boolean isHasWinner() { return this.hasWinner; }
     public int getWinner() { return this.winningPlayer; }
+
     public char[][] getBoardAsCharArray()
     {
         char[][] res = new char[this.rows][this.cols];
@@ -131,7 +137,7 @@ public class Board {
 
     public int leftRightSequence(int col, int player)
     {
-        int res = 0;
+        int res = 1;
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         Disc temp = d;
 
@@ -144,20 +150,20 @@ public class Board {
 
     public int upDownSequence(int col, int player)
     {
-        int res = 0;
+        int res = 1;
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
-        Disc temp = d;
+        //Disc temp = d;
 
-        res += getSequenceByDirection(temp.getDiscByDirection(Directions.UP), player, Directions.UP);
-        temp = d;
-        res += getSequenceByDirection(temp.getDiscByDirection(Directions.DOWN), player, Directions.DOWN);
+        res += getSequenceByDirection(d.getDiscByDirection(Directions.UP), player, Directions.UP);
+        Disc temp = d;
+        res += getSequenceByDirection(d.getDiscByDirection(Directions.DOWN), player, Directions.DOWN);
 
         return res;
     }
 
     public int diagonalUpSequence(int col, int player)
     {
-        int res = 0;
+        int res = 1;
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         Disc temp = d;
 
@@ -170,7 +176,7 @@ public class Board {
 
     public int diagonalDownSequence(int col, int player)
     {
-        int res = 0;
+        int res = 1;
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         Disc temp = d;
 

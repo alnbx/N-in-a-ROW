@@ -1,33 +1,35 @@
 package engine;
 
+import java.io.Serializable;
+
 /**
  * Created by user on 27/07/2018.
  */
-public class Col {
+public class Col implements Serializable {
 
     private int colNumber;
     private int freeSpace;
     private Disc[] discs;
     private int lastRowInserted;
-    private int colLength;
 
     public Col(int colNumber, int discsInCol) {
         this.colNumber = colNumber;
         this.discs = new Disc[discsInCol];
         this.freeSpace = discsInCol;
         this.lastRowInserted = discs.length;
-        this.colLength = discs.length - 1;
 
         initCol();
     }
 
     private void initCol()
     {
-        for (int i = 0; i < discs.length; i++) { discs[i] = new Disc(new Position(colNumber, i), 0); }
+        for (int i = 0; i < discs.length; i++) {
+            discs[i] = new Disc(new Position(i, colNumber), 0);
+        }
     }
 
     public int getFreeSpace() { return this.freeSpace; }
-    public int getColLength() { return this.colLength; }
+    public int getColLength() { return discs.length; }
     public Disc getDiscInCol(int x) { return this.discs[x]; }
 
     public void connectDiscsLeft(Col left)
@@ -96,9 +98,13 @@ public class Col {
         }
     }
 
-    public void playMove(int player) { this.discs[--lastRowInserted].setDiscOfPlayer(player); }
+    public void playMove(int player) {
+        this.discs[--lastRowInserted].setDiscOfPlayer(player);
+    }
 
     public int getLastRowInserted() { return this.lastRowInserted; }
 
-    public void undoMove() { this.discs[lastRowInserted++].setDiscOfPlayer(0); }
+    public void undoMove() {
+        this.discs[lastRowInserted++].setDiscOfPlayer(0);
+    }
 }

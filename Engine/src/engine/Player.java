@@ -1,10 +1,12 @@
 package engine;
 
 import common.PlayersTypes;
+
+import java.io.Serializable;
 import java.util.Objects;
 import java.lang.Exception;
 
-public class Player {
+public class Player implements Serializable {
     private int numOfTurnsPlayed;
     private String name;
     private int id;
@@ -22,7 +24,6 @@ public class Player {
         numOfTurnsPlayed = 0;
     }
 
-    // TODO: Use this function :)
     public void increaseNumberOfTurnsPlayed() { numOfTurnsPlayed++; }
 
     // for UNDO
