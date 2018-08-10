@@ -242,12 +242,12 @@ public class UI
         int initializedPlayers = 0;
 
         System.out.println("Before the game begins, please enter the types of the players! :)");
-        System.out.println("Please type h for human player and r for robotic player ");
 
         while (initializedPlayers < playersAmount) {
+            System.out.println();
+            System.out.println("Please type h for human player and r for robotic player ");
             System.out.print(String.format("Please type your choice for player %d: ",  (initializedPlayers + 1)));
             userChoice = scanner.nextLine();
-            System.out.println();
 
             while (!(userChoice.toLowerCase().equals("r") || userChoice.toLowerCase().equals("h"))) {
                 System.out.print("Oops, bad choice. Please try again:  ");
