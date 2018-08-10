@@ -25,6 +25,7 @@ public class UI
     private PrintMessages winningMessage;
     private PrintMessages endGame;
     private GameLogic gameLogic;
+    private boolean playersSet;
     private boolean isValidXML;
 
     public static Scanner scanner = new Scanner(System.in);
@@ -39,6 +40,8 @@ public class UI
         this.winningMessage = new WinnerMessage();
         this.endGame = new EndGameMessage();
         this.gameLogic = new Game();
+        this.playersSet = false;
+        this.isValidXML = false;
     }
 
 
@@ -65,7 +68,6 @@ public class UI
             try {
                 gameLogic.loadSettingsFile(this.xmlPath);
                 configurationLoaded = true;
-                this.isValidXML = true;
             } catch (Exception e) {
                 System.out.println("\nSorry to interrupt but the configuration file is invalid :(");
                 System.out.println("Please provide another XML or type exit if you wish to exit");
@@ -86,15 +88,25 @@ public class UI
             case LOADXML:
                 if (!loadXML())
                     continueGame = false;
-                else
+                else {
                     printBoard();
+                    this.isValidXML = true;
+                }
                 break;
             case STARTGAME:
+                if (!isValidXML) {
+                    System.out.println("Please load a game file or a settings file, before starting a new game");
+                }
+                else {
                     continueGame = startGame();
+                }
                 break;
             case LOADGAME:
                 continueGame = loadGameFromFile();
-
+                if (continueGame) {
+                    isValidXML = true;
+                    playersSet = true;
+                }
                 break;
             case EXIT:
                 continueGame = false;
@@ -105,7 +117,8 @@ public class UI
 
     private boolean startGame()
     {
-        choosePlayersType();
+        if (!this.playersSet)
+            choosePlayersType();
         boolean continuePlaying = playSingleRound();
         return continuePlaying;
     }
@@ -268,6 +281,7 @@ public class UI
                 initializedPlayers++;
             }
         }
+        this.playersSet = true;
     }
 
     private void saveGameToFile()
@@ -277,7 +291,7 @@ public class UI
 
         try (ObjectOutputStream out =
                      new ObjectOutputStream(
-                             new FileOutputStream("N-in-a-Row_" + time))) {
+                             new FileOutputStream("N-in-a-Row_" + time + ".nar"))) {
             out.writeObject(this.gameLogic);
             out.flush();
         }
