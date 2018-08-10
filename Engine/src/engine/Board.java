@@ -95,8 +95,7 @@ public class Board implements Serializable {
 
     public boolean undoMove(int col)
     {
-        if (board[col].getLastRowInserted() == board[col].getColLength())
-            return false;
+        if (board[col].getLastRowInserted() == board[col].getColLength()) { return false; }
 
         board[col].undoMove();
 

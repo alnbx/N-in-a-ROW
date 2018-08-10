@@ -34,8 +34,7 @@ public class Col implements Serializable {
 
     public void connectDiscsLeft(Col left)
     {
-        for (int i = 0; i < this.discs.length; i++)
-        {
+        for (int i = 0; i < this.discs.length; i++) {
             this.discs[i].setDiscsAround(Directions.LEFT, left.getDiscInCol(i));
         }
     }
@@ -44,16 +43,14 @@ public class Col implements Serializable {
 
     public void connectDiscsLeftUp(Col leftUp)
     {
-        for (int i = 1; i < this.discs.length; i++)
-        {
+        for (int i = 1; i < this.discs.length; i++) {
             this.discs[i].setDiscsAround(Directions.LEFTUP, leftUp.getDiscInCol(i - 1));
         }
     }
 
     public void connectDiscsLeftDown(Col leftDown)
     {
-        for (int i = 0; i < this.discs.length - 1; i++)
-        {
+        for (int i = 0; i < this.discs.length - 1; i++) {
             Disc temp = leftDown.getDiscInCol(i + 1);
             this.discs[i].setDiscsAround(Directions.LEFTDOWN, leftDown.getDiscInCol(i + 1));
         }
@@ -61,40 +58,35 @@ public class Col implements Serializable {
 
     public void connectDiscsRight(Col right)
     {
-        for (int i = 0; i < this.discs.length; i++)
-        {
+        for (int i = 0; i < this.discs.length; i++) {
             this.discs[i].setDiscsAround(Directions.RIGHT, right.getDiscInCol(i));
         }
     }
 
     public void connectDiscsRightUp(Col rightUp)
     {
-        for (int i = 1; i < this.discs.length; i++)
-        {
+        for (int i = 1; i < this.discs.length; i++) {
             this.discs[i].setDiscsAround(Directions.UPRIGHT, rightUp.getDiscInCol(i - 1));
         }
     }
 
     public void connectDiscsRightDown (Col rightDown)
     {
-        for (int i = 0; i < this.discs.length - 1; i++)
-        {
+        for (int i = 0; i < this.discs.length - 1; i++) {
             this.discs[i].setDiscsAround(Directions.RIGHTDOWN, rightDown.getDiscInCol(i + 1));
         }
     }
 
     public void connectDiscsUp()
     {
-        for (int i = 1; i < this.discs.length; i++)
-        {
+        for (int i = 1; i < this.discs.length; i++) {
             this.discs[i].setDiscsAround(Directions.UP, this.discs[i - 1]);
         }
     }
 
     public void connectDiscsDown()
     {
-        for (int i = 0; i < this.discs.length - 1; i++)
-        {
+        for (int i = 0; i < this.discs.length - 1; i++) {
             this.discs[i].setDiscsAround(Directions.DOWN, this.discs[i + 1]);
         }
     }
@@ -108,5 +100,6 @@ public class Col implements Serializable {
 
     public void undoMove() {
         this.discs[lastRowInserted++].setDiscOfPlayer(0);
+        this.freeSpace++;
     }
 }
