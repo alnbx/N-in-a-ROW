@@ -1,7 +1,10 @@
+package ui;
+
 /**
  * Created by user on 31/07/2018.
  */
-public class GameMenu implements Menu {
+public class PrimaryMenu implements Menu {
+
     @Override
     public MenuChoice showMenu() {
         boolean printAgain = true;
@@ -9,12 +12,10 @@ public class GameMenu implements Menu {
 
         while (printAgain) {
             System.out.println("Please type the Number of action you wish to make:");
-            System.out.println("1) Make a move");
-            System.out.println("2) Show game statistics");
-            System.out.println("3) Show history");
-            System.out.println("4) Undo last move");
-            System.out.println("5) Save game to file");
-            System.out.println("6) Exit");
+            System.out.println("1) Load new configuration XML");
+            System.out.println("2) Start game");
+            System.out.println("3) Load game from file");
+            System.out.println("4) Exit");
 
             while (true) {
                 try {
@@ -25,17 +26,15 @@ public class GameMenu implements Menu {
                 }
             }
 
-            printAgain = (userChoice > 6 || userChoice < 1);
+            printAgain = (userChoice > 4 || userChoice < 1);
             if (printAgain) { System.out.println("Bad choice. Try again!"); }
         }
 
         switch(userChoice) {
-            case 1: return MenuChoice.MAKETURN;
-            case 2: return MenuChoice.GAMESTATS;
-            case 3: return MenuChoice.HISTORY;
-            case 4: return MenuChoice.UNDO;
-            case 5: return MenuChoice.SAVEGAME;
-            case 6: return MenuChoice.EXIT;
+            case 1: return MenuChoice.LOADXML;
+            case 2: return MenuChoice.STARTGAME;
+            case 3: return MenuChoice.LOADGAME;
+            case 4: return MenuChoice.EXIT;
         }
 
         return MenuChoice.INVALIDCHOICE;
