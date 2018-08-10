@@ -17,7 +17,6 @@ public class Game implements GameLogic, Serializable {
     private boolean hasWinner;
     private boolean isBoardFull;
     private Date startingTime;
-    private boolean isFirstMove;
     private GameSettings gameSettings;
     private List<Player> players;
     private Player currentPlayer;
@@ -30,12 +29,18 @@ public class Game implements GameLogic, Serializable {
         this.gameSettings = new GameSettings();
     }
 
-    private void setBoardFromSettings() {
+    public void setBoardFromSettings() {
         this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getBoardNumCols());
         this.hasWinner = false;
         this.isBoardFull = false;
         this.currentPlayer = null;
         this.playedMoves = new ArrayList<Move>();
+        this.startingTime = null;
+        if(!players.isEmpty()) {
+            this.currentPlayer = players.get(0);
+            for (Player player : players)
+                player.restart();
+        }
     }
 
     @Override
@@ -103,35 +108,41 @@ public class Game implements GameLogic, Serializable {
     @Override
     public int getCols() { return this.board.getCols(); }
 
-    @Override
+    /*@Override
     public void restartGame()
     {
         board.restart();
         playedMoves.clear();
 
-        for (Player player : players) { player.restart(); }
+        for (Player player : players) {
+            player.restart();
+        }
 
         this.hasWinner = false;
         this.isBoardFull = false;
 
         this.currentPlayer = players.get(0);
-    }
+    }*/
 
     @Override
     public boolean play(int col)
     {
         boolean ret = true;
 
-        if (this.currentPlayer.getPlayerType() == PlayersTypes.HUMAN) { ret = playHumanPlayer(col); }
-        else { playComputerPlayer(); }
+        if (this.currentPlayer.getPlayerType() == PlayersTypes.HUMAN) {
+            ret = playHumanPlayer(col);
+        }
+        else {
+            playComputerPlayer();
+        }
+
         //change current player after turn is completed succefully
         currentPlayer = players.get(currentPlayer.getId() % players.size());
 
         board.decreaseEmptySpace();
         if (board.isFull()) { this.isBoardFull = true; }
 
-        if (!this.isFirstMove) {
-            this.isFirstMove = true;
+        if (playedMoves.isEmpty()) {
             setStartingTime();
         }
 

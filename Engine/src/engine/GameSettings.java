@@ -22,7 +22,8 @@ public class GameSettings implements Serializable {
 
     GameSettings() {
         this.numOfPlayers = 2;
-        this.settingsFilePath = settingsFilePath;
+        this.boardNumRows = 6;
+        this.boardNumCols = 7;
     }
 
     public void setGameType(GameType gameType) {

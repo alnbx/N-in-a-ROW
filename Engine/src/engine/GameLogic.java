@@ -26,6 +26,6 @@ public interface GameLogic {
     List<Move> getMovesHistory();
     boolean getHasWinner();
     boolean getIsBoardFull();
-    void restartGame();
+    void setBoardFromSettings();
     int getSequenceLength();
 }

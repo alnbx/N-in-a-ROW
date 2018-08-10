@@ -18,20 +18,22 @@ import engine.Move;
 public class UI
 {
     private String xmlPath;
-    private Menu firstMenu;
+    private Menu welcomeMessage;
     private Menu mainMenu;
     private Menu gameMenu;
+    private Menu primaryMenu_wRestart;
     private PrintMessages winningMessage;
     private PrintMessages endGame;
     private GameLogic gameLogic;
+    private boolean isValidXML;
 
     public static Scanner scanner = new Scanner(System.in);
     public static final char[] playerDiscs = {' ', '@', '#', '$', '%', '&', '+', '~'};
 
-    public UI(String xmlPath)
+    public UI()
     {
-        this.xmlPath = xmlPath;
-        this.firstMenu = new FirstMenu();
+        this.xmlPath = "";
+        this.welcomeMessage = new WelcomeMessage();
         this.mainMenu = new PrimaryMenu();
         this.gameMenu = new GameMenu();
         this.winningMessage = new WinnerMessage();
@@ -39,42 +41,37 @@ public class UI
         this.gameLogic = new Game();
     }
 
+
     public void playGame()
     {
-        firstMenu.showMenu();
-        if (loadXML())
-            mainGameLoop();
-    }
-
-    private void mainGameLoop() {
         boolean stayInGame = true;
-        printBoard();
+        welcomeMessage.showMenu();
         while (stayInGame) {
             stayInGame = handleUserChoicePrimaryMenu(mainMenu.showMenu());
 
-            if (stayInGame) { gameLogic.restartGame(); }
+            if (stayInGame)
+                gameLogic.setBoardFromSettings();
         }
 
         System.out.println("Bye Bye :(");
-        //System.exit(0);
     }
 
     private boolean loadXML() {
         boolean configurationLoaded = false;
 
         while (!configurationLoaded) {
+            System.out.println("Please enter the path of an XML file with game settings: ");
+            this.xmlPath = scanner.nextLine();
             try {
                 gameLogic.loadSettingsFile(this.xmlPath);
                 configurationLoaded = true;
+                this.isValidXML = true;
             } catch (Exception e) {
-                System.out.println("Sorry to interrupt but the configuration file is invalid:\n");
-                //System.out.println(e.getStackTrace());
+                System.out.println("\nSorry to interrupt but the configuration file is invalid :(");
                 System.out.println("Please provide another XML or type exit if you wish to exit");
                 xmlPath = scanner.nextLine();
                 if (xmlPath.toLowerCase().equals("exit")) {
                     break;
-                    //System.out.println("ByeBye");
-                    //System.exit(0);
                 }
             }
         }
@@ -87,15 +84,13 @@ public class UI
         boolean continueGame = true;
         switch (userChoice){
             case LOADXML:
-                System.out.println("Please enter the path to the XML you wish to loadSettingsFile: ");
-                this.xmlPath = scanner.nextLine();
-                if (!loadXML()) {
+                if (!loadXML())
                     continueGame = false;
-                }
-                printBoard();
+                else
+                    printBoard();
                 break;
             case STARTGAME:
-                continueGame = startGame();
+                    continueGame = startGame();
                 break;
             case LOADGAME:
                 continueGame = loadGameFromFile();
@@ -356,10 +351,7 @@ public class UI
 
     public static void main(String[] args)
     {
-        UI ui;
-        //TODO: For debug only!
-        if (args.length == 0) { ui = new UI("C:\\Users\\user\\Documents\\Computer Science B.S.C\\Java course\\NinaRow\\ex1-small.xml"); }
-        else { ui = new UI(args[0]); }
+        UI ui = new UI();
         ui.playGame();
     }
 }

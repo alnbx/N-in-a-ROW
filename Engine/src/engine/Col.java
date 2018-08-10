@@ -39,7 +39,10 @@ public class Col implements Serializable {
         }
     }
 
-    public void restartCol() { for (int i = 0; i < this.discs.length; i++) { this.discs[i].restartDisc(); } }
+    public void restartCol() {
+        for (int i = 0; i < this.discs.length; i++)
+            this.discs[i].restartDisc();
+    }
 
     public void connectDiscsLeftUp(Col leftUp)
     {
