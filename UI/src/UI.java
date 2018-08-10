@@ -319,7 +319,10 @@ public class UI
     {
 
         System.out.print("      ");
-        for (int i = 0; i < cols; i++) { System.out.print(String.format("|  %d  ", i+1)); }
+        for (int i = 0; i < cols; i++) {
+            if (0 == ((i + 1) / 10)) { System.out.print(String.format("|  %d  ", i+1)); }
+            else                     { System.out.print(String.format("| %d  ", i+1)); }
+        }
         System.out.println("|");
 
         printLineSeparator(cols);
@@ -330,12 +333,14 @@ public class UI
     {
         char[][] board = gameLogic.boardReadyToPrint();
         int cols = gameLogic.getCols();
-
+        int rows = board.length;
         System.out.println("\n");
 
-        for(int row = 0; row < board.length; row++ )
+        for(int row = 0; row < rows; row++ )
         {
-            System.out.print(String.format("   %d  ", row + 1));
+            if (((row + 1)/10) == 0) { System.out.print(String.format("   %d  ", row + 1)); }
+            else                     { System.out.print(String.format("  %d  ", row + 1)); }
+
             for (int col = 0; col < cols; col++) {
                 int i = board[row][col] - '0';
                 System.out.print(String.format("|  %c  ",playerDiscs[i]));
@@ -351,7 +356,7 @@ public class UI
     {
         UI ui;
         //TODO: For debug only!
-        if (args.length == 0) { ui = new UI("/Users/Miri/Documents/MTA_computerScience/JAVA/exercises/ex1-small.xml"); }
+        if (args.length == 0) { ui = new UI("C:\\Users\\user\\Documents\\Computer Science B.S.C\\Java course\\NinaRow\\ex1-small.xml"); }
         else { ui = new UI(args[0]); }
         ui.playGame();
     }

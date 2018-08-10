@@ -24,7 +24,7 @@ public class Col implements Serializable {
     private void initCol()
     {
         for (int i = 0; i < discs.length; i++) {
-            discs[i] = new Disc(new Position(i, colNumber), 0);
+            discs[i] = new Disc(new Position(i, this.colNumber), 0);
         }
     }
 
@@ -40,7 +40,7 @@ public class Col implements Serializable {
         }
     }
 
-    public void restartCol() { for (int i = 0; i < this.discs.length - 1; i++) { this.discs[i].restartDisc(); } }
+    public void restartCol() { for (int i = 0; i < this.discs.length; i++) { this.discs[i].restartDisc(); } }
 
     public void connectDiscsLeftUp(Col leftUp)
     {
@@ -54,6 +54,7 @@ public class Col implements Serializable {
     {
         for (int i = 0; i < this.discs.length - 1; i++)
         {
+            Disc temp = leftDown.getDiscInCol(i + 1);
             this.discs[i].setDiscsAround(Directions.LEFTDOWN, leftDown.getDiscInCol(i + 1));
         }
     }
@@ -78,7 +79,7 @@ public class Col implements Serializable {
     {
         for (int i = 0; i < this.discs.length - 1; i++)
         {
-            this.discs[i].setDiscsAround(Directions.LEFTDOWN, rightDown.getDiscInCol(i + 1));
+            this.discs[i].setDiscsAround(Directions.RIGHTDOWN, rightDown.getDiscInCol(i + 1));
         }
     }
 
@@ -100,6 +101,7 @@ public class Col implements Serializable {
 
     public void playMove(int player) {
         this.discs[--lastRowInserted].setDiscOfPlayer(player);
+        this.freeSpace--;
     }
 
     public int getLastRowInserted() { return this.lastRowInserted; }
