@@ -18,7 +18,6 @@ import engine.Move;
 public class UI {
     private String xmlPath;
     private String savedGamePath;
-    private PrintMessages welcomeMessage;
     private Menu primaryMenu_noRestart;
     private Menu gameMenu;
     private Menu primaryMenu_wRestart;
@@ -33,7 +32,6 @@ public class UI {
     public UI() {
         this.xmlPath = "";
         this.savedGamePath = "";
-        this.welcomeMessage = new WelcomeMessage();
         this.primaryMenu_noRestart = new PrimaryMenu_noRestart();
         this.primaryMenu_wRestart = new PrimaryMenu_wRestart();
         this.gameMenu = new GameMenu();
@@ -45,8 +43,7 @@ public class UI {
 
     public void playGame() {
         MenuChoice menuChoice = MenuChoice.INVALIDCHOICE;
-
-        this.welcomeMessage.printMessage(0);
+        System.out.println("Hello and welcome to out fabulous N-in-a-Row game!\n");
         while (menuChoice != MenuChoice.EXIT) {
             if (!this.isValidXML) {
                 while (menuChoice != MenuChoice.EXIT && !this.isValidXML) {
