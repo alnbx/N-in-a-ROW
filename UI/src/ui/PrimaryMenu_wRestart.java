@@ -32,7 +32,7 @@ public class PrimaryMenu_wRestart implements Menu {
 
         switch(userChoice) {
             case 1: return MenuChoice.LOADXML;
-            case 2: return MenuChoice.STARTGAME;
+            case 2: return MenuChoice.RESTARTGAME;
             case 3: return MenuChoice.LOADGAME;
             case 4: return MenuChoice.EXIT;
         }

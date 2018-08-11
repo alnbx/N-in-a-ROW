@@ -25,7 +25,6 @@ public class UI {
     private PrintMessages winningMessage;
     private PrintMessages endGame;
     private GameLogic gameLogic;
-    private boolean playersSet;
     private boolean isValidXML;
     private boolean arePlayersSet;
 
@@ -103,7 +102,7 @@ public class UI {
             case LOADXML:
                 succeededLoading = loadXML();
                 break;
-            case STARTGAME:
+            case RESTARTGAME:
                 succeededLoading = true;
                 if (this.savedGamePath.equals(""))
                     this.gameLogic.setBoardFromSettings();
