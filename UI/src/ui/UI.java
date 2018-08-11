@@ -63,7 +63,6 @@ public class UI {
             }
 
             if(menuChoice != MenuChoice.EXIT) {
-                this.isValidXML = true;
                 menuChoice = playSingleRound();
             }                                                                                                        
         }
@@ -81,16 +80,8 @@ public class UI {
             configurationLoaded = true;
             this.isValidXML = true;
 
-            /*
-            //if last played game was from file - init new players, otherwise - refer to same players
-            if(!savedGamePath.equals("") || gameLogic.getNumberOfInitializedPlayers() == 0) {
-                this.gameLogic.setBoardFromSettings(true);
-                choosePlayersType();
-            }
-            else
-                this.gameLogic.setBoardFromSettings(false);  */
-
             this.gameLogic.setBoardFromSettings(true);
+            printBoard(false);
             choosePlayersType();
             this.savedGamePath = "";
         } catch (Exception e) {
@@ -220,20 +211,28 @@ public class UI {
 
     private void undoLastMove() {
         if (!gameLogic.undoLastMove())
-            System.out.println("No Moves to undo");
+            printMessageWithDelay("No Moves to undo");
     }
 
     private void showTurnsHistory() {
         List<Move> moves = gameLogic.getMovesHistory();
 
         if (moves.isEmpty()) {
-            System.out.println("No moves were played");
+            printMessageWithDelay("No moves were played");
         } else {
             System.out.println("\n");
             for (Move m : moves) {
                 System.out.println(String.format("%d: Player %d --> Column %d", m.getMoveIndex() + 1, m.getPlayerId(), m.getCol() + 1));
             }
+            printMessageWithDelay("");
         }
+    }
+
+    private void printMessageWithDelay(String msg) {
+        System.out.println("\n" + msg);
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ignored) { }
     }
 
     private void showGameStats() {
@@ -263,23 +262,6 @@ public class UI {
             repeated += str;
 
         return repeated;
-    }
-
-    private void showOfflineSpecs() {
-        int playerAmmount = gameLogic.getNumberOfInitializedPlayers();
-
-        System.out.println("========== Game specs ==========");
-        System.out.println("Game Status: Inactive");
-        System.out.println(String.format("Length of winning sequence: " + gameLogic.getSequenceLength()));
-        System.out.println("=== Players discs ===");
-        for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Disc: %c", i + 1, 0));
-        }
-
-        System.out.println("=== Player turns played ===");
-        for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Turns: %d", i + 1, 0));
-        }
     }
 
     private void playTurn() {
@@ -368,9 +350,9 @@ public class UI {
                              new FileOutputStream("N-in-a-Row_" + time + ".nar"))) {
             out.writeObject(this.gameLogic);
             out.flush();
-            System.out.println("Game saved to file");
+            printMessageWithDelay("Game saved to file");
         } catch (IOException e) {
-            System.out.println("Failed to save game to file");
+            printMessageWithDelay("Failed to save game to file");
         }
     }
 
@@ -422,9 +404,6 @@ public class UI {
         if (printSpec) {
             showGameStats();
         }
-        //else {
-        //    showOfflineSpecs();
-        //}
 
         System.out.println();
     }
