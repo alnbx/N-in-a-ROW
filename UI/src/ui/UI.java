@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import com.sun.deploy.util.StringUtils;
 import common.PlayersTypes;
 import engine.GameLogic;
 import engine.Game;
@@ -227,29 +228,25 @@ public class UI {
             System.out.println("No moves were played");
         } else {
             for (Move m : moves) {
-                System.out.println(String.format("%d: Player %d has dropped a disc to column %d\n", m.getMoveIndex(), m.getPlayerId(), m.getCol()));
+                System.out.println(String.format("%d: Player %d --> column %d\n", m.getMoveIndex(), m.getPlayerId(), m.getCol()));
             }
         }
     }
 
     private void showGameStats() {
-        System.out.println("========== Game statistics ==========");
         int playerAmmount = gameLogic.getNumberOfPlayers();
 
-        System.out.println("Game Status: Active");
-        System.out.println(String.format("Length of winning sequence: " + gameLogic.getSequenceLength()));
+        System.out.println("\nGame Stats:");
+        System.out.println("Status: Active");
+        System.out.println("Length of winning sequence: " + gameLogic.getSequenceLength());
         System.out.println("Current player: " + gameLogic.getIdOfCurrentPlayer());
         String time = gameLogic.timeFromBegining();
         System.out.println(String.format("Elapsed time: " + time));
 
-        System.out.println("=== Players discs ===");
+        System.out.println("\nPlayers Stats:");
         for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Disc: %c", i + 1, playerDiscs[i + 1]));
-        }
-
-        System.out.println("=== Player turns played ===");
-        for (int i = 0; i < playerAmmount; i++) {
-            System.out.println(String.format("Player: %d Turns: %d", i + 1, gameLogic.playerTurns(i + 1)));
+            System.out.println(String.format("Player %d: Disc: %c, Turns played: %d",
+                    i + 1, playerDiscs[i + 1], gameLogic.playerTurns(i + 1)));
         }
     }
 
