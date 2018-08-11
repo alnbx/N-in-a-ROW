@@ -228,7 +228,7 @@ public class UI {
     private void printMessageWithDelay(String msg) {
         System.out.println("\n" + msg);
         try {
-            Thread.sleep(1500);
+            Thread.sleep(1800);
         } catch (InterruptedException ignored) { }
     }
 
@@ -347,7 +347,7 @@ public class UI {
                              new FileOutputStream("N-in-a-Row_" + time + ".nar"))) {
             out.writeObject(this.gameLogic);
             out.flush();
-            printMessageWithDelay("Game saved to file");
+            printMessageWithDelay("Game saved to file: " + "N-in-a-Row_" + time + ".nar");
         } catch (IOException e) {
             printMessageWithDelay("Failed to save game to file");
         }
