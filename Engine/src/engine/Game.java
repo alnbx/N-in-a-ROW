@@ -29,14 +29,20 @@ public class Game implements GameLogic, Serializable {
         this.gameSettings = new GameSettings();
     }
 
-    public void setBoardFromSettings() {
+    public void setBoardFromSettings(boolean restartPlayers) {
         this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getBoardNumCols());
         this.hasWinner = false;
         this.isBoardFull = false;
         this.currentPlayer = null;
         this.playedMoves = new ArrayList<Move>();
         this.startingTime = null;
-        if(!players.isEmpty()) {
+        restartPlayers(restartPlayers);
+    }
+
+    private void restartPlayers(boolean isRestart) {
+        if (isRestart)
+            this.players = new ArrayList<Player>(maxNumOfPlayers);
+        else {
             this.currentPlayer = players.get(0);
             for (Player player : players)
                 player.restart();
@@ -156,7 +162,6 @@ public class Game implements GameLogic, Serializable {
     {
         try {
             gameSettings.initGameSettings(filePath);
-            setBoardFromSettings();
         } catch (Exception e) {
             throw e;
         }
@@ -174,7 +179,11 @@ public class Game implements GameLogic, Serializable {
 
     public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }
 
-    public int getNumberOfPlayers() {
+    public int getNumberOfInitializedPlayers() {
+        return players.size();
+    }
+
+    public int getNumberOfPlayersToInitialized() {
         return gameSettings.getNumOfPlayers();
     }
 

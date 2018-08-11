@@ -12,8 +12,8 @@ public class PrimaryMenu_wRestart implements Menu {
 
         while (printAgain) {
             System.out.println("Please type the Number of action you wish to make:");
-            System.out.println("1) Load new configuration XML");
-            System.out.println("2) Start game");
+            System.out.println("1) Start new game from configuration XML");
+            System.out.println("2) Restart last game");
             System.out.println("3) Load game from file");
             System.out.println("4) Exit");
 

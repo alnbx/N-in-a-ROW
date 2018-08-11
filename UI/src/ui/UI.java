@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import com.sun.deploy.util.StringUtils;
 import common.PlayersTypes;
 import engine.GameLogic;
 import engine.Game;
@@ -27,7 +26,6 @@ public class UI {
     private PrintMessages endGame;
     private GameLogic gameLogic;
     private boolean isValidXML;
-    private boolean arePlayersSet;
 
     public static Scanner scanner = new Scanner(System.in);
     public static final char[] playerDiscs = {' ', '@', '#', '$', '%', '&', '+', '~'};
@@ -43,7 +41,6 @@ public class UI {
         this.endGame = new EndGameMessage();
         this.gameLogic = new Game();
         this.isValidXML = false;
-        this.arePlayersSet = false;
     }
 
     public void playGame() {
@@ -83,11 +80,19 @@ public class UI {
             gameLogic.loadSettingsFile(this.xmlPath);
             configurationLoaded = true;
             this.isValidXML = true;
-            this.gameLogic.setBoardFromSettings();
-            this.savedGamePath = "";
-            if (!this.arePlayersSet)
+
+            /*
+            //if last played game was from file - init new players, otherwise - refer to same players
+            if(!savedGamePath.equals("") || gameLogic.getNumberOfInitializedPlayers() == 0) {
+                this.gameLogic.setBoardFromSettings(true);
                 choosePlayersType();
-            printBoard(false);
+            }
+            else
+                this.gameLogic.setBoardFromSettings(false);  */
+
+            this.gameLogic.setBoardFromSettings(true);
+            choosePlayersType();
+            this.savedGamePath = "";
         } catch (Exception e) {
             System.out.println("\nSorry to interrupt but the configuration file is invalid :(");
         }
@@ -106,7 +111,7 @@ public class UI {
             case RESTARTGAME:
                 succeededLoading = true;
                 if (this.savedGamePath.equals(""))
-                    this.gameLogic.setBoardFromSettings();
+                    this.gameLogic.setBoardFromSettings(false);
                 else {
                     if (!readGameFromFile(this.savedGamePath))
                         System.out.println("Failed to reload game from file");
@@ -168,7 +173,7 @@ public class UI {
             if (gameLogic.getHasWinner()) {
                 int idWinner = gameLogic.getIdOfCurrentPlayer() - 1;
                 if (idWinner == 0)
-                    idWinner = gameLogic.getNumberOfPlayers();
+                    idWinner = gameLogic.getNumberOfInitializedPlayers();
                 winningMessage.printMessage(idWinner);
             }
             else if (gameLogic.getIsBoardFull()) {
@@ -198,9 +203,6 @@ public class UI {
 
     private void handleUserChoiceGameMenu(MenuChoice userChoice) {
         switch (userChoice) {
-            case GAMESTATS:
-                showGameStats();
-                break;
             case MAKETURN:
                 playTurn();
                 break;
@@ -234,24 +236,36 @@ public class UI {
     }
 
     private void showGameStats() {
-        int playerAmmount = gameLogic.getNumberOfPlayers();
+        int playerAmmount = gameLogic.getNumberOfInitializedPlayers();
 
-        System.out.println("\nGame Stats:");
+        String gameStatsTitle = "Game Stats:";
+        System.out.println("\n" + gameStatsTitle);
+        System.out.println(repeatStr("-", gameStatsTitle.length()));
         System.out.println("Status: Active");
         System.out.println("Length of winning sequence: " + gameLogic.getSequenceLength());
         System.out.println("Current player: " + gameLogic.getIdOfCurrentPlayer());
         String time = gameLogic.timeFromBegining();
         System.out.println(String.format("Elapsed time: " + time));
 
-        System.out.println("\nPlayers Stats:");
+        String playersStatsTitle = "Players Stats:";
+        System.out.println("\n" + playersStatsTitle);
+        System.out.println(repeatStr("-", playersStatsTitle.length()));
         for (int i = 0; i < playerAmmount; i++) {
             System.out.println(String.format("Player %d: Disc: %c, Turns played: %d",
                     i + 1, playerDiscs[i + 1], gameLogic.playerTurns(i + 1)));
         }
     }
 
+    private String repeatStr(String str, int times){
+        String repeated = "";
+        for (int i = 0; i < times; ++i)
+            repeated += str;
+
+        return repeated;
+    }
+
     private void showOfflineSpecs() {
-        int playerAmmount = gameLogic.getNumberOfPlayers();
+        int playerAmmount = gameLogic.getNumberOfInitializedPlayers();
 
         System.out.println("========== Game specs ==========");
         System.out.println("Game Status: Inactive");
@@ -308,7 +322,7 @@ public class UI {
     }
 
     private void choosePlayersType() {
-        int playersAmount = gameLogic.getNumberOfPlayers();
+        int playersAmount = gameLogic.getNumberOfPlayersToInitialized();
         int robotsCounter = 0;
         String userChoice;
         int initializedPlayers = 0;
@@ -342,8 +356,6 @@ public class UI {
                 initializedPlayers++;
             }
         }
-
-        this.arePlayersSet = true;
     }
 
     private void saveGameToFile() {
@@ -407,9 +419,10 @@ public class UI {
 
         if (printSpec) {
             showGameStats();
-        } else {
-            showOfflineSpecs();
         }
+        //else {
+        //    showOfflineSpecs();
+        //}
 
         System.out.println();
     }
