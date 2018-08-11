@@ -3,7 +3,7 @@ package ui;
 /**
  * Created by user on 31/07/2018.
  */
-public class PrimaryMenu implements Menu {
+public class PrimaryMenu_wRestart implements Menu {
 
     @Override
     public MenuChoice showMenu() {
