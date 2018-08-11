@@ -367,6 +367,7 @@ public class UI {
                              new FileOutputStream("N-in-a-Row_" + time + ".nar"))) {
             out.writeObject(this.gameLogic);
             out.flush();
+            System.out.println("Game saved to file");
         } catch (IOException e) {
             System.out.println("Failed to save game to file");
         }
