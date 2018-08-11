@@ -1,9 +1,9 @@
-package engine;
+package common;
 
 import java.io.Serializable;
 
 public enum GameVariant implements Serializable {
-    Regular,
-    Circular,
-    Popout
+    REGULAR,
+    CIRCULAR,
+    POPOUT
 }

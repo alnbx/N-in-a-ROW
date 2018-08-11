@@ -1,9 +1,9 @@
-package engine;
+package common;
 
 import java.io.Serializable;
 
 public enum GameType implements Serializable {
-    Basic,
-    Multiplayer,
-    DynamicMultiPlayer
+    BASIC,
+    MULTIPLAYER,
+    DYNAMIC_MULTIPLAYER
 }

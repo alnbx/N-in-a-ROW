@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import common.PlayersTypes;
+import common.*;
 import engine.GameLogic;
 import engine.Game;
 import engine.Move;

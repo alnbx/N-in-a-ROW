@@ -1,5 +1,7 @@
 package engine;
 
+import common.GameType;
+import common.GameVariant;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -16,7 +18,6 @@ public class GameSettings implements Serializable {
     private int boardNumCols;
     private GameVariant gameVariant;
     private GameType gameType;
-    private File settingsFile;
     private String settingsFilePath;
     private int numOfPlayers;
 

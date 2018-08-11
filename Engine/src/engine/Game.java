@@ -1,6 +1,6 @@
 package engine;//import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 
-import common.PlayersTypes;
+import common.*;
 
 
 import java.io.Serializable;
@@ -49,8 +49,7 @@ public class Game implements GameLogic, Serializable {
         }
     }
 
-    @Override
-    public boolean playHumanPlayer(int col)
+    private boolean playHumanPlayer(int col)
     {
         int playerID = this.currentPlayer.getId();
         col--;
@@ -72,8 +71,7 @@ public class Game implements GameLogic, Serializable {
         return false;
     }
 
-    @Override
-    public boolean playComputerPlayer()
+    private boolean playComputerPlayer()
     {
         Random r = new Random();
         int playerID = currentPlayer.getId();
