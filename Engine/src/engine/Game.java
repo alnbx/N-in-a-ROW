@@ -114,22 +114,6 @@ public class Game implements GameLogic, Serializable {
     @Override
     public int getCols() { return this.board.getCols(); }
 
-    /*@Override
-    public void restartGame()
-    {
-        board.restart();
-        playedMoves.clear();
-
-        for (Player player : players) {
-            player.restart();
-        }
-
-        this.hasWinner = false;
-        this.isBoardFull = false;
-
-        this.currentPlayer = players.get(0);
-    }*/
-
     @Override
     public boolean play(int col)
     {

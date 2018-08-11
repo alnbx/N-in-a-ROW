@@ -229,8 +229,9 @@ public class UI {
         if (moves.isEmpty()) {
             System.out.println("No moves were played");
         } else {
+            System.out.println("\n");
             for (Move m : moves) {
-                System.out.println(String.format("%d: Player %d --> column %d\n", m.getMoveIndex(), m.getPlayerId(), m.getCol()));
+                System.out.println(String.format("%d: Player %d --> Column %d", m.getMoveIndex() + 1, m.getPlayerId(), m.getCol() + 1));
             }
         }
     }
