@@ -104,11 +104,11 @@ public class Game implements GameLogic, Serializable {
         Long diff = 0L;
         Date now = new Date();
 
-        diff = ((null == this.startingTime) ? 0 : this.startingTime.getTime() - now.getTime());
+        diff = ((null == this.startingTime) ? 0 : now.getTime() - this.startingTime.getTime());
         long diffSeconds = diff / 1000 % 60;
         long diffMinutes = diff / (60 * 1000) % 60;
 
-        return String.format("%d:%d", diffMinutes, diffSeconds);
+        return String.format("%02d:%02d", diffMinutes, diffSeconds);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class Game implements GameLogic, Serializable {
         board.decreaseEmptySpace();
         if (board.isFull()) { this.isBoardFull = true; }
 
-        if (playedMoves.isEmpty()) {
+        if (this.startingTime == null) {
             setStartingTime();
         }
 
