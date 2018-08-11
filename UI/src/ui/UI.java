@@ -89,7 +89,7 @@ public class UI
                 if (!loadXML())
                     continueGame = false;
                 else {
-                    printBoard();
+                    printBoard(false);
                     this.isValidXML = true;
                 }
                 break;
@@ -129,7 +129,7 @@ public class UI
         MenuChoice userChoice = MenuChoice.INVALIDCHOICE;
 
         while((!gameLogic.getHasWinner()) && (!gameLogic.getIsBoardFull()) && MenuChoice.EXIT != userChoice) {
-            printBoard();
+            printBoard(true);
             userChoice = gameMenu.showMenu();
             handleUserChoiceGameMenu(userChoice);
         }
@@ -138,7 +138,7 @@ public class UI
             continuePlaying = false;
         }
         else {
-            printBoard();
+            printBoard(true);
             if (gameLogic.getHasWinner()) {
                 int idWinner = gameLogic.getIdOfCurrentPlayer() - 1;
                 if (idWinner == 0)
@@ -187,9 +187,10 @@ public class UI
 
     private void showGameStats()
     {
+        System.out.println("========== Game statistics ==========");
         int playerAmmount = gameLogic.getNumberOfPlayers();
 
-        System.out.println("========== Game statistics ==========");
+        System.out.println("Game Status: Active");
         System.out.println(String.format("Length of winning sequence: " + gameLogic.getSequenceLength()));
         System.out.println("Current player: " + gameLogic.getIdOfCurrentPlayer());
         String time = gameLogic.timeFromBegining();
@@ -200,9 +201,27 @@ public class UI
             System.out.println(String.format("Player: %d Disc: %c", i + 1, playerDiscs[i+1]));
         }
 
-        System.out.println("=== Player turns ===");
+        System.out.println("=== Player turns played ===");
         for (int i = 0; i < playerAmmount; i++) {
             System.out.println(String.format("Player: %d Turns: %d", i + 1, gameLogic.playerTurns(i+1)));
+        }
+    }
+
+    private void showOfflineSpecs()
+    {
+        int playerAmmount = gameLogic.getNumberOfPlayers();
+
+        System.out.println("========== Game specs ==========");
+        System.out.println("Game Status: Inactive");
+        System.out.println(String.format("Length of winning sequence: " + gameLogic.getSequenceLength()));
+        System.out.println("=== Players discs ===");
+        for (int i = 0; i < playerAmmount; i++) {
+            System.out.println(String.format("Player: %d Disc: %c", i + 1, 0));
+        }
+
+        System.out.println("=== Player turns played ===");
+        for (int i = 0; i < playerAmmount; i++) {
+            System.out.println(String.format("Player: %d Turns: %d", i + 1, 0));
         }
     }
 
@@ -337,10 +356,10 @@ public class UI
         System.out.println("|");
 
         printLineSeparator(cols);
-        System.out.println("\n");
+        //System.out.println();
     }
 
-    private void printBoard()
+    private void printBoard(boolean printSpec)
     {
         char[][] board = gameLogic.boardReadyToPrint();
         int cols = gameLogic.getCols();
@@ -361,6 +380,11 @@ public class UI
         }
 
         printTopScales(cols);
+
+        if (printSpec) { showGameStats(); }
+        else           { showOfflineSpecs(); }
+
+        System.out.println();
     }
 
     public static void main(String[] args)

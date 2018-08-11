@@ -246,7 +246,9 @@ public class Game implements GameLogic, Serializable {
         return playedMoves;
     }
 
-    public int getIdOfCurrentPlayer() {
+    public int getIdOfCurrentPlayer()
+    {
+        if (null == currentPlayer) { return 0; }
         return currentPlayer.getId();
     }
 
