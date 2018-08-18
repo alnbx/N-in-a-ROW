@@ -4,7 +4,6 @@ import common.PlayersTypes;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.lang.Exception;
 
 public class Player implements Serializable {
     private int numOfTurnsPlayed;
@@ -12,17 +11,28 @@ public class Player implements Serializable {
     private int id;
     private PlayersTypes playerType;
 
-    public String getName() {
-        return name;
-    }
-
     Player(int id, PlayersTypes playerType, String name) {
         this.playerType = playerType;
         this.id = id;
         this.name = name;
-
-        numOfTurnsPlayed = 0;
+        this.isActive = true;
+        this.numOfTurnsPlayed = 0;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    private boolean isActive;
+
+    public String getName() {
+        return name;
+    }
+
 
     public void increaseNumberOfTurnsPlayed() { numOfTurnsPlayed++; }
 

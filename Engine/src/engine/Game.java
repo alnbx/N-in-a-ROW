@@ -11,8 +11,6 @@ import java.lang.Exception;
  * Created by user on 27/07/2018.
  */
 public class Game implements GameLogic, Serializable {
-
-    final int maxNumOfPlayers = 6;
     private Board board;
     private boolean hasWinner;
     private boolean isBoardFull;
@@ -24,7 +22,6 @@ public class Game implements GameLogic, Serializable {
 
     public Game()
     {
-        this.players = new ArrayList<Player>(maxNumOfPlayers);
         this.startingTime = null;
         this.gameSettings = new GameSettings();
     }
@@ -40,8 +37,13 @@ public class Game implements GameLogic, Serializable {
     }
 
     private void restartPlayers(boolean isRestart) {
-        if (isRestart)
-            this.players = new ArrayList<Player>(maxNumOfPlayers);
+        if (isRestart) {
+            if (gameSettings.isDynamicPlayers())
+                this.players = gameSettings.getPlayers();
+            else
+                this.players = new ArrayList<Player>(2);
+        }
+
         else {
             this.currentPlayer = players.get(0);
             for (Player player : players)

@@ -325,7 +325,7 @@ public class UI {
                 if (robotsCounter == playersAmount) {
                     System.out.println("You chose all players to be robots and that is not legal. Please choose again");
                 } else {
-                    this.gameLogic.initPlayer(PlayersTypes.ROBOT, initializedPlayers + 1, "Computer");
+                    this.gameLogic.initPlayer(PlayersTypes.COMPUTER, initializedPlayers + 1, "Computer");
                     robotsCounter++;
                     initializedPlayers++;
                 }
