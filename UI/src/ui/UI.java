@@ -39,7 +39,6 @@ public class UI {
         this.gameMenu = new GameMenu();
         this.winningMessage = new WinnerMessage();
         this.endGame = new EndGameMessage();
-        //this.gameLogic = new Game();
         this.isValidXML = false;
         this.gameFactory = new GameFactory();
     }
@@ -69,29 +68,6 @@ public class UI {
 
         System.out.println("Bye Bye :(");
     }
-/*
-    private boolean loadXML() {
-        boolean configurationLoaded = false;
-
-        System.out.println("Please enter the full path of an XML file with game settings: ");
-        this.xmlPath = scanner.nextLine();
-        try {
-            gameLogic.loadSettingsFile(this.xmlPath);
-            configurationLoaded = true;
-            this.isValidXML = true;
-
-            this.gameLogic.setBoardFromSettings(true);
-            printBoard(false);
-            choosePlayersType();
-            this.savedGamePath = "";
-        } catch (Exception e) {
-            System.out.println("\nSorry to interrupt but the configuration file is invalid :(");
-        }
-        finally {
-            return configurationLoaded;
-        }
-    }
-    */
 
     private boolean loadXML() {
         boolean configurationLoaded = false;

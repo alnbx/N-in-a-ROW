@@ -66,7 +66,7 @@ public class Game implements GameLogic, Serializable {
 
         if (board.playMove(col, playerID)) {
             //record move
-            playedMoves.add(new Move(playerID, col));
+            playedMoves.add(new Move(playerID, col, timeFromBegining()));
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
             if (checkWinningMove(col, playerID)) {
@@ -89,7 +89,7 @@ public class Game implements GameLogic, Serializable {
         while(!board.playMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
 
         //record move
-        playedMoves.add(new Move(playerID, rand));
+        playedMoves.add(new Move(playerID, rand, timeFromBegining()));
         getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
         if (checkWinningMove(rand, playerID)) {
