@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import common.*;
+import engine.GameFactory;
 import engine.GameLogic;
 import engine.Game;
 import engine.Move;
@@ -25,6 +26,7 @@ public class UI {
     private PrintMessages endGame;
     private GameLogic gameLogic;
     private boolean isValidXML;
+    private GameFactory gameFactory;
 
     public static Scanner scanner = new Scanner(System.in);
     public static final char[] playerDiscs = {' ', '@', '#', '$', '%', '&', '+', '~'};
@@ -37,8 +39,9 @@ public class UI {
         this.gameMenu = new GameMenu();
         this.winningMessage = new WinnerMessage();
         this.endGame = new EndGameMessage();
-        this.gameLogic = new Game();
+        //this.gameLogic = new Game();
         this.isValidXML = false;
+        this.gameFactory = new GameFactory();
     }
 
     public void playGame() {
@@ -66,7 +69,7 @@ public class UI {
 
         System.out.println("Bye Bye :(");
     }
-
+/*
     private boolean loadXML() {
         boolean configurationLoaded = false;
 
@@ -74,6 +77,29 @@ public class UI {
         this.xmlPath = scanner.nextLine();
         try {
             gameLogic.loadSettingsFile(this.xmlPath);
+            configurationLoaded = true;
+            this.isValidXML = true;
+
+            this.gameLogic.setBoardFromSettings(true);
+            printBoard(false);
+            choosePlayersType();
+            this.savedGamePath = "";
+        } catch (Exception e) {
+            System.out.println("\nSorry to interrupt but the configuration file is invalid :(");
+        }
+        finally {
+            return configurationLoaded;
+        }
+    }
+    */
+
+    private boolean loadXML() {
+        boolean configurationLoaded = false;
+
+        System.out.println("Please enter the full path of an XML file with game settings: ");
+        this.xmlPath = scanner.nextLine();
+        try {
+            gameLogic = gameFactory.getNewGame(xmlPath);
             configurationLoaded = true;
             this.isValidXML = true;
 
@@ -265,7 +291,7 @@ public class UI {
         int col = 0;
 
         while (true) {
-            if (gameLogic.getTypeOfCurrentPlayer() == PlayersTypes.HUMAN) {
+            if (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.HUMAN) {
                 col = getUserInputCol();
             }
 
@@ -325,14 +351,14 @@ public class UI {
                 if (robotsCounter == playersAmount) {
                     System.out.println("You chose all players to be robots and that is not legal. Please choose again");
                 } else {
-                    this.gameLogic.initPlayer(PlayersTypes.COMPUTER, initializedPlayers + 1, "Computer");
+                    this.gameLogic.initPlayer(PlayerTypes.COMPUTER, initializedPlayers + 1, "Computer");
                     robotsCounter++;
                     initializedPlayers++;
                 }
             } else {
                 System.out.print("Please type player's name: ");
                 String name = scanner.nextLine();
-                this.gameLogic.initPlayer(PlayersTypes.HUMAN, initializedPlayers + 1, name);
+                this.gameLogic.initPlayer(PlayerTypes.HUMAN, initializedPlayers + 1, name);
                 initializedPlayers++;
             }
         }

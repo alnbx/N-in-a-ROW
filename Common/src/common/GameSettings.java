@@ -1,8 +1,5 @@
-package engine;
+package common;
 
-import common.GameType;
-import common.GameVariant;
-import common.PlayersTypes;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -24,16 +21,29 @@ public class GameSettings implements Serializable {
     private GameVariant gameVariant;
     private GameType gameType;
     private String settingsFilePath;
-    private List<Player> players;
+    private List<PlayerSettings> players;
     private boolean isDynamicPlayers;
     private int numOfPlayers;
     private String gameTitle;
 
-    GameSettings() {
+    public GameSettings() {
         this.boardNumRows = 6;
         this.boardNumCols = 7;
-        this.players = new ArrayList<Player>(maxNumOfPlayers);
+        this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
         this.isDynamicPlayers = true;
+    }
+
+    public GameSettings(String settingsFilePath) throws Exception {
+        this.boardNumRows = 6;
+        this.boardNumCols = 7;
+        this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
+        this.isDynamicPlayers = true;
+        try {
+            initGameSettings(settingsFilePath);
+        }
+        catch (Exception e) {
+            throw e;
+        }
     }
 
     public int getTarget() {
@@ -64,7 +74,7 @@ public class GameSettings implements Serializable {
         return numOfPlayers;
     }
 
-    public List<Player> getPlayers() {
+    public List<PlayerSettings> getPlayers() {
         return players;
     }
 
@@ -124,11 +134,6 @@ public class GameSettings implements Serializable {
 
                             List<Node> playersNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "Players");
                             parsePlayersParentNode(playersNodes);
-
-                            if (players.size() != numOfPlayers) {
-                                throw new SettingsFileException("xml: the number of Players in the Players list doen's match the number defined in the DynamicPlayers node");
-                            }
-
                         }
                         catch (SettingsFileException e) {
                             throw e;
@@ -209,9 +214,13 @@ public class GameSettings implements Serializable {
             NodeList PlayersChildren = playersParent.get(0).getChildNodes();
             List<Node> playersNodes = getNodesWithNameAndType(PlayersChildren, Node.ELEMENT_NODE, "Player");
             parsePlayersNodeList(playersNodes);
+
+            if (players.size() != numOfPlayers) {
+
+            }
         }
-        else {
-            throw new SettingsFileException("xml: number of players in Players list and DynamicPlayers does not match");
+        else if (this.isDynamicPlayers && players.size() != numOfPlayers) {
+            throw new SettingsFileException("xml: the number of Players in the Players list doensn't match the number defined in the DynamicPlayers node");
         }
     }
 
@@ -236,7 +245,7 @@ public class GameSettings implements Serializable {
                 try {
                     int playerId = Integer.parseInt(idAttr.getNodeValue());
 
-                    for (Player p : players) {
+                    for (PlayerSettings p : players) {
                         if (p.getId() == playerId) {
                             throw new SettingsFileException("xml: Players list has more than one player with the id: " + playerId);
                         }
@@ -262,7 +271,7 @@ public class GameSettings implements Serializable {
 
     private void parsePlayerElement(Node playerNode, int playerId) throws SettingsFileException {
         String actualPlayerName = "";
-        PlayersTypes actualPlayerType = PlayersTypes.HUMAN;
+        PlayerTypes actualPlayerType = PlayerTypes.HUMAN;
 
         NodeList playerElements = playerNode.getChildNodes();
 
@@ -297,19 +306,19 @@ public class GameSettings implements Serializable {
             throw new SettingsFileException("xml: player " + playerId + "has no elemetns");
         }
 
-        players.add(new Player(playerId, actualPlayerType, actualPlayerName));
+        players.add(new PlayerSettings(actualPlayerName, playerId, actualPlayerType));
     }
 
-    private PlayersTypes parsePlayerType(Node playerType, int playerID) throws SettingsFileException{
+    private PlayerTypes parsePlayerType(Node playerType, int playerID) throws SettingsFileException{
         boolean isLegalPlayerType = false;
         NodeList playerTypeVal = playerType.getChildNodes();
-        PlayersTypes actualPlayerType = PlayersTypes.HUMAN;
+        PlayerTypes actualPlayerType = PlayerTypes.HUMAN;
 
         if (playerTypeVal.getLength() != 0) {
             String playerTypeStr = playerTypeVal.item(0).getTextContent();
-            PlayersTypes playerTypes[] = PlayersTypes.values();
+            PlayerTypes playerTypes[] = PlayerTypes.values();
 
-            for (PlayersTypes pt : playerTypes) {
+            for (PlayerTypes pt : playerTypes) {
                 if (pt.name().equalsIgnoreCase(playerTypeStr)) {
                     isLegalPlayerType = true;
                     actualPlayerType = pt;

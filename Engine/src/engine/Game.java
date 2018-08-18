@@ -23,7 +23,11 @@ public class Game implements GameLogic, Serializable {
     public Game()
     {
         this.startingTime = null;
-        this.gameSettings = new GameSettings();
+        //this.gameSettings = new GameSettings();
+    }
+
+    public Game(GameSettings gameSettings) {
+        this.gameSettings = gameSettings;
     }
 
     public void setBoardFromSettings(boolean restartPlayers) {
@@ -38,8 +42,12 @@ public class Game implements GameLogic, Serializable {
 
     private void restartPlayers(boolean isRestart) {
         if (isRestart) {
-            if (gameSettings.isDynamicPlayers())
-                this.players = gameSettings.getPlayers();
+            if (gameSettings.isDynamicPlayers()) {
+                List<PlayerSettings> playersSettings = gameSettings.getPlayers();
+                for (PlayerSettings pt : playersSettings) {
+                    players.add(new Player(pt));
+                }
+            }
             else
                 this.players = new ArrayList<Player>(2);
         }
@@ -119,7 +127,7 @@ public class Game implements GameLogic, Serializable {
     {
         boolean ret = true;
 
-        if (this.currentPlayer.getPlayerType() == PlayersTypes.HUMAN) {
+        if (this.currentPlayer.getPlayerType() == PlayerTypes.HUMAN) {
             ret = playHumanPlayer(col);
         }
         else {
@@ -178,14 +186,14 @@ public class Game implements GameLogic, Serializable {
     public boolean getHasWinner() { return this.hasWinner; }
     public boolean getIsBoardFull() { return this.isBoardFull; }
 
-    public void initPlayer(PlayersTypes playerType, int id, String name) {
+    public void initPlayer(PlayerTypes playerType, int id, String name) {
         Player player = new Player(id, playerType, name);
         players.add(player);
         if (null == currentPlayer)
             currentPlayer = player;
     }
 
-    public PlayersTypes getTypeOfCurrentPlayer() {
+    public PlayerTypes getTypeOfCurrentPlayer() {
         return currentPlayer.getPlayerType();
     }
 

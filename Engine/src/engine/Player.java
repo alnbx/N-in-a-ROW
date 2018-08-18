@@ -1,7 +1,7 @@
 package engine;
 
-import common.PlayersTypes;
-
+import common.PlayerTypes;
+import common.PlayerSettings;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,12 +9,21 @@ public class Player implements Serializable {
     private int numOfTurnsPlayed;
     private String name;
     private int id;
-    private PlayersTypes playerType;
+    private PlayerTypes playerType;
+    private boolean isActive;
 
-    Player(int id, PlayersTypes playerType, String name) {
+    Player(int id, PlayerTypes playerType, String name) {
         this.playerType = playerType;
         this.id = id;
         this.name = name;
+        this.isActive = true;
+        this.numOfTurnsPlayed = 0;
+    }
+
+    Player(PlayerSettings player) {
+        this.playerType = player.getPlayerType();
+        this.id = player.getId();
+        this.name = player.getName();
         this.isActive = true;
         this.numOfTurnsPlayed = 0;
     }
@@ -26,8 +35,6 @@ public class Player implements Serializable {
     public void setActive(boolean active) {
         isActive = active;
     }
-
-    private boolean isActive;
 
     public String getName() {
         return name;
@@ -59,7 +66,7 @@ public class Player implements Serializable {
         return Objects.hash(id);
     }
 
-    public PlayersTypes getPlayerType() {
+    public PlayerTypes getPlayerType() {
         return playerType;
     }
 

@@ -1,4 +1,4 @@
-package engine;
+package common;
 
 public class SettingsFileException extends Exception {
     String message;
