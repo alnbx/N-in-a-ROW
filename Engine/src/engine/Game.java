@@ -11,14 +11,14 @@ import java.lang.Exception;
  * Created by user on 27/07/2018.
  */
 public class Game implements GameLogic, Serializable {
-    private Board board;
-    private boolean hasWinner;
-    private boolean isBoardFull;
-    private Date startingTime;
-    private GameSettings gameSettings;
-    private List<Player> players;
-    private Player currentPlayer;
-    private List<Move> playedMoves;
+    protected Board board;
+    protected boolean hasWinner;
+    protected boolean isBoardFull;
+    protected Date startingTime;
+    protected GameSettings gameSettings;
+    protected List<Player> players;
+    protected Player currentPlayer;
+    protected List<Move> playedMoves;
 
     public Game()
     {
@@ -31,7 +31,7 @@ public class Game implements GameLogic, Serializable {
     }
 
     public void setBoardFromSettings(boolean restartPlayers) {
-        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getBoardNumCols());
+        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getBoardNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
         this.hasWinner = false;
         this.isBoardFull = false;
         this.currentPlayer = null;
@@ -40,7 +40,7 @@ public class Game implements GameLogic, Serializable {
         restartPlayers(restartPlayers);
     }
 
-    private void restartPlayers(boolean isRestart) {
+    protected void restartPlayers(boolean isRestart) {
         if (isRestart) {
             if (gameSettings.isDynamicPlayers()) {
                 List<PlayerSettings> playersSettings = gameSettings.getPlayers();
@@ -59,13 +59,12 @@ public class Game implements GameLogic, Serializable {
         }
     }
 
-    private boolean playHumanPlayer(int col)
+    protected boolean playHumanPlayer(int col, boolean popout)
     {
         int playerID = this.currentPlayer.getId();
         col--;
 
-        if (board.playMove(col, playerID))
-        {
+        if (board.playMove(col, playerID)) {
             //record move
             playedMoves.add(new Move(playerID, col));
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
@@ -81,15 +80,13 @@ public class Game implements GameLogic, Serializable {
         return false;
     }
 
-    private boolean playComputerPlayer()
+    protected boolean playComputerPlayer()
     {
         Random r = new Random();
         int playerID = currentPlayer.getId();
         int rand = r.nextInt(board.getCols());
 
-        while(!board.playMove(rand, playerID)) {
-            rand = r.nextInt(board.getCols());
-        }
+        while(!board.playMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
 
         //record move
         playedMoves.add(new Move(playerID, rand));
@@ -123,27 +120,22 @@ public class Game implements GameLogic, Serializable {
     public int getCols() { return this.board.getCols(); }
 
     @Override
-    public boolean play(int col)
+    public boolean play(int col, boolean popout)
     {
         boolean ret = true;
 
-        if (this.currentPlayer.getPlayerType() == PlayerTypes.HUMAN) {
-            ret = playHumanPlayer(col);
+        if (this.currentPlayer.getPlayerType() == PlayerTypes.HUMAN) { ret = playHumanPlayer(col, popout); }
+        else { playHumanPlayer(col, popout); }
+
+        if (ret) {
+            //change current player after turn is completed succefully
+            currentPlayer = players.get(currentPlayer.getId() % players.size());
+
+            board.decreaseEmptySpace();
+            if (board.isFull()) { this.isBoardFull = true; }
+
+            if (this.startingTime == null) { setStartingTime(); }
         }
-        else {
-            playComputerPlayer();
-        }
-
-        //change current player after turn is completed succefully
-        currentPlayer = players.get(currentPlayer.getId() % players.size());
-
-        board.decreaseEmptySpace();
-        if (board.isFull()) { this.isBoardFull = true; }
-
-        if (this.startingTime == null) {
-            setStartingTime();
-        }
-
         return ret;
     }
 
@@ -159,7 +151,7 @@ public class Game implements GameLogic, Serializable {
         }
     }
 
-    private boolean checkWinningMove(int col, int player)
+    protected boolean checkWinningMove(int col, int player)
     {
         int targetSequence = this.gameSettings.getTarget();
 
@@ -189,13 +181,10 @@ public class Game implements GameLogic, Serializable {
     public void initPlayer(PlayerTypes playerType, int id, String name) {
         Player player = new Player(id, playerType, name);
         players.add(player);
-        if (null == currentPlayer)
-            currentPlayer = player;
+        if (null == currentPlayer) { currentPlayer = player; }
     }
 
-    public PlayerTypes getTypeOfCurrentPlayer() {
-        return currentPlayer.getPlayerType();
-    }
+    public PlayerTypes getTypeOfCurrentPlayer() { return currentPlayer.getPlayerType(); }
 
     public boolean undoLastMove() {
         boolean isUndoAvailable = true;
@@ -231,7 +220,7 @@ public class Game implements GameLogic, Serializable {
         currentPlayer = player;
     }
 
-    private Player getPlayerById(int playerId) {
+    protected Player getPlayerById(int playerId) {
         Player player = null;
 
         for (Player p : players) {
@@ -243,9 +232,7 @@ public class Game implements GameLogic, Serializable {
         return player;
     }
 
-    public List<Move> getMovesHistory() {
-        return playedMoves;
-    }
+    public List<Move> getMovesHistory() { return playedMoves; }
 
     public int getIdOfCurrentPlayer()
     {

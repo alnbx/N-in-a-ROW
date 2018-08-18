@@ -13,8 +13,9 @@ public class Board implements Serializable {
     private boolean hasWinner;
     private int winningPlayer;
     private int emptySpaces;
+    private boolean isCircular;
 
-    public Board(int rows, int cols)
+    public Board(int rows, int cols, boolean isCircular)
     {
         this.rows = rows;
         this.cols = cols;
@@ -22,6 +23,7 @@ public class Board implements Serializable {
         this.hasWinner = false;
         this.winningPlayer = 0;
         this.emptySpaces = this.rows * this.cols;
+        this.isCircular = isCircular;
 
         initBoard();
     }
@@ -50,12 +52,20 @@ public class Board implements Serializable {
             connectDiscsToRight(i);
             connectDiscsToDownUp(i);
         }
+
+        if (this.isCircular) { connectDiscsCircular(); }
+    }
+
+    private void connectDiscsCircular() {
+        board[0].connectDiscsLeftRightCircular(board[this.cols - 1]);
+
+        //connect UpDown
+        for (int i = 0; i < this.cols; i++) { board[i].connectDiscsUpDownCircular(); }
     }
 
     private void connectDiscsToLeft(int loc)
     {
-        if (loc != 0)
-        {
+        if (loc != 0) {
             board[loc].connectDiscsLeft(board[loc - 1]);
             board[loc].connectDiscsLeftDown(board[loc - 1]);
             board[loc].connectDiscsLeftUp(board[loc - 1]);
@@ -64,8 +74,7 @@ public class Board implements Serializable {
 
     private void connectDiscsToRight(int loc)
     {
-        if (loc != this.cols - 1)
-        {
+        if (loc != this.cols - 1) {
             board[loc].connectDiscsRight(board[loc + 1]);
             board[loc].connectDiscsRightUp(board[loc + 1]);
             board[loc].connectDiscsRightDown(board[loc + 1]);
@@ -147,6 +156,19 @@ public class Board implements Serializable {
         return res;
     }
 
+    public int leftRightSequencePopout(int col, int row)
+    {
+        int res = 1;
+        Disc d = board[col].getDiscInCol(row);
+        Disc temp = d;
+
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFT), temp.getPlayerDisc(), Directions.LEFT);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.RIGHT), temp.getPlayerDisc(), Directions.RIGHT);
+
+        return res;
+    }
+
     public int upDownSequence(int col, int player)
     {
         int res = 1;
@@ -156,6 +178,19 @@ public class Board implements Serializable {
         res += getSequenceByDirection(d.getDiscByDirection(Directions.UP), player, Directions.UP);
         Disc temp = d;
         res += getSequenceByDirection(d.getDiscByDirection(Directions.DOWN), player, Directions.DOWN);
+
+        return res;
+    }
+
+    public int upDownSequencePopout(int col, int row)
+    {
+        int res = 1;
+        Disc d = board[col].getDiscInCol(row);
+        Disc temp = d;
+
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.UP), temp.getPlayerDisc(), Directions.UP);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.DOWN), temp.getPlayerDisc(), Directions.DOWN);
 
         return res;
     }
@@ -173,6 +208,19 @@ public class Board implements Serializable {
         return res;
     }
 
+    public int diagonalUpSequencePopout(int col, int row)
+    {
+        int res = 1;
+        Disc d = board[col].getDiscInCol(row);
+        Disc temp = d;
+
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.UPRIGHT), temp.getPlayerDisc(), Directions.UPRIGHT);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFTDOWN), temp.getPlayerDisc(), Directions.LEFTDOWN);
+
+        return res;
+    }
+
     public int diagonalDownSequence(int col, int player)
     {
         int res = 1;
@@ -186,6 +234,37 @@ public class Board implements Serializable {
         return res;
     }
 
+    public int diagonalDownSequencePopout(int col, int row)
+    {
+        int res = 1;
+        Disc d = board[col].getDiscInCol(row);
+        Disc temp = d;
+
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFTUP), temp.getPlayerDisc(), Directions.LEFTUP);
+        temp = d;
+        res += getSequenceByDirection(temp.getDiscByDirection(Directions.RIGHTDOWN), temp.getPlayerDisc(), Directions.RIGHTDOWN);
+
+        return res;
+    }
+
     public void decreaseEmptySpace() { this.emptySpaces--; }
     public boolean isFull() {return this.emptySpaces == 0; }
+
+    public boolean isPopoutAvaliableForPlayer(int playerID)
+    {
+        for (int i = 0; i < board.length; i++) {
+            if (board[i].getDiscInCol(this.rows - 1).getPlayerDisc() == playerID) { return true; }
+        }
+
+        return false;
+    }
+
+    public boolean playPopoutMove(int col, int playerID)
+    {
+        if (board[col].getDiscInCol(rows - 1).getPlayerDisc() != playerID) { return false; }
+
+        board[col].dropDiscsDown();
+
+        return true;
+    }
 }

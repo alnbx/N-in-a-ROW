@@ -8,7 +8,7 @@ import java.util.List;
  * Created by user on 27/07/2018.
  */
 public interface GameLogic {
-    boolean play(int col);
+    boolean play(int col, boolean popout);
     int playerTurns(int player);
     String timeFromBegining();
     int getCols();

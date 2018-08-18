@@ -94,15 +94,42 @@ public class Col implements Serializable {
         }
     }
 
-    public void playMove(int player) {
+    public void connectDiscsLeftRightCircular(Col edge)
+    {
+        for (int i = 0; i < this.discs.length - 1; i++)
+        {
+            this.discs[i].setDiscsAround(Directions.LEFT, edge.getDiscInCol(i));
+            edge.discs[i].setDiscsAround(Directions.RIGHT, this.discs[i]);
+        }
+    }
+
+    public void connectDiscsUpDownCircular()
+    {
+        this.discs[0].setDiscsAround(Directions.DOWN, this.discs[discs.length - 1]);
+        this.discs[discs.length - 1].setDiscsAround(Directions.UP, this.discs[0]);
+    }
+
+    public void playMove(int player)
+    {
         this.discs[--lastRowInserted].setDiscOfPlayer(player);
         this.freeSpace--;
     }
 
     public int getLastRowInserted() { return this.lastRowInserted; }
 
-    public void undoMove() {
+    public void undoMove()
+    {
         this.discs[lastRowInserted++].setDiscOfPlayer(0);
         this.freeSpace++;
+    }
+
+    public void dropDiscsDown()
+    {
+        for (int i = this.discs.length - 1; i > 0; i--) {
+            this.discs[i].setDiscOfPlayer(this.discs[i - 1].getPlayerDisc());
+        }
+
+        this.discs[0].setDiscOfPlayer(0);
+        this.lastRowInserted--;
     }
 }
