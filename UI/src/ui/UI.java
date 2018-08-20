@@ -271,7 +271,7 @@ public class UI {
                 col = getUserInputCol();
             }
 
-            if (!gameLogic.play(col)) {
+            if (!gameLogic.play(col, false)) {
                 System.out.println("Illegal move. please try again.");
                 col = getUserInputCol();
             } else {
