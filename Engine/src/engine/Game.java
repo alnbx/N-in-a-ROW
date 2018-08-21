@@ -125,7 +125,7 @@ public class Game implements GameLogic, Serializable {
         boolean ret = true;
 
         if (this.currentPlayer.getPlayerType() == PlayerTypes.HUMAN) { ret = playHumanPlayer(col, popout); }
-        else { playHumanPlayer(col, popout); }
+        else { ret = playHumanPlayer(col, popout); }
 
         if (ret) {
             //change current player after turn is completed succefully
