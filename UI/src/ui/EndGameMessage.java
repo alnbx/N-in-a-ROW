@@ -1,11 +1,13 @@
 package ui;
 
+import java.util.Set;
+
 /**
  * Created by user on 31/07/2018.
  */
 public class EndGameMessage implements PrintMessages {
     @Override
-    public void printMessage(int player)
+    public void printMessage(Set<Integer> winners, int amountOfPlayers)
     {
         System.out.println("**********************************************************");
         System.out.println("********************** END OF GAME ***********************");

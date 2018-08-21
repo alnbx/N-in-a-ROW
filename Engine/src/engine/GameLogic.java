@@ -3,6 +3,7 @@ package engine;
 import common.PlayerTypes;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by user on 27/07/2018.
@@ -21,6 +22,7 @@ public interface GameLogic {
     int getIdOfCurrentPlayer();
     List<Move> getMovesHistory();
     boolean getHasWinner();
+    Set<Integer> getWinners();
     boolean getIsBoardFull();
     void setBoardFromSettings(boolean restartPlayers);
     int getSequenceLength();

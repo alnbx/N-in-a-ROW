@@ -1,6 +1,8 @@
 package engine;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by user on 27/07/2018.
@@ -11,7 +13,7 @@ public class Board implements Serializable {
     private int cols;
     private Col[] board;
     private boolean hasWinner;
-    private int winningPlayer;
+    private Set<Integer> winningPlayer;
     private int emptySpaces;
     private boolean isCircular;
 
@@ -21,7 +23,7 @@ public class Board implements Serializable {
         this.cols = cols;
         board = new Col[cols];
         this.hasWinner = false;
-        this.winningPlayer = 0;
+        this.winningPlayer = new HashSet<Integer>();
         this.emptySpaces = this.rows * this.cols;
         this.isCircular = isCircular;
 
@@ -113,9 +115,20 @@ public class Board implements Serializable {
 
     //TODO: check if necessary! Delete it if not!
     public Col[] getBoard() { return this.board; }
-    public void setWinner(int winningPlayer) { this.hasWinner = true; this.winningPlayer = winningPlayer; }
+    public void setWinner(int winningPlayer)
+    {
+        this.hasWinner = true;
+        this.winningPlayer.add(winningPlayer);
+    }
+
+    public void setWinner(Set<Integer> winningPlayer)
+    {
+        this.hasWinner = true;
+        this.winningPlayer = winningPlayer;
+    }
+
     public boolean isHasWinner() { return this.hasWinner; }
-    public int getWinner() { return this.winningPlayer; }
+    public Set<Integer> getWinner() { return this.winningPlayer; }
 
     public char[][] getBoardAsCharArray()
     {
@@ -267,4 +280,6 @@ public class Board implements Serializable {
 
         return true;
     }
+
+    public int getPlayerInDisc(int col, int row) { return board[col].getDiscInCol(row).getPlayerDisc(); }
 }

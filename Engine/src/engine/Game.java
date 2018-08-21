@@ -240,4 +240,6 @@ public class Game implements GameLogic, Serializable {
         return currentPlayer.getId();
     }
 
+    public Set<Integer> getWinners() { return board.getWinner(); }
+
 }

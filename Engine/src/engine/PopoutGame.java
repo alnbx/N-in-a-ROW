@@ -2,7 +2,9 @@ package engine;
 
 import common.GameSettings;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class PopoutGame extends Game
 {
@@ -55,8 +57,9 @@ public class PopoutGame extends Game
         getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
         //todo: After Popout check winning move must be for all column...
-        if (checkWinningMove(rand, playerID)) {
-            board.setWinner(playerID);
+        Set<Integer> winners = checkWinningMove(rand);
+        if (!winners.isEmpty()) {
+            board.setWinner(winners);
             board.setHasWinner(true);
         }
 
@@ -80,18 +83,19 @@ public class PopoutGame extends Game
     }
 
     //todo: you do not know which player are you checking. handle it.
-    protected boolean checkWinningMove(int col)
+    private Set<Integer> checkWinningMove(int col)
     {
         int targetSequence = this.gameSettings.getTarget();
+        Set<Integer> res = new HashSet<>();
 
         for (int i = board.getRows() - 1; i > 0; i++) {
             if ( board.leftRightSequencePopout(col, i) == targetSequence    ||
                     board.upDownSequencePopout(col, i) == targetSequence       ||
                     board.diagonalDownSequencePopout(col, i) == targetSequence ||
                     board.diagonalUpSequencePopout(col, i) == targetSequence)
-            { return true; }
+            { res.add(board.getPlayerInDisc(col, i)); }
         }
 
-        return false;
+        return res;
     }
 }

@@ -2,9 +2,7 @@ package ui;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import common.*;
 import engine.GameFactory;
@@ -161,13 +159,14 @@ public class UI {
         if (MenuChoice.EXIT != userChoice) {
             printBoard(true);
             if (gameLogic.getHasWinner()) {
-                int idWinner = gameLogic.getIdOfCurrentPlayer() - 1;
-                if (idWinner == 0)
-                    idWinner = gameLogic.getNumberOfInitializedPlayers();
-                winningMessage.printMessage(idWinner);
+                Set<Integer> winners = gameLogic.getWinners();
+                //int idWinner = gameLogic.getIdOfCurrentPlayer() - 1;
+                //if (idWinner == 0)
+                //    idWinner = gameLogic.getNumberOfInitializedPlayers();
+                winningMessage.printMessage(winners, gameLogic.getNumberOfInitializedPlayers());
             }
             else if (gameLogic.getIsBoardFull()) {
-                endGame.printMessage(0);
+                endGame.printMessage(new HashSet<Integer>(), gameLogic.getNumberOfInitializedPlayers());
             }
         }
 
