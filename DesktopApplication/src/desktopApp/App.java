@@ -23,7 +23,7 @@ public class App extends Application {
         Controller controller = fxmlLoader.getController();
         controller.setApplication();
         controller.setPrimarySatge(primaryStage);
-        
+
         Scene scene = new Scene(root, 300, 275);
 
         primaryStage.setScene(scene);
