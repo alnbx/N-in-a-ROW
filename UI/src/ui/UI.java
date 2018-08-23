@@ -1,3 +1,4 @@
+/*
 package ui;
 
 import java.io.*;
@@ -10,10 +11,10 @@ import engine.GameLogic;
 import engine.Game;
 import engine.Move;
 
-/**
- * Created by user on 30/07/2018.
- */
-
+*
+Created by user on 30/07/2018.
+*/
+/*
 public class UI {
     private String xmlPath;
     private String savedGamePath;
@@ -61,7 +62,7 @@ public class UI {
 
             if(menuChoice != MenuChoice.EXIT) {
                 menuChoice = playSingleRound();
-            }                                                                                                        
+            }
         }
 
         System.out.println("Bye Bye :(");
@@ -411,3 +412,5 @@ public class UI {
         ui.playGame();
     }
 }
+
+*/

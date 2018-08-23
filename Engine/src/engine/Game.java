@@ -31,7 +31,7 @@ public class Game implements GameLogic, Serializable {
     }
 
     public void setBoardFromSettings(boolean restartPlayers) {
-        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getBoardNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
+        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
         this.hasWinner = false;
         this.isBoardFull = false;
         this.currentPlayer = null;
@@ -117,7 +117,15 @@ public class Game implements GameLogic, Serializable {
     }
 
     @Override
-    public int getCols() { return this.board.getCols(); }
+    public int getCols() { return this.gameSettings.getNumCols(); }
+
+    @Override
+    public int getRows() { return gameSettings.getNumRows(); }
+
+    @Override
+    public boolean isPopout() {
+        return gameSettings.isPopout();
+    }
 
     @Override
     public boolean play(int col, boolean popout)

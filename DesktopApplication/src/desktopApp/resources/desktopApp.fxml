@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fx:id="MainPanel_ScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <BorderPane fx:id="MainPanel_BorderPane" prefHeight="598.0" prefWidth="897.0">
+         <top>
+            <ScrollPane fx:id="TopPanel_ScrollPane" fitToHeight="true" fitToWidth="true" prefHeight="79.0" prefWidth="901.0" BorderPane.alignment="CENTER">
+               <content>
+                  <VBox fx:id="TopPanel_VBox" prefHeight="63.0" prefWidth="896.0">
+                     <children>
+                        <HBox alignment="CENTER">
+                           <VBox.margin>
+                              <Insets left="15.0" top="15.0" />
+                           </VBox.margin>
+                           <children>
+                              <Label fx:id="TopPanel_welcome_Label" alignment="CENTER" contentDisplay="CENTER" text="Welcome!">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox fx:id="TopPanel_buttons_HBox" alignment="CENTER" prefHeight="61.0" prefWidth="896.0">
+                           <children>
+                              <Button fx:id="TopPanel_loadXML_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loadNewSettingFile_onButtonAction" text="Load XML">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="TopPanel_playRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playRound_onButtonAction" text="Play Round">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="TopPanel_playRound_ButtonTopPanel_endRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#endRound_onButtonAction" text="End Round">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="TopPanel_playerResign_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playerResign_onButtonAction" text="Player Resign">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="TopPanel_exitGame_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exitGame_onButtonAction" text="Exit Game">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </top>
+         <center>
+            <ScrollPane fx:id="CenterPanel_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="300.0" minViewportHeight="300.0" minViewportWidth="300.0" minWidth="300.0" prefHeight="405.0" prefWidth="719.0" BorderPane.alignment="CENTER">
+               <content>
+                  <GridPane fx:id="CenterPanel_boardArea_GridPane" gridLinesVisible="true" minHeight="300.0" minWidth="500.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+         </center>
+         <left>
+            <ScrollPane fx:id="LeftPanel_ScrollPane" prefHeight="516.0" prefWidth="257.0" BorderPane.alignment="CENTER">
+               <content>
+                  <VBox fx:id="LeftPanel_players_VBox" prefHeight="517.0" prefWidth="255.0">
+                     <children>
+                        <Label fx:id="LeftPanel_playersLabel_Label" alignment="CENTER" prefHeight="35.0" prefWidth="255.0" text="Players" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="LeftPanel_playersTable_TableView" prefHeight="205.0" prefWidth="248.0">
+                          <columns>
+                            <TableColumn fx:id="LeftPanel_playerID_TableColumn" prefWidth="37.0" text="ID" />
+                            <TableColumn fx:id="LeftPanel_playerMoves_TableColumn" prefWidth="88.0" text="Moves Made" />
+                              <TableColumn fx:id="LeftPanel_playerMoves_TableColumnLeftPanel_playerColour_TableColumn" prefWidth="54.0" text="Colour" />
+                              <TableColumn fx:id="LeftPanel_playerMoves_TableColumnLeftPanel_playerType_TableColumn" prefWidth="75.0" text="Type" />
+                          </columns>
+                        </TableView>
+                        <Label fx:id="LeftPanel_movesHistory_Label" alignment="CENTER" prefHeight="35.0" prefWidth="255.0" text="Moves History" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="LeftPanel_movesHistory_TableView" prefHeight="280.0" prefWidth="255.0">
+                           <columns>
+                              <TableColumn fx:id="LeftPanel_moveID_TableColumn" prefWidth="49.0" text="ID" />
+                              <TableColumn fx:id="LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumn" prefWidth="113.0" text="Move Type" />
+                              <TableColumn fx:id="LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumnLeftPanel_moveID_TableColumnLeftPanel_moveColumn_TableColumn" prefWidth="92.0" text="Column" />
+                           </columns>
+                        </TableView>
+                        <ScrollPane fx:id="LeftPanel_replay_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="50.0" minViewportHeight="50.0" minViewportWidth="50.0" minWidth="50.0">
+                           <content>
+                              <HBox fx:id="LeftPanel_replay_HBox" minHeight="20.0" minWidth="20.0" prefHeight="26.0" prefWidth="100.0">
+                                 <children>
+                                    <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" />
+                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="&lt;-" />
+                                    <Button fx:id="LeftPanel_replayLeftArrow_ButtonLeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="-&gt;" />
+                                 </children>
+                              </HBox>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </left>
+      </BorderPane>
+   </content>
+</ScrollPane>

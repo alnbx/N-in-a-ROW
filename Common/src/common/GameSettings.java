@@ -46,6 +46,14 @@ public class GameSettings implements Serializable {
         }
     }
 
+    public int getNumRows() {
+        return boardNumRows;
+    }
+
+    public boolean isPopout() {
+        return gameVariant == GameVariant.POPOUT;
+    }
+
     public int getTarget() {
         return this.target;
     }
@@ -54,7 +62,7 @@ public class GameSettings implements Serializable {
         return this.boardNumRows;
     }
 
-    public int getBoardNumCols() {
+    public int getNumCols() {
         return this.boardNumCols;
     }
 

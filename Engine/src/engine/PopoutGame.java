@@ -53,8 +53,9 @@ public class PopoutGame extends Game
 
         //record move
         //todo: record if it was a popout or not
+
         playedMoves.add(new Move(playerID, rand, timeFromBegining()));
-        getPlayerById(playerID).increaseNumberOfTurnsPlayed();
+
 
         //todo: After Popout check winning move must be for all column...
         Set<Integer> winners = checkWinningMove(rand);

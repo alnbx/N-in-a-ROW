@@ -13,6 +13,7 @@ public interface GameLogic {
     int playerTurns(int player);
     String timeFromBegining();
     int getCols();
+    int getRows();
     void loadSettingsFile(String filePath) throws Exception;
     char[][] boardReadyToPrint();
     void initPlayer(PlayerTypes playerType, int id, String name);
@@ -27,4 +28,5 @@ public interface GameLogic {
     void setBoardFromSettings(boolean restartPlayers);
     int getSequenceLength();
     int getNumberOfPlayersToInitialized();
+    boolean isPopout();
 }
