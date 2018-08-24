@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="MainPanel_ScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.Controller.java">
+<ScrollPane fx:id="MainPanel_ScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.desktopAppController">
    <content>
       <BorderPane fx:id="MainPanel_BorderPane" prefHeight="598.0" prefWidth="897.0">
          <top>
@@ -46,12 +46,12 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="TopPanel_playRound_ButtonTopPanel_endRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#endRound_onButtonAction" text="End Round">
+                              <Button fx:id="TopPanel_endRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#endRound_onButtonAction" text="End Round">
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="TopPanel_playerResign_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playerResign_onButtonAction" text="Player Resign">
+                              <Button fx:id="TopPanel_resignPlayer_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playerResign_onButtonAction" text="Player Resign">
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>
@@ -71,7 +71,7 @@
          <center>
             <ScrollPane fx:id="CenterPanel_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="300.0" minViewportHeight="300.0" minViewportWidth="300.0" minWidth="300.0" prefHeight="405.0" prefWidth="719.0" BorderPane.alignment="CENTER">
                <content>
-                  <GridPane fx:id="CenterPanel_boardArea_GridPane" gridLinesVisible="true" minHeight="300.0" minWidth="500.0">
+                  <GridPane fx:id="CenterPanel_boardArea_GridPane" gridLinesVisible="false" minHeight="300.0" minWidth="500.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -121,7 +121,7 @@
                                  <children>
                                     <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" />
                                     <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="&lt;-" />
-                                    <Button fx:id="LeftPanel_replayLeftArrow_ButtonLeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="-&gt;" />
+                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="-&gt;" />
                                  </children>
                               </HBox>
                            </content>

@@ -2,17 +2,21 @@ package desktopApp;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import engine.*;
@@ -22,11 +26,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
-public class Controller {
+public class desktopAppController {
     private GameLogic currentGameLogic;
     private GameFactory gameFactory;
-    private BooleanProperty isValidXML;
-    private BooleanProperty isReplayMode;
+    private SimpleIntegerProperty isValidXML;
+    private SimpleIntegerProperty isReplayMode;
     private Stage primaryStage;
 
     @FXML private ResourceBundle resources;
@@ -98,12 +102,12 @@ public class Controller {
         assert TopPanel_endRound_Button != null : "fx:id=\"TopPanel_endRound_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
     }
 
-    public Controller() {
+    public desktopAppController() {
         gameFactory = new GameFactory();
-        isValidXML = new SimpleBooleanProperty();
-        isValidXML.setValue(false);
-        isReplayMode = new SimpleBooleanProperty();
-        isReplayMode.set(false);
+        isValidXML = new SimpleIntegerProperty();
+        isValidXML.setValue(0);
+        isReplayMode = new SimpleIntegerProperty();
+        isReplayMode.setValue(0);
     }
 
     public void setApplication() {
@@ -113,12 +117,13 @@ public class Controller {
         TopPanel_resignPlayer_Button.setDisable(true);
         TopPanel_exitGame_Button.setDisable(false);
 
-        TopPanel_playRound_Button.disableProperty().bind(isValidXML);
-        TopPanel_endRound_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty().not());
-        TopPanel_resignPlayer_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty().not());
-        LeftPanel_toggleReplay_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty().not());
-        LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.not());
-        LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.not());
+        TopPanel_loadXML_Button.disableProperty().bind(isValidXML.isEqualTo(0).not());
+        TopPanel_playRound_Button.disableProperty().bind(TopPanel_loadXML_Button.disabledProperty().not());
+        TopPanel_endRound_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
+        TopPanel_resignPlayer_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
+        LeftPanel_toggleReplay_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
+        LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
+        LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
 
     }
 
@@ -132,10 +137,12 @@ public class Controller {
         CenterPanel_boardArea_GridPane.setVgap(0);
 
         addColButtons(cols);
-        addBoardCells(rows, cols);
+        addBoardCells(cols, rows);
         if (currentGameLogic.isPopout()) {
             addPopoutButtons(cols, rows);
         }
+
+        MainPanel_BorderPane.setCenter(CenterPanel_boardArea_GridPane);
     }
 
     private void addBoardCells(int cols, int rows) {
@@ -145,15 +152,16 @@ public class Controller {
 
                 CenterPanel_boardArea_GridPane.setRowIndex(c, i);
                 CenterPanel_boardArea_GridPane.setColumnIndex(c, j);
+                CenterPanel_boardArea_GridPane.setMargin(c, new Insets(10, 10, 0, 0));
                 CenterPanel_boardArea_GridPane.getChildren().add(c);
             }
         }
-
     }
 
     private void addPopoutButtons(int cols, int rows) {
         for (int i = 0; i < cols; i++) {
-            ImageView image = new ImageView("/resources/downArrow.jpeg");
+
+            ImageView image = new ImageView("/desktopApp/resources/downArrow.png");
             image.setFitHeight(25);
             image.setFitWidth(25);
 
@@ -163,6 +171,7 @@ public class Controller {
             CenterPanel_boardArea_GridPane.setColumnIndex(b_out, i);
             CenterPanel_boardArea_GridPane.getChildren().add(b_out);
         }
+
     }
 
     private Button createNewArrowButton(int col, ImageView img) {
@@ -173,12 +182,13 @@ public class Controller {
 
     private void addColButtons(int cols) {
         for (int i = 0; i < cols; i++) {
-            ImageView image = new ImageView("/resources/downArrow.jpeg");
+
+            ImageView image = new ImageView("/desktopApp/resources/downArrow.png");
             image.setFitHeight(25);
             image.setFitWidth(25);
             Button b_in = createNewArrowButton(i, image);
 
-            CenterPanel_boardArea_GridPane.setRowIndex(b_in,0);
+            CenterPanel_boardArea_GridPane.setRowIndex(b_in, 0);
             CenterPanel_boardArea_GridPane.setColumnIndex(b_in, i);
             CenterPanel_boardArea_GridPane.getChildren().add(b_in);
         }
@@ -194,17 +204,17 @@ public class Controller {
         return c;
     }
 
-    void setDiscInCol(int col, int playerId) {
+    public void setDiscInCol(int col, int playerId) {
 
     }
 
     @FXML
-    void endRound_onButtonAction(ActionEvent event) {
+    public void endRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
 
     }
 
     @FXML
-    void exitGame_onButtonAction(ActionEvent event) {
+    public void exitGame_onButtonAction(javafx.event.ActionEvent actionEvent) {
 
     }
 
@@ -212,8 +222,19 @@ public class Controller {
         this.primaryStage = primaryStage;
     }
 
+
     @FXML
-    private void loadNewSettingFile_onButtonAction(ActionEvent event) {
+    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Settings File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files","*.xml"));
@@ -225,23 +246,16 @@ public class Controller {
             try {
                 currentGameLogic = gameFactory.getNewGame(settingsFile.getAbsolutePath().toString());
                 createBoard();
-                break;
+                return;
             }
             catch (Exception e) {
+                System.out.println("Error loading file");
+                break;
                 //TODO: popout message of invalid settings file
             }
         }
 
+        CenterPanel_boardArea_GridPane.visibleProperty().setValue(true);
+        isValidXML.setValue(1);
     }
-
-    @FXML
-    void playRound_onButtonAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void playerResign_onButtonAction(ActionEvent event) {
-
-    }
-
 }

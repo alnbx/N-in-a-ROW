@@ -20,11 +20,11 @@ public class App extends Application {
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
 
-        Controller controller = fxmlLoader.getController();
+        desktopAppController controller = fxmlLoader.getController();
         controller.setApplication();
         controller.setPrimarySatge(primaryStage);
 
-        Scene scene = new Scene(root, 300, 275);
+        Scene scene = new Scene(root, 900, 600);
 
         primaryStage.setScene(scene);
         primaryStage.show();
