@@ -19,7 +19,7 @@ public class PrimaryMenu_wRestart implements Menu {
 
             while (true) {
                 try {
-                    userChoice = Integer.parseInt(UI.scanner.nextLine());
+                    //userChoice = Integer.parseInt(UI.scanner.nextLine());
                     break;
                 } catch (NumberFormatException nfe) {
                     System.out.println("Not a number. Try again: ");

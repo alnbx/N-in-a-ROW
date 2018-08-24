@@ -15,7 +15,7 @@ public class App extends Application {
         primaryStage.setTitle("Hello There in FXML");
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = App.class.getResource("/resources/desktopApp.fxml");
+        URL url = getClass().getResource("/desktopApp/resources/desktopApp.fxml");
 
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
