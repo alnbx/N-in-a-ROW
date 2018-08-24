@@ -1,22 +1,19 @@
 package desktopApp;
 
-import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import common.MoveType;
+import common.PlayerTypes;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import engine.*;
@@ -24,48 +21,94 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 
 public class desktopAppController {
     private GameLogic currentGameLogic;
     private GameFactory gameFactory;
-    private SimpleIntegerProperty isValidXML;
+    private SimpleBooleanProperty isValidXML;
     private SimpleIntegerProperty isReplayMode;
     private Stage primaryStage;
+    private List<PlayerDisplay> players;
+    private final Color playersColors[] = {
+            Color.BLUE,
+            Color.ORANGE,
+            Color.GREEN,
+            Color.YELLOW,
+            Color.MAGENTA,
+            Color.OLIVE
+    };
 
-    @FXML private ResourceBundle resources;
-    @FXML private URL location;
-    @FXML private ScrollPane MainPanel_ScrollPane;
-    @FXML private BorderPane MainPanel_BorderPane;
-    @FXML private ScrollPane CenterPanel_ScrollPane;
-    @FXML private GridPane CenterPanel_boardArea_GridPane;
-    @FXML private ScrollPane LeftPanel_ScrollPane;
-    @FXML private VBox LeftPanel_players_VBox;
-    @FXML private Label LeftPanel_playersLabel_Label;
-    @FXML private TableView<?> LeftPanel_playersTable_TableView;
-    @FXML private TableColumn<?, ?> LeftPanel_playerID_TableColumn;
-    @FXML private TableColumn<?, ?> LeftPanel_playerMoves_TableColumn;
-    @FXML private TableColumn<?, ?> LeftPanel_playerMoves_TableColumnLeftPanel_playerColour_TableColumn;
-    @FXML private TableColumn<?, ?> LeftPanel_playerMoves_TableColumnLeftPanel_playerType_TableColumn;
-    @FXML private Label LeftPanel_movesHistory_Label;
-    @FXML private TableView<?> LeftPanel_movesHistory_TableView;
-    @FXML private TableColumn<?, ?> LeftPanel_moveID_TableColumn;
-    @FXML private TableColumn<?, ?> LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumn;
-    @FXML private TableColumn<?, ?> LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumnLeftPanel_moveID_TableColumnLeftPanel_moveColumn_TableColumn;
-    @FXML private ScrollPane LeftPanel_replay_ScrollPane;
-    @FXML private HBox LeftPanel_replay_HBox;
-    @FXML private Button LeftPanel_toggleReplay_Button;
-    @FXML private Button LeftPanel_replayLeftArrow_Button;
-    @FXML private Button LeftPanel_replayRightArrow_Button;
-    @FXML private ScrollPane TopPanel_ScrollPane;
-    @FXML private VBox TopPanel_VBox;
-    @FXML private Label TopPanel_welcome_Label;
-    @FXML private HBox TopPanel_buttons_HBox;
-    @FXML private Button TopPanel_loadXML_Button;
-    @FXML private Button TopPanel_resignPlayer_Button;
-    @FXML private Button TopPanel_exitGame_Button;
-    @FXML private Button TopPanel_playRound_Button;
-    @FXML private Button TopPanel_endRound_Button;
+    @FXML
+    private ResourceBundle resources;
+    @FXML
+    private URL location;
+    @FXML
+    private ScrollPane MainPanel_ScrollPane;
+    @FXML
+    private BorderPane MainPanel_BorderPane;
+    @FXML
+    private ScrollPane CenterPanel_ScrollPane;
+    @FXML
+    private GridPane CenterPanel_boardArea_GridPane;
+    @FXML
+    private ScrollPane LeftPanel_ScrollPane;
+    @FXML
+    private VBox LeftPanel_players_VBox;
+
+    @FXML
+    private Label LeftPanel_playersLabel_Label;
+    @FXML
+    private TableView<PlayerDisplay> LeftPanel_playersTable_TableView;
+    @FXML
+    private TableColumn<PlayerDisplay, Integer> LeftPanel_playerID_TableColumn;
+    @FXML
+    private TableColumn<PlayerDisplay, Integer> LeftPanel_playerMoves_TableColumn;
+    @FXML
+    private TableColumn<PlayerDisplay, Color> LeftPanel_playerColour_TableColumn;
+    @FXML
+    private TableColumn<PlayerDisplay, PlayerTypes> LeftPanel_playerType_TableColumn;
+
+    @FXML
+    private Label LeftPanel_movesHistory_Label;
+    @FXML
+    private TableView<Move> LeftPanel_movesHistory_TableView;
+    @FXML
+    private TableColumn<Move, Integer> LeftPanel_moveID_TableColumn;
+    @FXML
+    private TableColumn<Move, MoveType> LeftPanel_moveType_TableColumn;
+    @FXML
+    private TableColumn<Move, Integer> LeftPanel_moveColumn_TableColumn;
+
+    @FXML
+    private ScrollPane LeftPanel_replay_ScrollPane;
+    @FXML
+    private HBox LeftPanel_replay_HBox;
+    @FXML
+    private Button LeftPanel_toggleReplay_Button;
+    @FXML
+    private Button LeftPanel_replayLeftArrow_Button;
+    @FXML
+    private Button LeftPanel_replayRightArrow_Button;
+    @FXML
+    private ScrollPane TopPanel_ScrollPane;
+    @FXML
+    private VBox TopPanel_VBox;
+    @FXML
+    private Label TopPanel_welcome_Label;
+    @FXML
+    private HBox TopPanel_buttons_HBox;
+    @FXML
+    private Button TopPanel_loadXML_Button;
+    @FXML
+    private Button TopPanel_resignPlayer_Button;
+    @FXML
+    private Button TopPanel_exitGame_Button;
+    @FXML
+    private Button TopPanel_playRound_Button;
+    @FXML
+    private Button TopPanel_endRound_Button;
 
     @FXML
     void initialize() {
@@ -79,13 +122,13 @@ public class desktopAppController {
         assert LeftPanel_playersTable_TableView != null : "fx:id=\"LeftPanel_playersTable_TableView\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_playerID_TableColumn != null : "fx:id=\"LeftPanel_playerID_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_playerMoves_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playerMoves_TableColumnLeftPanel_playerColour_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumnLeftPanel_playerColour_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playerMoves_TableColumnLeftPanel_playerType_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumnLeftPanel_playerType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
+        assert LeftPanel_playerColour_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumnLeftPanel_playerColour_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
+        assert LeftPanel_playerType_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumnLeftPanel_playerType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_movesHistory_Label != null : "fx:id=\"LeftPanel_movesHistory_Label\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_movesHistory_TableView != null : "fx:id=\"LeftPanel_movesHistory_TableView\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_moveID_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumnLeftPanel_moveID_TableColumnLeftPanel_moveColumn_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumnLeftPanel_moveID_TableColumnLeftPanel_moveColumn_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
+        assert LeftPanel_moveType_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
+        assert LeftPanel_moveColumn_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumnLeftPanel_moveID_TableColumnLeftPanel_moveColumn_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_replay_ScrollPane != null : "fx:id=\"LeftPanel_replay_ScrollPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_replay_HBox != null : "fx:id=\"LeftPanel_replay_HBox\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_toggleReplay_Button != null : "fx:id=\"LeftPanel_toggleReplay_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
@@ -104,8 +147,8 @@ public class desktopAppController {
 
     public desktopAppController() {
         gameFactory = new GameFactory();
-        isValidXML = new SimpleIntegerProperty();
-        isValidXML.setValue(0);
+        isValidXML = new SimpleBooleanProperty();
+        isValidXML.setValue(false);
         isReplayMode = new SimpleIntegerProperty();
         isReplayMode.setValue(0);
     }
@@ -117,7 +160,7 @@ public class desktopAppController {
         TopPanel_resignPlayer_Button.setDisable(true);
         TopPanel_exitGame_Button.setDisable(false);
 
-        TopPanel_loadXML_Button.disableProperty().bind(isValidXML.isEqualTo(0).not());
+        TopPanel_loadXML_Button.disableProperty().bind(Bindings.selectBoolean(isValidXML));
         TopPanel_playRound_Button.disableProperty().bind(TopPanel_loadXML_Button.disabledProperty().not());
         TopPanel_endRound_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
         TopPanel_resignPlayer_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
@@ -125,6 +168,15 @@ public class desktopAppController {
         LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
         LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
 
+        LeftPanel_playerID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        LeftPanel_playerColour_TableColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
+        LeftPanel_playerMoves_TableColumn.setCellValueFactory(new PropertyValueFactory<>("numMoves"));
+        LeftPanel_playerType_TableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        LeftPanel_moveID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        LeftPanel_moveType_TableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        LeftPanel_moveColumn_TableColumn.setCellValueFactory(new PropertyValueFactory<>("col"));
+        
     }
 
     private void createBoard() {
@@ -147,7 +199,7 @@ public class desktopAppController {
 
     private void addBoardCells(int cols, int rows) {
         for (int i = 1; i <= rows; i++) {
-            for (int j = 0; j < cols; j++ ) {
+            for (int j = 0; j < cols; j++) {
                 Circle c = createNewDisc();
 
                 CenterPanel_boardArea_GridPane.setRowIndex(c, i);
@@ -167,7 +219,7 @@ public class desktopAppController {
 
             Button b_out = createNewArrowButton(i, image);
 
-            CenterPanel_boardArea_GridPane.setRowIndex(b_out,rows + 1);
+            CenterPanel_boardArea_GridPane.setRowIndex(b_out, rows + 1);
             CenterPanel_boardArea_GridPane.setColumnIndex(b_out, i);
             CenterPanel_boardArea_GridPane.getChildren().add(b_out);
         }
@@ -237,18 +289,19 @@ public class desktopAppController {
     public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Settings File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files","*.xml"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
         File settingsFile = fileChooser.showOpenDialog(primaryStage);
-        if (settingsFile==null)
+        if (settingsFile == null)
             return;
 
         while (true) {
             try {
-                currentGameLogic = gameFactory.getNewGame(settingsFile.getAbsolutePath().toString());
+                currentGameLogic = gameFactory.getNewGame(settingsFile.getAbsolutePath());
+                currentGameLogic.setRoundFromSettings(true);
                 createBoard();
-                return;
-            }
-            catch (Exception e) {
+                createPlayers();
+                break;
+            } catch (Exception e) {
                 System.out.println("Error loading file");
                 break;
                 //TODO: popout message of invalid settings file
@@ -256,6 +309,18 @@ public class desktopAppController {
         }
 
         CenterPanel_boardArea_GridPane.visibleProperty().setValue(true);
-        isValidXML.setValue(1);
+        isValidXML.setValue(true);
+    }
+
+    private void createPlayers() {
+        List<Player> players = currentGameLogic.getPlayers();
+        int i = 0;
+
+        for (Player p : players) {
+            PlayerDisplay playerDisplay = new PlayerDisplay(p);
+            playerDisplay.setColor(playersColors[i]);
+            LeftPanel_playersTable_TableView.getItems().addAll(playerDisplay);
+            i++;
+        }
     }
 }

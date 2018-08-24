@@ -22,22 +22,14 @@ public class GameSettings implements Serializable {
     private GameType gameType;
     private String settingsFilePath;
     private List<PlayerSettings> players;
-    private boolean isDynamicPlayers;
     private int numOfPlayers;
     private String gameTitle;
 
-    public GameSettings() {
-        this.boardNumRows = 6;
-        this.boardNumCols = 7;
-        this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
-        this.isDynamicPlayers = true;
-    }
 
     public GameSettings(String settingsFilePath) throws Exception {
         this.boardNumRows = 6;
         this.boardNumCols = 7;
         this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
-        this.isDynamicPlayers = true;
         try {
             initGameSettings(settingsFilePath);
         }
@@ -74,15 +66,11 @@ public class GameSettings implements Serializable {
         return this.gameType;
     }
 
-    public boolean isDynamicPlayers() {
-        return isDynamicPlayers;
-    }
-
     public int getNumOfPlayers() {
         return numOfPlayers;
     }
 
-    public List<PlayerSettings> getPlayers() {
+    public List<PlayerSettings> getPlayersSettings() {
         return players;
     }
 
@@ -136,10 +124,6 @@ public class GameSettings implements Serializable {
                             List<Node> gameNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "Game");
                             parseGameNode(gameNodes);
 
-                            // parsing DynampicPlayers before Players, to validate number of players
-                            List<Node> dynamicPlayersNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "DynamicPlayers");
-                            parseDynamicPlayersNode(dynamicPlayersNodes);
-
                             List<Node> playersNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "Players");
                             parsePlayersParentNode(playersNodes);
                         }
@@ -159,76 +143,20 @@ public class GameSettings implements Serializable {
         }
     }
 
-    private void parseDynamicPlayersNode(List<Node> dynamicPlayersNodes) throws SettingsFileException {
-        if (dynamicPlayersNodes.size() != 0) {
-            Node dynamicPlayersNode = dynamicPlayersNodes.get(0);
-            NamedNodeMap dynamicPlayersAttributes = dynamicPlayersNode.getAttributes();
-
-            if (dynamicPlayersAttributes.getLength() != 0) {
-                try {
-                    Node gameTitle = dynamicPlayersAttributes.getNamedItem("game-title");
-                    parseGameTitle(gameTitle);
-
-                    Node numPlayers = dynamicPlayersAttributes.getNamedItem("total-players");
-                    parseNumPlayers(numPlayers);
-                }
-                catch (SettingsFileException e) {
-                    throw e;
-                }
-
-            }
-            else {
-                throw new SettingsFileException("xml: DynamicPlayers element has no attributes");
-            }
-        }
-        else {
-            this.isDynamicPlayers = false;
-            numOfPlayers = 2;
-        }
-    }
-
-    private void parseNumPlayers(Node numPlayers) throws SettingsFileException {
-        if (numPlayers != null) {
-            try {
-                int numPlayersVal  = Integer.parseInt(numPlayers.getChildNodes().item(0).getTextContent());
-
-                if (numPlayersVal >= minNumOfPlayers && numPlayersVal <= maxNumOfPlayers) {
-                    this.numOfPlayers = numPlayersVal;
-                }
-                else {
-                    throw new SettingsFileException("xml: defined number of players is " + numPlayersVal);
-                }
-            }
-            catch (NumberFormatException e) {
-                throw new SettingsFileException("xml: the value of total-players attribute is not an int");
-            }
-        }
-        else {
-            throw new SettingsFileException("xml: DynamicPlayers has no total-players attribute");
-        }
-    }
-
-    private void parseGameTitle(Node gameTitle) throws SettingsFileException{
-        if (gameTitle != null) {
-            this.gameTitle = gameTitle.getChildNodes().item(0).getTextContent();
-        }
-        else {
-            throw new SettingsFileException("xml: DynamicPlayers has no game-title attribute");
-        }
-    }
-
     private void parsePlayersParentNode(List<Node> playersParent) throws SettingsFileException {
-        if (playersParent.size() != 0 && this.isDynamicPlayers) {
+        if (playersParent.size() != 0) {
             NodeList PlayersChildren = playersParent.get(0).getChildNodes();
             List<Node> playersNodes = getNodesWithNameAndType(PlayersChildren, Node.ELEMENT_NODE, "Player");
+
             parsePlayersNodeList(playersNodes);
-
-            if (players.size() != numOfPlayers) {
-
-            }
         }
-        else if (this.isDynamicPlayers && players.size() != numOfPlayers) {
-            throw new SettingsFileException("xml: the number of Players in the Players list doensn't match the number defined in the DynamicPlayers node");
+        else {
+            if (this.gameType == GameType.DYNAMIC_MULTIPLAYER || this.gameType == GameType.MULTIPLAYER) {
+                throw new SettingsFileException("xml: there's no Players list while the game is defined multiplayer");
+            }
+            else {
+                numOfPlayers = 2;
+            }
         }
     }
 

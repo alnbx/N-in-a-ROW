@@ -30,7 +30,7 @@ public class Game implements GameLogic, Serializable {
         this.gameSettings = gameSettings;
     }
 
-    public void setBoardFromSettings(boolean restartPlayers) {
+    public void setRoundFromSettings(boolean restartPlayers) {
         this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
         this.hasWinner = false;
         this.isBoardFull = false;
@@ -40,18 +40,18 @@ public class Game implements GameLogic, Serializable {
         restartPlayers(restartPlayers);
     }
 
-    protected void restartPlayers(boolean isRestart) {
-        if (isRestart) {
-            if (gameSettings.isDynamicPlayers()) {
-                List<PlayerSettings> playersSettings = gameSettings.getPlayers();
+    protected void restartPlayers(boolean isNewPlayers) {
+        if (isNewPlayers) {
+            this.players = new ArrayList<Player>();
+
+            if (gameSettings.getGameType() == GameType.MULTIPLAYER ||
+                    gameSettings.getGameType() == GameType.DYNAMIC_MULTIPLAYER) {
+                List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
                 for (PlayerSettings pt : playersSettings) {
                     players.add(new Player(pt));
                 }
             }
-            else
-                this.players = new ArrayList<Player>(2);
         }
-
         else {
             this.currentPlayer = players.get(0);
             for (Player player : players)
@@ -101,7 +101,7 @@ public class Game implements GameLogic, Serializable {
     }
 
     @Override
-    public int playerTurns(int player) { return getPlayerById(player).getPlayerTurns(); }
+    public int playerTurns(int player) { return getPlayerById(player).getNumMovesMade(); }
 
     @Override
     public String timeFromBegining()
@@ -249,5 +249,10 @@ public class Game implements GameLogic, Serializable {
     }
 
     public Set<Integer> getWinners() { return board.getWinner(); }
+
+    @Override
+    public List<Player> getPlayers() {
+        return players;
+    }
 
 }

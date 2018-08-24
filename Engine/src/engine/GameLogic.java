@@ -1,5 +1,6 @@
 package engine;
 
+import common.PlayerSettings;
 import common.PlayerTypes;
 
 import java.util.List;
@@ -25,8 +26,9 @@ public interface GameLogic {
     boolean getHasWinner();
     Set<Integer> getWinners();
     boolean getIsBoardFull();
-    void setBoardFromSettings(boolean restartPlayers);
+    void setRoundFromSettings(boolean restartPlayers);
     int getSequenceLength();
     int getNumberOfPlayersToInitialized();
     boolean isPopout();
+    List<Player> getPlayers();
 }

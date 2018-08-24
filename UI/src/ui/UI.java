@@ -78,7 +78,7 @@ public class UI {
             configurationLoaded = true;
             this.isValidXML = true;
 
-            this.gameLogic.setBoardFromSettings(true);
+            this.gameLogic.setRoundFromSettings(true);
             printBoard(false);
             choosePlayersType();
             this.savedGamePath = "";
@@ -100,7 +100,7 @@ public class UI {
             case RESTARTGAME:
                 succeededLoading = true;
                 if (this.savedGamePath.equals(""))
-                    this.gameLogic.setBoardFromSettings(false);
+                    this.gameLogic.setRoundFromSettings(false);
                 else {
                     if (!readGameFromFile(this.savedGamePath))
                         System.out.println("Failed to reload game from file");

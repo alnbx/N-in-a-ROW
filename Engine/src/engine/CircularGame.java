@@ -10,7 +10,7 @@ public class CircularGame extends Game {
     }
 
     @Override
-    public void setBoardFromSettings(boolean restartPlayers) {
+    public void setRoundFromSettings(boolean restartPlayers) {
         this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), true);
         this.hasWinner = false;
         this.isBoardFull = false;
