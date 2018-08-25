@@ -18,6 +18,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -343,8 +344,6 @@ public class desktopAppController {
 
     @FXML
     public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        File settingsFile;
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Settings File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
@@ -407,10 +406,10 @@ public class desktopAppController {
 
             XMLLoader.setOnSucceeded((event) ->{
                 xmlLoadingWindow.close();
-                currentGameLogic = XMLLoader.getValue();
-                if (null != currentGameLogic) {
+                gameLogic = XMLLoader.getValue();
+                if (null != gameLogic) {
 
-                    currentGameLogic.setRoundFromSettings(true);
+                    gameLogic.setRoundFromSettings(true);
                     createBoard();
                     createPlayers();
                 }
