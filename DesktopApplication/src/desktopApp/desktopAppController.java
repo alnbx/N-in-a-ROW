@@ -226,11 +226,7 @@ public class desktopAppController {
 
     }
 
-    private Button createNewArrowButton(int col, ImageView img) {
-        Button b = new Button("", img);
-
-        return b;
-    }
+    private Button createNewArrowButton(int col, ImageView img) {return new Button("", img); }
 
     private void addColButtons(int cols) {
         for (int i = 0; i < cols; i++) {
@@ -267,6 +263,10 @@ public class desktopAppController {
 
     @FXML
     public void exitGame_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        TopPanel_welcome_Label.setText("Bye Bye");
+        try { Thread.sleep(1000); }
+        catch (InterruptedException e) { }
+        System.exit(0);
 
     }
 
@@ -276,8 +276,13 @@ public class desktopAppController {
 
 
     @FXML
-    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
+    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) { playComputerIfNeeded(); }
 
+    private void playComputerIfNeeded() {
+        while ( currentGameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER ) {
+            currentGameLogic.play(0,currentGameLogic.isPopout());
+            //TODO: update board
+        }
     }
 
     @FXML
