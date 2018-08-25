@@ -53,10 +53,11 @@ public class Game implements GameLogic, Serializable {
             }
         }
         else {
-            this.currentPlayer = players.get(0);
             for (Player player : players)
                 player.restart();
         }
+
+        this.currentPlayer = players.get(0);
     }
 
     protected boolean playHumanPlayer(int col, boolean popout)
@@ -137,7 +138,7 @@ public class Game implements GameLogic, Serializable {
 
         if (ret) {
             //change current player after turn is completed succefully
-            currentPlayer = players.get(currentPlayer.getId() % players.size());
+            currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size());
 
             board.decreaseEmptySpace();
             if (board.isFull()) { this.isBoardFull = true; }
@@ -145,6 +146,18 @@ public class Game implements GameLogic, Serializable {
             if (this.startingTime == null) { setStartingTime(); }
         }
         return ret;
+    }
+
+    private int getIndexOfCurrentPlayer() {
+        int index = 0;
+        for (int i = 0; i < players.size(); ++i) {
+            if (players.get(i).getId() == currentPlayer.getId()) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
     }
 
     private void setStartingTime() { this.startingTime = new Date(); }

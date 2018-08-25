@@ -18,9 +18,9 @@
    <content>
       <BorderPane fx:id="MainPanel_BorderPane" prefHeight="598.0" prefWidth="897.0">
          <top>
-            <ScrollPane fx:id="TopPanel_ScrollPane" fitToHeight="true" fitToWidth="true" prefHeight="79.0" prefWidth="901.0" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="TopPanel_ScrollPane" fitToHeight="true" fitToWidth="true" prefHeight="102.0" prefWidth="898.0" BorderPane.alignment="CENTER">
                <content>
-                  <VBox fx:id="TopPanel_VBox" prefHeight="63.0" prefWidth="896.0">
+                  <VBox fx:id="TopPanel_VBox" prefHeight="107.0" prefWidth="896.0">
                      <children>
                         <HBox alignment="CENTER">
                            <VBox.margin>
@@ -69,7 +69,7 @@
             </ScrollPane>
          </top>
          <center>
-            <ScrollPane fx:id="CenterPanel_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="300.0" minViewportHeight="300.0" minViewportWidth="300.0" minWidth="300.0" prefHeight="405.0" prefWidth="719.0" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="CenterPanel_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="300.0" minViewportHeight="300.0" minViewportWidth="300.0" minWidth="300.0" prefHeight="519.0" prefWidth="607.0" BorderPane.alignment="CENTER">
                <content>
                   <GridPane fx:id="CenterPanel_boardArea_GridPane" gridLinesVisible="false" minHeight="300.0" minWidth="500.0">
                     <columnConstraints>
@@ -86,25 +86,25 @@
             </ScrollPane>
          </center>
          <left>
-            <ScrollPane fx:id="LeftPanel_ScrollPane" prefHeight="516.0" prefWidth="257.0" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="LeftPanel_ScrollPane" prefHeight="449.0" prefWidth="346.0" BorderPane.alignment="CENTER">
                <content>
-                  <VBox fx:id="LeftPanel_players_VBox" prefHeight="517.0" prefWidth="255.0">
+                  <VBox fx:id="LeftPanel_players_VBox" prefHeight="475.0" prefWidth="355.0">
                      <children>
-                        <Label fx:id="LeftPanel_playersLabel_Label" alignment="CENTER" prefHeight="35.0" prefWidth="255.0" text="Players" textAlignment="CENTER">
+                        <Label fx:id="LeftPanel_playersLabel_Label" alignment="CENTER" prefHeight="20.0" prefWidth="333.0" text="Players" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <TableView fx:id="LeftPanel_playersTable_TableView" prefHeight="205.0" prefWidth="248.0">
+                        <TableView fx:id="LeftPanel_playersTable_TableView" prefHeight="226.0" prefWidth="354.0">
                           <columns>
+                              <TableColumn fx:id="LeftPanel_playerColour_TableColumn" prefWidth="58.0" text="Colour" />
                             <TableColumn fx:id="LeftPanel_playerID_TableColumn" prefWidth="37.0" text="ID" />
-                             <TableColumn fx:id="LeftPanel_playerName_TableColumn" prefWidth="75.0" text="Name" />
-                            <TableColumn fx:id="LeftPanel_playerMoves_TableColumn" prefWidth="88.0" text="Moves Made" />
-                             <TableColumn fx:id="LeftPanel_playerColour_TableColumn" prefWidth="20.0" text="Colour" />
-                              <TableColumn fx:id="LeftPanel_playerType_TableColumn" prefWidth="75.0" text="Type" />
+                              <TableColumn fx:id="LeftPanel_playerName_TableColumn" prefWidth="71.0" text="Name" />
+                            <TableColumn fx:id="LeftPanel_playerMoves_TableColumn" prefWidth="94.0" text="Moves Made" />
+                              <TableColumn fx:id="LeftPanel_playerType_TableColumn" prefWidth="62.0" text="Type" />
                           </columns>
                         </TableView>
-                        <Label fx:id="LeftPanel_movesHistory_Label" alignment="CENTER" prefHeight="35.0" prefWidth="255.0" text="Moves History" textAlignment="CENTER">
+                        <Label fx:id="LeftPanel_movesHistory_Label" alignment="CENTER" prefHeight="20.0" prefWidth="335.0" text="Moves History" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
