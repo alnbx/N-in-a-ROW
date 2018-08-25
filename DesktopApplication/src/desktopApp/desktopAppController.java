@@ -7,8 +7,12 @@ import java.util.ResourceBundle;
 
 import common.MoveType;
 import common.PlayerTypes;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,14 +35,6 @@ public class desktopAppController {
     private SimpleIntegerProperty isReplayMode;
     private Stage primaryStage;
     private List<PlayerDisplay> players;
-    private final Color playersColors[] = {
-            Color.BLUE,
-            Color.ORANGE,
-            Color.GREEN,
-            Color.YELLOW,
-            Color.MAGENTA,
-            Color.OLIVE
-    };
 
     @FXML
     private ResourceBundle resources;
@@ -64,9 +60,11 @@ public class desktopAppController {
     @FXML
     private TableColumn<PlayerDisplay, Integer> LeftPanel_playerID_TableColumn;
     @FXML
+    private TableColumn<PlayerDisplay, String> LeftPanel_playerName_TableColumn;
+    @FXML
     private TableColumn<PlayerDisplay, Integer> LeftPanel_playerMoves_TableColumn;
     @FXML
-    private TableColumn<PlayerDisplay, Color> LeftPanel_playerColour_TableColumn;
+    private TableColumn<PlayerDisplay, String> LeftPanel_playerColour_TableColumn;
     @FXML
     private TableColumn<PlayerDisplay, PlayerTypes> LeftPanel_playerType_TableColumn;
 
@@ -169,6 +167,7 @@ public class desktopAppController {
         LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
 
         LeftPanel_playerID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        LeftPanel_playerName_TableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         LeftPanel_playerColour_TableColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
         LeftPanel_playerMoves_TableColumn.setCellValueFactory(new PropertyValueFactory<>("numMoves"));
         LeftPanel_playerType_TableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -176,7 +175,32 @@ public class desktopAppController {
         LeftPanel_moveID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         LeftPanel_moveType_TableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         LeftPanel_moveColumn_TableColumn.setCellValueFactory(new PropertyValueFactory<>("col"));
-        
+
+        Callback<TableColumn<PlayerDisplay, String>, TableCell<PlayerDisplay, String>> colorCellFactory =
+                new Callback<TableColumn<PlayerDisplay, String>, TableCell<PlayerDisplay, String>>() {
+                    @Override
+                    public TableCell call(TableColumn p) {
+                        TableCell cell = new TableCell<PlayerDisplay, String>() {
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                super.updateItem(item, empty);
+                                setText("");
+                                int row = getTableRow().getIndex() + 1;
+                                String id = row > currentGameLogic.getNumberOfPlayersToInitialized() ?
+                                        "" : "player" + row;
+                                setId(id);
+                            }
+
+                            private String getString() {
+                                return getItem() == null ? "" : getItem();
+                            }
+                        };
+
+                        return cell;
+                    }
+                };
+
+        LeftPanel_playerColour_TableColumn.setCellFactory(colorCellFactory);
     }
 
     private void createBoard() {
@@ -319,13 +343,12 @@ public class desktopAppController {
 
     private void createPlayers() {
         List<Player> players = currentGameLogic.getPlayers();
-        int i = 0;
+
+        LeftPanel_playersTable_TableView.setId("playerOne");
 
         for (Player p : players) {
             PlayerDisplay playerDisplay = new PlayerDisplay(p);
-            playerDisplay.setColor(playersColors[i]);
-            LeftPanel_playersTable_TableView.getItems().addAll(playerDisplay);
-            i++;
+            LeftPanel_playersTable_TableView.getItems().add(playerDisplay);
         }
     }
 }

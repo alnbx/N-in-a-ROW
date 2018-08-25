@@ -10,7 +10,7 @@ public class PlayerDisplay {
     private int id;
     private PlayerTypes type;
     private int numMoves;
-    private Color color;
+    private String color;
     private boolean isActive;
 
     public PlayerDisplay(Player p) {
@@ -37,7 +37,7 @@ public class PlayerDisplay {
         return numMoves;
     }
 
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
@@ -61,7 +61,7 @@ public class PlayerDisplay {
         this.numMoves = numMoves;
     }
 
-    public void setColor(Color color) {
+    public void setColor(String color) {
         this.color = color;
     }
 

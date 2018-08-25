@@ -26,6 +26,8 @@ public class App extends Application {
 
         Scene scene = new Scene(root, 900, 600);
 
+        scene.getStylesheets().add(getClass().getResource("/desktopApp/resources/playersTable.css").toExternalForm());
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }

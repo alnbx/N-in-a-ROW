@@ -1,0 +1,31 @@
+#player1 {
+    -fx-background-color: orange;
+}
+
+#player2 {
+    -fx-background-color: blue;
+}
+
+#player3 {
+    -fx-background-color: magenta;
+}
+
+#player4 {
+    -fx-background-color: green;
+}
+
+#player5 {
+    -fx-background-color: yellow;
+}
+
+#player6 {
+    -fx-background-color: olive;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: white;
+}
+
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}

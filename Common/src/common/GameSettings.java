@@ -169,6 +169,8 @@ public class GameSettings implements Serializable {
                 throw e;
             }
         }
+
+        numOfPlayers = playersNode.size();
     }
 
     private void parseSinglePlayerNode(Node playerNode) throws SettingsFileException {
