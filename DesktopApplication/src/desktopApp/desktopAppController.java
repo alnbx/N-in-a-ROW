@@ -14,8 +14,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -24,6 +27,7 @@ import engine.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -316,20 +320,18 @@ public class desktopAppController {
 
     @FXML
     public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        File settingsFile;
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Settings File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
-        File settingsFile = fileChooser.showOpenDialog(primaryStage);
-        if (settingsFile == null)
-            return;
 
         while (true) {
             try {
-                currentGameLogic = gameFactory.getNewGame(settingsFile.getAbsolutePath());
-                currentGameLogic.setRoundFromSettings(true);
-                createBoard();
-                createPlayers();
-                break;
+                settingsFile = fileChooser.showOpenDialog(primaryStage);
+                if (settingsFile == null) { throw new Exception(); }
+                if (createLoadingTask(settingsFile)) { break; }
+                else { throw new Exception(); }
             } catch (Exception e) {
                 System.out.println("Error loading file");
                 break;
@@ -339,6 +341,52 @@ public class desktopAppController {
 
         CenterPanel_boardArea_GridPane.visibleProperty().setValue(true);
         isValidXML.setValue(true);
+    }
+
+    private boolean createLoadingTask(File settingsFile) {
+        try {
+            loadXMLTask XMLLoader = new loadXMLTask(gameFactory, settingsFile.getAbsolutePath());
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            URL url = getClass().getResource("/desktopApp/resources/xmlLoading.fxml");
+            fxmlLoader.setLocation(url);
+            VBox xmlLoading = fxmlLoader.load(url.openStream());
+
+            Scene secondScene = new Scene(xmlLoading, 800, 350);
+            Stage xmlLoadingWindow = new Stage();
+            xmlLoadingWindow.setTitle("XML Loading");
+            xmlLoadingWindow.setScene(secondScene);
+            xmlLoadingWindow.initModality(Modality.WINDOW_MODAL);
+            xmlLoadingWindow.initOwner(primaryStage);
+            xmlLoadingWindow.setX(primaryStage.getX());
+            xmlLoadingWindow.setY(primaryStage.getY() + 200);
+
+            xmlLoadingController controller = fxmlLoader.getController();
+            controller.updateFileName(settingsFile.getAbsolutePath());
+
+            Thread loadXMLThread = new Thread(XMLLoader);
+            controller.getProgressHbox_Progress_progressBar().progressProperty().bind(XMLLoader.progressProperty());
+            controller.getStatusHbox_statusLabel_label().textProperty().bind(XMLLoader.messageProperty());
+            xmlLoadingWindow.show();
+            loadXMLThread.start();
+
+            XMLLoader.setOnSucceeded((event) ->{
+                xmlLoadingWindow.close();
+                currentGameLogic = XMLLoader.getValue();
+                if (null != currentGameLogic) {
+
+                    currentGameLogic.setRoundFromSettings(true);
+                    createBoard();
+                    createPlayers();
+                }
+                else {
+                    //todo: show alert
+                    //return false;
+                }
+            });
+        }
+        catch (Exception e) { return false; }
+
+        return true;
     }
 
     private void createPlayers() {
