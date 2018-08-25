@@ -1,25 +1,31 @@
-#player1 {
+.player1 {
     -fx-background-color: orange;
+    -fx-fill: orange;
 }
 
-#player2 {
+.player2 {
     -fx-background-color: blue;
+    -fx-fill: blue;
 }
 
-#player3 {
+.player3 {
     -fx-background-color: magenta;
+    -fx-fill: magenta;
 }
 
-#player4 {
+.player4 {
     -fx-background-color: green;
+    -fx-fill: green;
 }
 
-#player5 {
+.player5 {
     -fx-background-color: yellow;
+    -fx-fill: yellow;
 }
 
-#player6 {
+.player6 {
     -fx-background-color: olive;
+    -fx-fill: olive;
 }
 
 .table-row-cell:empty {
@@ -28,4 +34,17 @@
 
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px;
+}
+
+.colButton {
+    -fx-background-image: url(/desktopApp/resources/downArrow.png);
+    -fx-min-height: 40px;
+    -fx-min-width: 50px;
+    -fx-background-size: 25px 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center 8px;
+}
+
+.emptyDisc {
+
 }
