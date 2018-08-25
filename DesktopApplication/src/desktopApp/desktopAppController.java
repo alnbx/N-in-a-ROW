@@ -224,10 +224,10 @@ public class desktopAppController {
         CenterPanel_boardArea_GridPane.setHgap(0);
         CenterPanel_boardArea_GridPane.setVgap(0);
 
-        addColButtons(cols, 0);
+        addColButtons(cols, 0, ButtonType.INSERT);
         addBoardCells(cols, rows);
         if (gameLogic.isPopout()) {
-            addColButtons(cols, rows + 1);
+            addColButtons(cols, rows + 1, ButtonType.POPOUT);
         }
 
         MainPanel_BorderPane.setCenter(CenterPanel_boardArea_GridPane);
@@ -246,23 +246,13 @@ public class desktopAppController {
         }
     }
 
-    private void addColButtons(int cols, int row) {
+    private void addColButtons(int cols, int row, ButtonType buttonType) {
         for (int i = 0; i < cols; i++) {
-            Button b = new ColumnButton(i + 1, ButtonType.INSERT);
+            Button b = new ColumnButton(i + 1, buttonType);
             b.getStyleClass().add("colButton");
             b.setOnAction((ActionEvent) -> {
                 play((ColumnButton) b);
             });
-            /*
-            b.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    boolean isValidMove = gameLogic.play(((ColumnButton) b).getCol(), gameLogic.isPopout());
-                    if (isValidMove) {
-                        setDiscInCol(((ColumnButton) b).getCol(), gameLogic.getIdOfCurrentPlayer());
-                    }
-                }
-            });*/
 
             CenterPanel_boardArea_GridPane.setRowIndex(b, row);
             CenterPanel_boardArea_GridPane.setColumnIndex(b, i);
@@ -274,12 +264,12 @@ public class desktopAppController {
     private void play(ColumnButton b) {
         boolean isValidMove = gameLogic.play(b.getCol(), gameLogic.isPopout());
         if (isValidMove) {
-            setDiscInCol(b.getCol() - 1, gameLogic.getIdOfCurrentPlayer());
+            if (b.getButtonType() == ButtonType.INSERT)
+                setDiscInCol(b.getCol() - 1, gameLogic.getIdOfCurrentPlayer());
+            else
+                removeDiscFromCol(b.getCol() - 1);
         }
     }
-
-    //private Button createNewArrowButton(int col, ImageView img) {return new Button("", img); }
-
 
     private Circle createNewDisc() {
         Circle c = new Circle();
@@ -308,6 +298,39 @@ public class desktopAppController {
         topDiscInCols[col] = row;
     }
 
+    // assuming column has at least 1 disc in it (to be removed)
+    public void removeDiscFromCol(int col) {
+        Node discAbove = null, discBelow = null;
+        ObservableList<Node> childrens = CenterPanel_boardArea_GridPane.getChildren();
+        int rowBelow = gameLogic.getRows();
+
+        while (rowBelow != topDiscInCols[col]) {
+            for (Node node : childrens) {
+                if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow - 1 &&
+                        CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
+                    discAbove = node;
+                    break;
+                }
+            }
+
+            for (Node node : childrens) {
+                if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow &&
+                        CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
+                    discBelow = node;
+                    break;
+                }
+            }
+
+            discBelow.getStyleClass().clear();
+            discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+            rowBelow--;
+        }
+
+        discAbove.getStyleClass().clear();
+        discAbove.getStyleClass().add("emptyDisc");
+        topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ? -1 : topDiscInCols[col] + 1;
+    }
+
     @FXML
     public void endRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
 
@@ -325,7 +348,6 @@ public class desktopAppController {
     void setPrimarySatge(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
-
 
     @FXML
     public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) { playComputerIfNeeded(); }
@@ -373,6 +395,7 @@ public class desktopAppController {
         int cols = gameLogic.getCols();
         topDiscInCols = new int[cols];
 
+        // row index of top disc in column is set to -1 when a column is empty
         for (int i = 0; i < cols; ++i) {
             topDiscInCols[i] = -1;
         }

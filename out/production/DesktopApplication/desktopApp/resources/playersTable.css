@@ -46,5 +46,6 @@
 }
 
 .emptyDisc {
-
+    -fx-background-color: transparent;
+    -fx-fill: transparent;
 }
