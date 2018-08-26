@@ -51,7 +51,6 @@ public class Game implements GameLogic, Serializable {
                     players.add(new Player(pt));
                 }
             }
-        }
         else {
             for (Player player : players)
                 player.restart();
