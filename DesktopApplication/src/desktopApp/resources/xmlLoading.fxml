@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="wrapping_vbox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="122.0" prefWidth="437.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.xmlLoadingController">
+   <children>
+      <HBox fx:id="Loading_hbox" alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="600.0" spacing="10.0">
+         <children>
+            <Label fx:id="LoadingHbox_loadingFile_Label" text="Loading File: " />
+            <Label fx:id="LoadingHbox_fileName_Label1" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets left="37.0" />
+         </VBox.margin>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </HBox>
+      <HBox fx:id="statusHbox" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+         <children>
+            <Label fx:id="statusHbox_status_label" text="Status:">
+               <HBox.margin>
+                  <Insets left="37.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="statusHbox_statusLabel_label" />
+         </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </HBox>
+      <HBox fx:id="ProgressHbox" alignment="CENTER" prefHeight="252.0" prefWidth="437.0">
+         <children>
+            <Label fx:id="ProgressHbox_Progress_label" text="Progress: " />
+            <ProgressBar fx:id="ProgressHbox_Progress_progressBar" prefHeight="18.0" prefWidth="312.0" progress="0.0" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
