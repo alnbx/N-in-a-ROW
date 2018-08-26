@@ -44,12 +44,9 @@ public class Game implements GameLogic, Serializable {
         if (isNewPlayers) {
             this.players = new ArrayList<Player>();
 
-            if (gameSettings.getGameType() == GameType.MULTIPLAYER ||
-                    gameSettings.getGameType() == GameType.DYNAMIC_MULTIPLAYER) {
-                List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
-                for (PlayerSettings pt : playersSettings) {
-                    players.add(new Player(pt));
-                }
+            List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
+            for (PlayerSettings pt : playersSettings) {
+                players.add(new Player(pt));
             }
         }
         else {
