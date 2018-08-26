@@ -366,12 +366,14 @@ public class desktopAppController {
 
     @FXML
     public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        File settingsFile;
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Settings File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
-        File settingsFile = fileChooser.showOpenDialog(primaryStage);
-        if (settingsFile == null)
-            return;
+        //File settingsFile = fileChooser.showOpenDialog(primaryStage);
+        //if (settingsFile == null)
+         //   return;
 
         while (true) {
             try {
