@@ -8,7 +8,7 @@ public class GameFactory {
 
 
 
-    private void loadSettingsFile(String filePath) throws Exception
+    public void loadSettingsFile(String filePath) throws Exception
     {
         try {
             gameSettings = new GameSettings(filePath);
@@ -18,11 +18,11 @@ public class GameFactory {
     }
 
     // play new game from a fresh game settings file
-    public GameLogic getNewGame(String settingsFilePath) throws Exception {
+    public GameLogic getNewGame() throws Exception {
         GameLogic game = null;
 
         try {
-            loadSettingsFile(settingsFilePath);
+            //loadSettingsFile(settingsFilePath);
             switch (gameSettings.getGameVariant()) {
                 case POPOUT:
                     game = new PopoutGame(gameSettings);
@@ -45,6 +45,7 @@ public class GameFactory {
     }
 
     // replaying game from game settings previously loaded
+    /*
     public GameLogic getNewGame() {
         GameLogic game = null;
 
@@ -55,4 +56,5 @@ public class GameFactory {
 
         return game;
     }
+    */
 }

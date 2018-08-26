@@ -46,6 +46,7 @@ public class desktopAppController {
     private List<PlayerDisplay> players;
     private int[] topDiscInCols;
     private Map<Integer, Integer> idToIndex;
+    private Boolean xmlLoadedSuccessfully;
 
     @FXML
     private ResourceBundle resources;
@@ -160,6 +161,7 @@ public class desktopAppController {
         isValidXML.setValue(false);
         isReplayMode = new SimpleIntegerProperty();
         isReplayMode.setValue(0);
+        xmlLoadedSuccessfully = false;
     }
 
     public void setApplication() {
@@ -380,17 +382,16 @@ public class desktopAppController {
                 settingsFile = fileChooser.showOpenDialog(primaryStage);
                 if (settingsFile == null) { throw new Exception(); }
                 if (createLoadingTask(settingsFile)) { break; }
-                else { throw new Exception(); }
+                else { isValidXML.setValue(false); return; }
             } catch (Exception e) {
                 System.out.println("Error loading file");
-                break;
+                continue;
                 //TODO: popout message of invalid settings file
             }
         }
 
         CenterPanel_boardArea_GridPane.visibleProperty().setValue(true);
         isValidXML.setValue(true);
-        initTopDiscInColsArr();
     }
 
     private void initTopDiscInColsArr() {
@@ -404,6 +405,8 @@ public class desktopAppController {
     }
 
     private boolean createLoadingTask(File settingsFile) {
+        boolean res = false;
+
         try {
             loadXMLTask XMLLoader = new loadXMLTask(gameFactory, settingsFile.getAbsolutePath());
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -431,22 +434,39 @@ public class desktopAppController {
 
             XMLLoader.setOnSucceeded((event) ->{
                 xmlLoadingWindow.close();
-                gameLogic = XMLLoader.getValue();
-                if (null != gameLogic) {
-
-                    gameLogic.setRoundFromSettings(true);
-                    createBoard();
-                    createPlayers();
+                //this.gameLogic = XMLLoader.getValue();
+                if (XMLLoader.getValue()) {
+                    try {
+                        this.gameLogic = gameFactory.getNewGame();
+                        this.gameLogic.setRoundFromSettings(true);
+                        createBoard();
+                        createPlayers();
+                        initTopDiscInColsArr();
+                        this.xmlLoadedSuccessfully = true;
+                    }
+                    catch (Exception e) { loadXmlFailed(); }
                 }
                 else {
-                    //todo: show alert
-                    //return false;
+                    loadXmlFailed();
                 }
             });
         }
-        catch (Exception e) { return false; }
+        catch (Exception e) { loadXmlFailed(); }
 
-        return true;
+        return this.xmlLoadedSuccessfully;
+    }
+
+    private void loadXmlFailed()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Loading File Failed");
+        alert.setHeaderText("Loading File Failed");
+        alert.setContentText("Loading XML file failed. \n Please try again");
+        this.xmlLoadedSuccessfully = false;
+        alert.show();
+        try { Thread.sleep(2000); }
+        catch (Exception e) {}
+        alert.close();
     }
 
     private void createPlayers() {

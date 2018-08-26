@@ -15,7 +15,7 @@ import java.net.URL;
 /**
  * Created by user on 25/08/2018.
  */
-public class loadXMLTask extends Task<GameLogic> {
+public class loadXMLTask extends Task<Boolean> {
     private GameFactory gameFactory;
     private String fileName;
     private int sleepTime;
@@ -27,7 +27,7 @@ public class loadXMLTask extends Task<GameLogic> {
     }
 
     @Override
-    public GameLogic call() throws Exception {
+    public Boolean call() throws Exception {
         updateMessage("Loading File");
         updateProgress(20, 100);
         Thread.sleep(this.sleepTime);
@@ -42,13 +42,14 @@ public class loadXMLTask extends Task<GameLogic> {
         try {
             updateProgress(90, 100);
             Thread.sleep(this.sleepTime);
-            GameLogic newGame = gameFactory.getNewGame(this.fileName);
+            //GameLogic newGame = gameFactory.getNewGame(this.fileName);
+            gameFactory.loadSettingsFile(this.fileName);
             updateProgress(100, 100);
             updateMessage("Finished loading XML file");
             Thread.sleep(this.sleepTime * 2);
-            return newGame;
+            return true;
         }
-        catch (Exception e) { return null; }
+        catch (Exception e) { return false; }
     }
 }
 
