@@ -2,31 +2,23 @@ package desktopApp;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.text.MessageFormat;
+import java.util.*;
 
 import common.MoveType;
 import common.PlayerTypes;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import engine.*;
 import javafx.scene.paint.Color;
@@ -45,7 +37,7 @@ public class desktopAppController {
     private Stage primaryStage;
     private List<PlayerDisplay> players;
     private int[] topDiscInCols;
-    private Map<Integer, Integer> idToIndex;
+    private Map<Integer, Integer> playerIdToPlayerIndex;
     private Boolean xmlLoadedSuccessfully;
 
     @FXML
@@ -162,6 +154,7 @@ public class desktopAppController {
         isReplayMode = new SimpleIntegerProperty();
         isReplayMode.setValue(0);
         xmlLoadedSuccessfully = false;
+        players = new ArrayList<PlayerDisplay>();
     }
 
     public void setApplication() {
@@ -198,8 +191,8 @@ public class desktopAppController {
                             public void updateItem(String item, boolean empty) {
                                 super.updateItem(item, empty);
                                 setText("");
-                                int row = getTableRow().getIndex() + 1;
-                                String styleClass = row > gameLogic.getNumberOfPlayersToInitialized() ?
+                                int row = getTableRow().getIndex();
+                                String styleClass = row >= gameLogic.getNumberOfPlayersToInitialized() ?
                                         "" : "player" + row;
                                 this.getStyleClass().add(styleClass);
                             }
@@ -214,7 +207,33 @@ public class desktopAppController {
                 };
 
         LeftPanel_playerColour_TableColumn.setCellFactory(colorCellFactory);
-        idToIndex = new HashMap<>();
+
+        ///// why is this code not working ???  :(  ////////////
+        /*
+        Callback<TableColumn<PlayerDisplay, Integer>, TableCell<PlayerDisplay, Integer>> numMovesCellFactory =
+                new Callback<TableColumn<PlayerDisplay, Integer>, TableCell<PlayerDisplay, Integer>>() {
+                    @Override
+                    public TableCell call(TableColumn p) {
+                        TableCell cell = new TableCell<PlayerDisplay, Integer>() {
+                            @Override
+                            public void updateItem(Integer item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (item != null) {
+                                    setText(item.toString());
+                                }
+                                else {
+                                    setText("");
+                                }
+                            }
+                        };
+
+                        return cell;
+                    }
+                };
+
+        LeftPanel_playerMoves_TableColumn.setCellFactory(numMovesCellFactory);
+         */
+        playerIdToPlayerIndex = new HashMap<>();
     }
 
     private void createBoard() {
@@ -226,10 +245,10 @@ public class desktopAppController {
         CenterPanel_boardArea_GridPane.setHgap(0);
         CenterPanel_boardArea_GridPane.setVgap(0);
 
-        addColButtons(cols, 0, ButtonType.INSERT);
+        addColButtons(cols, 0, ColButtonType.INSERT);
         addBoardCells(cols, rows);
         if (gameLogic.isPopout()) {
-            addColButtons(cols, rows + 1, ButtonType.POPOUT);
+            addColButtons(cols, rows + 1, ColButtonType.POPOUT);
         }
 
         MainPanel_BorderPane.setCenter(CenterPanel_boardArea_GridPane);
@@ -248,12 +267,12 @@ public class desktopAppController {
         }
     }
 
-    private void addColButtons(int cols, int row, ButtonType buttonType) {
+    private void addColButtons(int cols, int row, ColButtonType buttonType) {
         for (int i = 0; i < cols; i++) {
             Button b = new ColumnButton(i + 1, buttonType);
             b.getStyleClass().add("colButton");
             b.setOnAction((ActionEvent) -> {
-                play((ColumnButton) b);
+                playSingleMove((ColumnButton) b);
             });
 
             CenterPanel_boardArea_GridPane.setRowIndex(b, row);
@@ -263,14 +282,86 @@ public class desktopAppController {
 
     }
 
-    private void play(ColumnButton b) {
+    private void playSingleMove(ColumnButton b) {
+        PlayerDisplay currentPlayer = players.get(
+                        playerIdToPlayerIndex.get(
+                        gameLogic.getIdOfCurrentPlayer())
+        );
+
         boolean isValidMove = gameLogic.play(b.getCol(), gameLogic.isPopout());
         if (isValidMove) {
-            if (b.getButtonType() == ButtonType.INSERT)
+            if (b.getButtonType() == ColButtonType.INSERT)
                 setDiscInCol(b.getCol() - 1, gameLogic.getIdOfCurrentPlayer());
             else
                 removeDiscFromCol(b.getCol() - 1);
+            currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
+            if (gameLogic.getHasWinner())
+                showWinAlert();
+            else if (gameLogic.getIsBoardFull())
+                showTieAlert();
         }
+        else {
+            showInvalidMoveAlert();
+        }
+    }
+
+    private void clearBoard() {
+        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+
+        for (Node cell : gridPaneCells) {
+            if (cell instanceof Circle) {
+                cell.getStyleClass().clear();
+                cell.getStyleClass().add("emptyDisc");
+            }
+        }
+    }
+
+    private void showInvalidMoveAlert() {
+        String message = "Invalid move, try again!";
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        Optional<ButtonType> result = alert.showAndWait();
+    }
+
+    private void showTieAlert() {
+        String message = "Round is over with a tie!";
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        Optional<ButtonType> result = alert.showAndWait();
+        clearBoard();
+        setDisableAllColButtons(true);
+    }
+
+    private void setDisableAllColButtons(boolean isEnable) {
+        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+
+        for (Node cell : gridPaneCells) {
+            if (cell instanceof Button) {
+                cell.setDisable(isEnable);
+            }
+        }
+    }
+
+    private void showWinAlert() {
+        Set<Integer> winners = gameLogic.getWinners();
+        String message = "{0} win" + (winners.size() == 1 ? "s " : " ") + "the round!";
+        List<String> names = new ArrayList<>();
+
+        for (Integer playerId : winners)
+            names.add(players.get(playerIdToPlayerIndex.get(playerId)).getName());
+
+        String namesMsg = "";
+        for (int i = 0; i < names.size() - 1; ++i) {
+            namesMsg += names.get(i) + ", ";
+        }
+
+        String lastName = names.get(names.size() - 1);
+        namesMsg = names.size() == 1 ? lastName :
+                (namesMsg.substring(0, namesMsg.length() - 2) + " and " + lastName);
+
+        message = MessageFormat.format(message, namesMsg);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        Optional<ButtonType> result = alert.showAndWait();
+        clearBoard();
+        setDisableAllColButtons(true);
     }
 
     private Circle createNewDisc() {
@@ -296,7 +387,7 @@ public class desktopAppController {
             }
         }
 
-        disc.getStyleClass().add("player" + idToIndex.get(playerId));
+        disc.getStyleClass().add("player" + playerIdToPlayerIndex.get(playerId));
         topDiscInCols[col] = row;
     }
 
@@ -366,6 +457,7 @@ public class desktopAppController {
 
     }
 
+    // TODO: fix Cancel option in FileChooser
     @FXML
     public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
         File settingsFile;
@@ -443,6 +535,8 @@ public class desktopAppController {
                         createPlayers();
                         initTopDiscInColsArr();
                         this.xmlLoadedSuccessfully = true;
+                        setDisableAllColButtons(false);
+                        this.isValidXML.set(true);
                     }
                     catch (Exception e) { loadXmlFailed(); }
                 }
@@ -471,13 +565,13 @@ public class desktopAppController {
 
     private void createPlayers() {
         List<Player> players = gameLogic.getPlayers();
-        // to keep consistency with the CSS, players counting statrs from 1
-        int i = 1;
+        int i = 0;
 
         for (Player p : players) {
             PlayerDisplay playerDisplay = new PlayerDisplay(p);
+            this.players.add(playerDisplay);
             LeftPanel_playersTable_TableView.getItems().add(playerDisplay);
-            idToIndex.put(p.getId(), i);
+            playerIdToPlayerIndex.put(p.getId(), i);
             i++;
         }
     }

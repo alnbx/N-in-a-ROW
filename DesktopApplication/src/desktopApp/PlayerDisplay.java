@@ -3,13 +3,17 @@ package desktopApp;
 import common.PlayerTypes;
 import engine.Player;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
 
 public class PlayerDisplay {
     private String name;
     private int id;
     private PlayerTypes type;
-    private int numMoves;
+    //private int numMoves;
+    private SimpleIntegerProperty numMoves;
     private String color;
     private boolean isActive;
 
@@ -17,7 +21,9 @@ public class PlayerDisplay {
         this.name = p.getName();
         this.id = p.getId();
         this.type = p.getPlayerType();
-        this.numMoves = p.getNumMovesMade();
+        //this.numMoves = p.getNumMovesMade();
+        this.numMoves = new SimpleIntegerProperty();
+        this.numMoves.set(0);
         this.isActive = true;
     }
 
@@ -33,8 +39,11 @@ public class PlayerDisplay {
         return type;
     }
 
+//    public int getNumMoves() {
+//        return numMoves;
+//    }
     public int getNumMoves() {
-        return numMoves;
+        return numMoves.get();
     }
 
     public String getColor() {
@@ -57,8 +66,11 @@ public class PlayerDisplay {
         this.type = type;
     }
 
+//    public void setNumMoves(int numMoves) {
+//        this.numMoves = numMoves;
+//    }
     public void setNumMoves(int numMoves) {
-        this.numMoves = numMoves;
+        this.numMoves.set(numMoves);
     }
 
     public void setColor(String color) {

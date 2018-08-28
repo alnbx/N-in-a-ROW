@@ -1,29 +1,29 @@
-.player1 {
+.player0 {
     -fx-background-color: orange;
     -fx-fill: orange;
 }
 
-.player2 {
+.player1 {
     -fx-background-color: blue;
     -fx-fill: blue;
 }
 
-.player3 {
+.player2 {
     -fx-background-color: magenta;
     -fx-fill: magenta;
 }
 
-.player4 {
+.player3 {
     -fx-background-color: green;
     -fx-fill: green;
 }
 
-.player5 {
+.player4 {
     -fx-background-color: yellow;
     -fx-fill: yellow;
 }
 
-.player6 {
+.player5 {
     -fx-background-color: olive;
     -fx-fill: olive;
 }

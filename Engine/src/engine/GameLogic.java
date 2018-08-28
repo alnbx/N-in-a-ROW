@@ -17,7 +17,7 @@ public interface GameLogic {
     int getRows();
     void loadSettingsFile(String filePath) throws Exception;
     char[][] boardReadyToPrint();
-    void initPlayer(PlayerTypes playerType, int id, String name);
+    //void initPlayer(PlayerTypes playerType, int id, String name);
     PlayerTypes getTypeOfCurrentPlayer();
     boolean undoLastMove(); // returns false if there are no moves to undo, otherwise returns true
     int getNumberOfInitializedPlayers();

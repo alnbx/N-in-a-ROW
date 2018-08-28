@@ -47,8 +47,8 @@ public class Game implements GameLogic, Serializable {
      //       if (gameSettings.getGameType() == GameType.MULTIPLAYER ||
      //               gameSettings.getGameType() == GameType.DYNAMIC_MULTIPLAYER) {
                 List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
-                for (PlayerSettings pt : playersSettings) {
-                    players.add(new Player(pt));
+                for (PlayerSettings ps : playersSettings) {
+                    players.add(new Player(ps));
                 }
             }
         else {
@@ -198,11 +198,11 @@ public class Game implements GameLogic, Serializable {
     public boolean getHasWinner() { return this.hasWinner; }
     public boolean getIsBoardFull() { return this.isBoardFull; }
 
-    public void initPlayer(PlayerTypes playerType, int id, String name) {
-        Player player = new Player(id, playerType, name);
-        players.add(player);
-        if (null == currentPlayer) { currentPlayer = player; }
-    }
+//    public void initPlayer(PlayerTypes playerType, int id, String name) {
+//        Player player = new Player(id, playerType, name);
+//        players.add(player);
+//        if (null == currentPlayer) { currentPlayer = player; }
+//    }
 
     public PlayerTypes getTypeOfCurrentPlayer() { return currentPlayer.getPlayerType(); }
 

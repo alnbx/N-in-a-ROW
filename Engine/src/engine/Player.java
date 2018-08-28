@@ -2,6 +2,8 @@ package engine;
 
 import common.PlayerTypes;
 import common.PlayerSettings;
+import javafx.beans.property.SimpleIntegerProperty;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -28,6 +30,10 @@ public class Player implements Serializable {
         this.numOfMovesMade = 0;
     }
 
+    public int getMoves() {
+        return numOfMovesMade;
+    }
+
     public boolean isActive() {
         return isActive;
     }
@@ -50,6 +56,7 @@ public class Player implements Serializable {
             numOfMovesMade++;
             isLegalDecrease = true;
         }
+
         return isLegalDecrease;
     }
 

@@ -1,6 +1,6 @@
 package desktopApp;
 
-public enum ButtonType {
+public enum ColButtonType {
     INSERT,
     POPOUT
 }
