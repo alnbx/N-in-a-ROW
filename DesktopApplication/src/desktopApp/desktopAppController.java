@@ -272,7 +272,7 @@ public class desktopAppController {
             Button b = new ColumnButton(i + 1, buttonType);
             b.getStyleClass().add("colButton");
             b.setOnAction((ActionEvent) -> {
-                playSingleMove((ColumnButton) b);
+                playSingleMove((ColumnButton) b, buttonType);
             });
 
             CenterPanel_boardArea_GridPane.setRowIndex(b, row);
@@ -282,13 +282,13 @@ public class desktopAppController {
 
     }
 
-    private void playSingleMove(ColumnButton b) {
+    private void playSingleMove(ColumnButton b, ColButtonType buttonType) {
         PlayerDisplay currentPlayer = players.get(
                         playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer())
         );
 
-        boolean isValidMove = gameLogic.play(b.getCol(), gameLogic.isPopout());
+        boolean isValidMove = gameLogic.play(b.getCol(), buttonType == ColButtonType.POPOUT);
         if (isValidMove) {
             if (b.getButtonType() == ColButtonType.INSERT)
                 setDiscInCol(b.getCol() - 1, gameLogic.getIdOfCurrentPlayer());
@@ -297,7 +297,7 @@ public class desktopAppController {
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
             if (gameLogic.getHasWinner())
                 showWinAlert();
-            else if (gameLogic.getIsBoardFull())
+            else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull())
                 showTieAlert();
         }
         else {

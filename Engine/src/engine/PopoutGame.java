@@ -18,7 +18,7 @@ public class PopoutGame extends Game
         int playerID = this.currentPlayer.getId();
         col--;
 
-        boolean turnPlayed =  popout ? playHumanPlayerRegular(col, playerID) : playHumanPlayerPopout(col, playerID);
+        boolean turnPlayed =  popout ? playHumanPlayerPopout(col, playerID) : playHumanPlayerRegular(col, playerID);
         if (turnPlayed) {
             //record move
             playedMoves.add(new Move(playerID, col, timeFromBegining()));

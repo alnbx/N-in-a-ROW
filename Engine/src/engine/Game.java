@@ -139,7 +139,9 @@ public class Game implements GameLogic, Serializable {
             //change current player after turn is completed succefully
             currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size());
 
-            board.decreaseEmptySpace();
+            if (popout) { board.increaseEmptySpace(); }
+            else { board.decreaseEmptySpace(); }
+
             if (board.isFull()) { this.isBoardFull = true; }
 
             if (this.startingTime == null) { setStartingTime(); }

@@ -261,6 +261,7 @@ public class Board implements Serializable {
     }
 
     public void decreaseEmptySpace() { this.emptySpaces--; }
+    public void increaseEmptySpace() { this.emptySpaces++; }
     public boolean isFull() {return this.emptySpaces == 0; }
 
     public boolean isPopoutAvaliableForPlayer(int playerID)
