@@ -11,6 +11,10 @@ public class Move implements Serializable {
     private int col;
     private String timeStamp;
 
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
     static { movesCount = 0;}
 
     public int getPlayerId() {

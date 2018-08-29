@@ -1,13 +1,14 @@
 package desktopApp;
 
+import common.MoveType;
 import javafx.scene.control.Button;
 
 public class ColumnButton extends Button {
     // to keep consistency with gameLogic, columns counting statrs from 1
     final private int col;
-    final private ColButtonType buttonType;
+    final private MoveType buttonType;
 
-    public ColumnButton(int col, ColButtonType buttonType) {
+    public ColumnButton(int col, MoveType buttonType) {
         super();
         this.col = col;
         this.buttonType = buttonType;
@@ -18,7 +19,7 @@ public class ColumnButton extends Button {
         return col;
     }
 
-    public ColButtonType getButtonType() {
+    public MoveType getButtonType() {
         return buttonType;
     }
 }
