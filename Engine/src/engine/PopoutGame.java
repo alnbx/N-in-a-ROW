@@ -21,7 +21,8 @@ public class PopoutGame extends Game
         boolean turnPlayed =  popout ? playHumanPlayerPopout(col, playerID) : playHumanPlayerRegular(col, playerID);
         if (turnPlayed) {
             //record move
-            playedMoves.add(new Move(playerID, col, timeFromBegining()));
+            this.lastMovePlayed = new Move(playerID, col, timeFromBegining());
+            playedMoves.add(lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
             if (popout) {
@@ -63,7 +64,8 @@ public class PopoutGame extends Game
         //record move
         //todo: record if it was a popout or not
 
-        playedMoves.add(new Move(playerID, rand, timeFromBegining()));
+        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining());
+        playedMoves.add(lastMovePlayed);
 
 
         //todo: After Popout check winning move must be for all column...

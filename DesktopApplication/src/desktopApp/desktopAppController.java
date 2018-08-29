@@ -156,6 +156,7 @@ public class desktopAppController {
         isReplayMode = new SimpleIntegerProperty();
         isReplayMode.setValue(0);
         xmlLoadedSuccessfully = false;
+        this.players = new ArrayList<>();
     }
 
     public void setApplication() {
@@ -399,11 +400,11 @@ public class desktopAppController {
     // assuming column has at least 1 disc in it (to be removed)
     public void removeDiscFromCol(int col) {
         Node discAbove = null, discBelow = null;
-        ObservableList<Node> childrens = CenterPanel_boardArea_GridPane.getChildren();
+        ObservableList<Node> children = CenterPanel_boardArea_GridPane.getChildren();
         int rowBelow = gameLogic.getRows();
 
-        while (rowBelow != topDiscInCols[col]) {
-            for (Node node : childrens) {
+        while (rowBelow != topDiscInCols[col] - 1) {
+            for (Node node : children) {
                 if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow - 1 &&
                         CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
                     discAbove = node;
@@ -411,7 +412,7 @@ public class desktopAppController {
                 }
             }
 
-            for (Node node : childrens) {
+            for (Node node : children) {
                 if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow &&
                         CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
                     discBelow = node;
@@ -570,7 +571,6 @@ public class desktopAppController {
     }
 
     private void createPlayers() {
-        this.players = new ArrayList<>();
         List<Player> players = gameLogic.getPlayers();
         int i = 0;
 

@@ -19,7 +19,7 @@ public class Game implements GameLogic, Serializable {
     protected List<Player> players;
     protected Player currentPlayer;
     protected List<Move> playedMoves;
-    private  Move lastMovePlayed;
+    protected   Move lastMovePlayed;
 
     public Game()
     {
