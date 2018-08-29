@@ -284,13 +284,13 @@ public class desktopAppController {
 
     }
 
-    private void playSingleMove(ColumnButton b, ColButtonType buttonType) {
+    private void playSingleMove(ColumnButton b, MoveType buttonType) {
         PlayerDisplay currentPlayer = players.get(
                         playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer())
         );
 
-        boolean isValidMove = gameLogic.play(b.getCol(), buttonType == ColButtonType.POPOUT);
+        boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
         if (isValidMove) {
             if (b.getButtonType() == MoveType.INSERT)
                 setDiscInCol(b.getCol() - 1, gameLogic.getIdOfCurrentPlayer());
