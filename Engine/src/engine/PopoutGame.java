@@ -24,11 +24,20 @@ public class PopoutGame extends Game
             playedMoves.add(new Move(playerID, col, timeFromBegining()));
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
-            if (checkWinningMove(col, playerID)) {
-                board.setWinner(playerID);
-                board.setHasWinner(true);
-                this.hasWinner = true;
+            if (popout) {
+                if (checkWinningMove(col, playerID)) {
+                    board.setWinner(playerID);
+                    board.setHasWinner(true);
+                    this.hasWinner = true;
+                }
+            } else {
+                Set<Integer> winners = checkWinningMove(col);
+                if (!winners.isEmpty()) {
+                    board.setWinner(winners);
+                    board.setHasWinner(true);
+                }
             }
+
             return true;
         }
 
