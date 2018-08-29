@@ -19,6 +19,7 @@ public class Game implements GameLogic, Serializable {
     protected List<Player> players;
     protected Player currentPlayer;
     protected List<Move> playedMoves;
+    private  Move lastMovePlayed;
 
     public Game()
     {
@@ -36,6 +37,7 @@ public class Game implements GameLogic, Serializable {
         this.isBoardFull = false;
         this.currentPlayer = null;
         this.playedMoves = new ArrayList<Move>();
+        this.lastMovePlayed = null;
         this.startingTime = null;
         restartPlayers(restartPlayers);
     }
@@ -66,7 +68,8 @@ public class Game implements GameLogic, Serializable {
 
         if (board.playMove(col, playerID)) {
             //record move
-            playedMoves.add(new Move(playerID, col, timeFromBegining()));
+            this.lastMovePlayed = new Move(playerID, col, timeFromBegining());
+            playedMoves.add(lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
             if (checkWinningMove(col, playerID)) {
@@ -80,6 +83,11 @@ public class Game implements GameLogic, Serializable {
         return false;
     }
 
+    @Override
+    public Move getLasttMove() {
+        return lastMovePlayed;
+    }
+
     protected boolean playComputerPlayer()
     {
         Random r = new Random();
@@ -89,7 +97,8 @@ public class Game implements GameLogic, Serializable {
         while(!board.playMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
 
         //record move
-        playedMoves.add(new Move(playerID, rand, timeFromBegining()));
+        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining());
+        playedMoves.add(lastMovePlayed);
         getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
         if (checkWinningMove(rand, playerID)) {
@@ -216,6 +225,7 @@ public class Game implements GameLogic, Serializable {
             int indexOfLastPlayedMove = playedMoves.size() - 1;
             Move undoMove = playedMoves.get(indexOfLastPlayedMove);
             playedMoves.remove(indexOfLastPlayedMove);
+            lastMovePlayed = playedMoves.get(playedMoves.size() - 1);
 
             //undo in board
             if (board.undoMove(undoMove.getCol()) ) {

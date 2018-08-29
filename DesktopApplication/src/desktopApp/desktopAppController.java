@@ -39,6 +39,7 @@ public class desktopAppController {
     private int[] topDiscInCols;
     private Map<Integer, Integer> playerIdToPlayerIndex;
     private Boolean xmlLoadedSuccessfully;
+    private List<MoveDisplay> moves;
 
     @FXML
     private ResourceBundle resources;
@@ -75,13 +76,15 @@ public class desktopAppController {
     @FXML
     private Label LeftPanel_movesHistory_Label;
     @FXML
-    private TableView<Move> LeftPanel_movesHistory_TableView;
+    private TableView<MoveDisplay> LeftPanel_movesHistory_TableView;
     @FXML
-    private TableColumn<Move, Integer> LeftPanel_moveID_TableColumn;
+    private TableColumn<MoveDisplay, String> LeftPanel_movePlayer_TableColumn;
     @FXML
-    private TableColumn<Move, MoveType> LeftPanel_moveType_TableColumn;
+    private TableColumn<MoveDisplay, MoveType> LeftPanel_moveType_TableColumn;
     @FXML
-    private TableColumn<Move, Integer> LeftPanel_moveColumn_TableColumn;
+    private TableColumn<MoveDisplay, Integer> LeftPanel_moveColumn_TableColumn;
+    @FXML
+    private TableColumn<MoveDisplay, String> LeftPanel_moveTimeStamp_TableColumn;
 
     @FXML
     private ScrollPane LeftPanel_replay_ScrollPane;
@@ -128,7 +131,6 @@ public class desktopAppController {
         assert LeftPanel_playerType_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumnLeftPanel_playerType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_movesHistory_Label != null : "fx:id=\"LeftPanel_movesHistory_Label\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_movesHistory_TableView != null : "fx:id=\"LeftPanel_movesHistory_TableView\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_moveID_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_moveType_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_moveColumn_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumnLeftPanel_moveID_TableColumnLeftPanel_moveColumn_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
         assert LeftPanel_replay_ScrollPane != null : "fx:id=\"LeftPanel_replay_ScrollPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
@@ -154,7 +156,6 @@ public class desktopAppController {
         isReplayMode = new SimpleIntegerProperty();
         isReplayMode.setValue(0);
         xmlLoadedSuccessfully = false;
-        players = new ArrayList<PlayerDisplay>();
     }
 
     public void setApplication() {
@@ -178,9 +179,10 @@ public class desktopAppController {
         LeftPanel_playerMoves_TableColumn.setCellValueFactory(new PropertyValueFactory<>("numMoves"));
         LeftPanel_playerType_TableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        LeftPanel_moveID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        LeftPanel_moveType_TableColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        LeftPanel_movePlayer_TableColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
+        LeftPanel_moveType_TableColumn.setCellValueFactory(new PropertyValueFactory<>("moveType"));
         LeftPanel_moveColumn_TableColumn.setCellValueFactory(new PropertyValueFactory<>("col"));
+        LeftPanel_moveTimeStamp_TableColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
 
         Callback<TableColumn<PlayerDisplay, String>, TableCell<PlayerDisplay, String>> colorCellFactory =
                 new Callback<TableColumn<PlayerDisplay, String>, TableCell<PlayerDisplay, String>>() {
@@ -245,10 +247,10 @@ public class desktopAppController {
         CenterPanel_boardArea_GridPane.setHgap(0);
         CenterPanel_boardArea_GridPane.setVgap(0);
 
-        addColButtons(cols, 0, ColButtonType.INSERT);
+        addColButtons(cols, 0, MoveType.INSERT);
         addBoardCells(cols, rows);
         if (gameLogic.isPopout()) {
-            addColButtons(cols, rows + 1, ColButtonType.POPOUT);
+            addColButtons(cols, rows + 1, MoveType.POPOUT);
         }
 
         MainPanel_BorderPane.setCenter(CenterPanel_boardArea_GridPane);
@@ -267,7 +269,7 @@ public class desktopAppController {
         }
     }
 
-    private void addColButtons(int cols, int row, ColButtonType buttonType) {
+    private void addColButtons(int cols, int row, MoveType buttonType) {
         for (int i = 0; i < cols; i++) {
             Button b = new ColumnButton(i + 1, buttonType);
             b.getStyleClass().add("colButton");
@@ -290,15 +292,18 @@ public class desktopAppController {
 
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == ColButtonType.POPOUT);
         if (isValidMove) {
-            if (b.getButtonType() == ColButtonType.INSERT)
+            if (b.getButtonType() == MoveType.INSERT)
                 setDiscInCol(b.getCol() - 1, gameLogic.getIdOfCurrentPlayer());
             else
                 removeDiscFromCol(b.getCol() - 1);
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
+
             if (gameLogic.getHasWinner())
                 showWinAlert();
             else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull())
                 showTieAlert();
+
+            addMoveToTable(gameLogic.getLasttMove(), b.getButtonType());
         }
         else {
             showInvalidMoveAlert();
@@ -537,6 +542,7 @@ public class desktopAppController {
                         this.xmlLoadedSuccessfully = true;
                         setDisableAllColButtons(false);
                         this.isValidXML.set(true);
+                        this.moves = new ArrayList<>();
                     }
                     catch (Exception e) { loadXmlFailed(); }
                 }
@@ -564,6 +570,7 @@ public class desktopAppController {
     }
 
     private void createPlayers() {
+        this.players = new ArrayList<>();
         List<Player> players = gameLogic.getPlayers();
         int i = 0;
 
@@ -574,5 +581,12 @@ public class desktopAppController {
             playerIdToPlayerIndex.put(p.getId(), i);
             i++;
         }
+    }
+
+    private void addMoveToTable(Move move, MoveType moveType) {
+        String playerName = players.get(playerIdToPlayerIndex.get(move.getPlayerId())).getName();
+        MoveDisplay moveDisplay= new MoveDisplay(move, playerName, moveType);
+        moves.add(moveDisplay);
+        LeftPanel_movesHistory_TableView.getItems().add(moveDisplay);
     }
 }

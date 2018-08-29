@@ -111,9 +111,10 @@
                         </Label>
                         <TableView fx:id="LeftPanel_movesHistory_TableView" prefHeight="280.0" prefWidth="255.0">
                            <columns>
-                              <TableColumn fx:id="LeftPanel_moveID_TableColumn" prefWidth="49.0" text="ID" />
-                              <TableColumn fx:id="LeftPanel_moveType_TableColumn" prefWidth="113.0" text="Move Type" />
-                              <TableColumn fx:id="LeftPanel_moveColumn_TableColumn" prefWidth="92.0" text="Column" />
+                              <TableColumn fx:id="LeftPanel_movePlayer_TableColumn" prefWidth="95.0" text="Player" />
+                              <TableColumn fx:id="LeftPanel_moveType_TableColumn" prefWidth="80.0" text="Move Type" />
+                              <TableColumn fx:id="LeftPanel_moveColumn_TableColumn" prefWidth="80.0" text="Column" />
+                              <TableColumn fx:id="LeftPanel_moveTimeStamp_TableColumn" prefWidth="80.0" text="Timestamp" />
                            </columns>
                         </TableView>
                         <ScrollPane fx:id="LeftPanel_replay_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="50.0" minViewportHeight="50.0" minViewportWidth="50.0" minWidth="50.0">
