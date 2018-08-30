@@ -19,7 +19,7 @@ public class Game implements GameLogic, Serializable {
     protected List<Player> players;
     protected Player currentPlayer;
     protected List<Move> playedMoves;
-    protected   Move lastMovePlayed;
+    protected Move lastMovePlayed;
 
     public Game()
     {
@@ -84,7 +84,7 @@ public class Game implements GameLogic, Serializable {
     }
 
     @Override
-    public Move getLasttMove() {
+    public Move getLastMove() {
         return lastMovePlayed;
     }
 

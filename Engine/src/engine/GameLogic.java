@@ -31,5 +31,5 @@ public interface GameLogic {
     int getNumberOfPlayersToInitialized();
     boolean isPopout();
     List<Player> getPlayers();
-    Move getLasttMove();
+    Move getLastMove();
 }

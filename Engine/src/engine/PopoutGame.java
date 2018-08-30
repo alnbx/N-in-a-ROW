@@ -22,23 +22,14 @@ public class PopoutGame extends Game
         if (turnPlayed) {
             //record move
             this.lastMovePlayed = new Move(playerID, col, timeFromBegining());
-            playedMoves.add(lastMovePlayed);
+            playedMoves.add(this.lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
-            if (popout) {
-                if (checkWinningMove(col, playerID)) {
-                    board.setWinner(playerID);
-                    board.setHasWinner(true);
-                    this.hasWinner = true;
-                }
-            } else {
-                Set<Integer> winners = checkWinningMove(col);
-                if (!winners.isEmpty()) {
-                    board.setWinner(winners);
-                    board.setHasWinner(true);
-                }
+            if (checkWinningMove(col, playerID)) {
+                board.setWinner(playerID);
+                board.setHasWinner(true);
+                this.hasWinner = true;
             }
-
             return true;
         }
 
@@ -63,9 +54,8 @@ public class PopoutGame extends Game
 
         //record move
         //todo: record if it was a popout or not
-
         this.lastMovePlayed = new Move(playerID, rand, timeFromBegining());
-        playedMoves.add(lastMovePlayed);
+        playedMoves.add(this.lastMovePlayed);
 
 
         //todo: After Popout check winning move must be for all column...

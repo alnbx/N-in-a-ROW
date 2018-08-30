@@ -294,7 +294,7 @@ public class desktopAppController {
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
         if (isValidMove) {
             if (b.getButtonType() == MoveType.INSERT)
-                setDiscInCol(b.getCol() - 1, gameLogic.getIdOfCurrentPlayer());
+                setDiscInCol(b.getCol() - 1, currentPlayer.getId());
             else
                 removeDiscFromCol(b.getCol() - 1);
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
@@ -304,7 +304,7 @@ public class desktopAppController {
             else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull())
                 showTieAlert();
 
-            addMoveToTable(gameLogic.getLasttMove(), b.getButtonType());
+            addMoveToTable(gameLogic.getLastMove(), b.getButtonType());
         }
         else {
             showInvalidMoveAlert();
@@ -484,7 +484,7 @@ public class desktopAppController {
             } catch (Exception e) {
                 System.out.println("Error loading file");
                 continue;
-                //TODO: popout message of invalid settings file
+                //TODO: alert of invalid settings file
             }
         }
 
