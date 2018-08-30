@@ -84,4 +84,6 @@ public class Player implements Serializable {
     public int getNumMovesMade() { return this.numOfMovesMade; }
 
     public void restart() { this.numOfMovesMade = 0; }
+
+    public void deactivatePlayer() { this.isActive = false; }
 }

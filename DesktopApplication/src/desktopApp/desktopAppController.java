@@ -474,7 +474,14 @@ public class desktopAppController {
 
     @FXML
     public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        gameLogic.resignPlayer();
 
+        //TODO: update board
+
+        if (gameLogic.getHasWinner()) {
+            showWinAlert();
+            endRound();
+        }
     }
 
     @FXML

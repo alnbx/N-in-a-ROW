@@ -162,6 +162,8 @@ public class Board implements Serializable {
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         Disc temp = d;
 
+        if (0 == d.getPlayerDisc()) { return 0; }
+
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFT), player, Directions.LEFT);
         temp = d;
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.RIGHT), player, Directions.RIGHT);
@@ -174,6 +176,8 @@ public class Board implements Serializable {
         int res = 1;
         Disc d = board[col].getDiscInCol(row);
         Disc temp = d;
+
+        if (0 == d.getPlayerDisc()) { return 0; }
 
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFT), temp.getPlayerDisc(), Directions.LEFT);
         temp = d;
@@ -188,6 +192,8 @@ public class Board implements Serializable {
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         //Disc temp = d;
 
+        if (0 == d.getPlayerDisc()) { return 0; }
+
         res += getSequenceByDirection(d.getDiscByDirection(Directions.UP), player, Directions.UP);
         Disc temp = d;
         res += getSequenceByDirection(d.getDiscByDirection(Directions.DOWN), player, Directions.DOWN);
@@ -200,6 +206,8 @@ public class Board implements Serializable {
         int res = 1;
         Disc d = board[col].getDiscInCol(row);
         Disc temp = d;
+
+        if (0 == d.getPlayerDisc()) { return 0; }
 
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.UP), temp.getPlayerDisc(), Directions.UP);
         temp = d;
@@ -214,6 +222,8 @@ public class Board implements Serializable {
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         Disc temp = d;
 
+        if (0 == d.getPlayerDisc()) { return 0; }
+
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.UPRIGHT), player, Directions.UPRIGHT);
         temp = d;
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFTDOWN), player, Directions.LEFTDOWN);
@@ -226,6 +236,8 @@ public class Board implements Serializable {
         int res = 1;
         Disc d = board[col].getDiscInCol(row);
         Disc temp = d;
+
+        if (0 == d.getPlayerDisc()) { return 0; }
 
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.UPRIGHT), temp.getPlayerDisc(), Directions.UPRIGHT);
         temp = d;
@@ -240,6 +252,8 @@ public class Board implements Serializable {
         Disc d = board[col].getDiscInCol(board[col].getLastRowInserted());
         Disc temp = d;
 
+        if (0 == d.getPlayerDisc()) { return 0; }
+
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFTUP), player, Directions.LEFTUP);
         temp = d;
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.RIGHTDOWN), player, Directions.RIGHTDOWN);
@@ -252,6 +266,8 @@ public class Board implements Serializable {
         int res = 1;
         Disc d = board[col].getDiscInCol(row);
         Disc temp = d;
+
+        if (0 == d.getPlayerDisc()) { return 0; }
 
         res += getSequenceByDirection(temp.getDiscByDirection(Directions.LEFTUP), temp.getPlayerDisc(), Directions.LEFTUP);
         temp = d;
@@ -283,4 +299,11 @@ public class Board implements Serializable {
     }
 
     public int getPlayerInDisc(int col, int row) { return board[col].getDiscInCol(row).getPlayerDisc(); }
+
+    public void removeAllDiscsofPlayer(int playerID)
+    {
+        for (int i = 0; i < board.length; i++) {
+            this.emptySpaces += board[i].removeDiscsFromCol(playerID);
+        }
+    }
 }

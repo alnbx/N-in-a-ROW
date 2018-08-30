@@ -20,6 +20,7 @@ public class Game implements GameLogic, Serializable {
     protected Player currentPlayer;
     protected List<Move> playedMoves;
     protected Move lastMovePlayed;
+    protected int activePlayers;
 
     public Game()
     {
@@ -59,6 +60,7 @@ public class Game implements GameLogic, Serializable {
         }
 
         this.currentPlayer = players.get(0);
+        this.activePlayers = this.players.size();
     }
 
     protected boolean playHumanPlayer(int col, boolean popout)
@@ -104,6 +106,7 @@ public class Game implements GameLogic, Serializable {
         if (checkWinningMove(rand, playerID)) {
             board.setWinner(playerID);
             board.setHasWinner(true);
+            this.hasWinner = true;
         }
 
         return true;
@@ -146,7 +149,7 @@ public class Game implements GameLogic, Serializable {
 
         if (ret) {
             //change current player after turn is completed succefully
-            currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size());
+            nextPlayer();
 
             if (popout) { board.increaseEmptySpace(); }
             else { board.decreaseEmptySpace(); }
@@ -156,6 +159,12 @@ public class Game implements GameLogic, Serializable {
             if (this.startingTime == null) { setStartingTime(); }
         }
         return ret;
+    }
+
+    private void nextPlayer()
+    {
+        currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size());
+        while(!currentPlayer.isActive()) { currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size()); }
     }
 
     private int getIndexOfCurrentPlayer() {
@@ -279,4 +288,39 @@ public class Game implements GameLogic, Serializable {
         return players;
     }
 
+    @Override
+    public void resignPlayer()
+    {
+        currentPlayer.deactivatePlayer();
+        this.board.removeAllDiscsofPlayer(currentPlayer.getId());
+        this.activePlayers--;
+
+        Set<Integer> winners = checkWinnersAllBoard();
+        if (!winners.isEmpty()) {
+            this.board.setWinner(winners);
+            this.board.setHasWinner(true);
+            this.hasWinner = true;
+        }
+    }
+
+    public int getNumberOfActivePlayers() { return this.activePlayers; }
+
+    private Set<Integer> checkWinnersAllBoard()
+    {
+        int targetSequence = this.gameSettings.getTarget();
+        Set<Integer> res = new HashSet<>();
+
+        for (int col = board.getCols() - 1; col >= 0; col--) {
+            for (int i = board.getRows() - 1; i >= 0; i--) {
+                if (board.leftRightSequencePopout(col, i) == targetSequence ||
+                        board.upDownSequencePopout(col, i) == targetSequence ||
+                        board.diagonalDownSequencePopout(col, i) == targetSequence ||
+                        board.diagonalUpSequencePopout(col, i) == targetSequence) {
+                    res.add(board.getPlayerInDisc(col, i));
+                }
+            }
+        }
+
+        return res;
+    }
 }

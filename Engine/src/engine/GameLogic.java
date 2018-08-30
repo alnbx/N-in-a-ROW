@@ -32,4 +32,6 @@ public interface GameLogic {
     boolean isPopout();
     List<Player> getPlayers();
     Move getLastMove();
+    void resignPlayer();
+    int getNumberOfActivePlayers();
 }

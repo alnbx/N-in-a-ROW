@@ -63,6 +63,7 @@ public class PopoutGame extends Game
         if (!winners.isEmpty()) {
             board.setWinner(winners);
             board.setHasWinner(true);
+            this.hasWinner = true;
         }
 
         return true;
@@ -90,7 +91,7 @@ public class PopoutGame extends Game
         int targetSequence = this.gameSettings.getTarget();
         Set<Integer> res = new HashSet<>();
 
-        for (int i = board.getRows() - 1; i > 0; i++) {
+        for (int i = board.getRows() - 1; i >= 0; i--) {
             if ( board.leftRightSequencePopout(col, i) == targetSequence    ||
                     board.upDownSequencePopout(col, i) == targetSequence       ||
                     board.diagonalDownSequencePopout(col, i) == targetSequence ||
