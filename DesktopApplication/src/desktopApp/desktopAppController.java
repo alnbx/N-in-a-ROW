@@ -450,6 +450,7 @@ public class desktopAppController {
             }
         }
 
+        disc.getStyleClass().clear();
         disc.getStyleClass().add("player" + playerIdToPlayerIndex.get(playerId));
         topDiscInCols[col] = row;
     }
