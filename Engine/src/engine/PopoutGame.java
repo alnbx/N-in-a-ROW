@@ -1,6 +1,7 @@
 package engine;
 
 import common.GameSettings;
+import common.MoveType;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -18,10 +19,11 @@ public class PopoutGame extends Game
         int playerID = this.currentPlayer.getId();
         col--;
 
+        MoveType moveType = popout ? MoveType.POPOUT : MoveType.INSERT;
         boolean turnPlayed =  popout ? playHumanPlayerPopout(col, playerID) : playHumanPlayerRegular(col, playerID);
         if (turnPlayed) {
             //record move
-            this.lastMovePlayed = new Move(playerID, col, timeFromBegining());
+            this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), moveType);
             playedMoves.add(this.lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
@@ -46,6 +48,7 @@ public class PopoutGame extends Game
     {
         Random r = new Random();
         int playerID = currentPlayer.getId();
+        // columns counting statrs from 1, as ComputerPlayer makes a pseudo move in column 0
         int rand = r.nextInt(board.getCols());
 
         if (!super.board.isPopoutAvaliableForPlayer(playerID)) { return false; }
@@ -53,8 +56,8 @@ public class PopoutGame extends Game
         while(!board.playPopoutMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
 
         //record move
-        //todo: record if it was a popout or not
-        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining());
+        // columns counting statrs from 1, as ComputerPlayer makes a pseudo move in column 0
+        this.lastMovePlayed = new Move(playerID, rand + 1, timeFromBegining(), MoveType.POPOUT);
         playedMoves.add(this.lastMovePlayed);
 
 

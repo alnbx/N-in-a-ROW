@@ -272,6 +272,8 @@ public class desktopAppController {
         }
     }
 
+    // to keep consistency with gameLogic, columns counting statrs from 1
+    // as ComputerPlayer makes a pseudo move in column 0
     private void addColButtons(int cols, int row, MoveType buttonType) {
         for (int i = 0; i < cols; i++) {
             Button b = new ColumnButton(i + 1, buttonType);
@@ -298,11 +300,11 @@ public class desktopAppController {
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
         if (isValidMove) {
             if (b.getButtonType() == MoveType.INSERT)
-                setDiscInCol(b.getCol() - 1, currentPlayer.getId());
+                setDiscInCol(b.getCol(), currentPlayer.getId());
             else
-                removeDiscFromCol(b.getCol() - 1);
+                removeDiscFromCol(b.getCol());
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
-            addMoveToTable(gameLogic.getLastMove(), b.getButtonType());
+            addMoveToTable(gameLogic.getLastMove());
 
             if (gameLogic.getHasWinner()) {
                 showWinAlert();
@@ -318,6 +320,36 @@ public class desktopAppController {
         }
 
         playComputerIfNeeded();
+    }
+
+    // TODO: take care of the case that ComputerPlayer plays first
+    private void playComputerIfNeeded() {
+        while (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER ) {
+            if (!isRoundOn.get())
+                isRoundOn.set(true);
+            PlayerDisplay currentPlayer = players.get(
+                    playerIdToPlayerIndex.get(
+                            gameLogic.getIdOfCurrentPlayer())
+            );
+            gameLogic.play(0, gameLogic.isPopout());
+            Move move = gameLogic.getLastMove();
+
+            if (move.getMoveType() == MoveType.INSERT)
+                setDiscInCol(move.getCol(), currentPlayer.getId());
+            else
+                removeDiscFromCol(move.getCol());
+            currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
+            addMoveToTable(gameLogic.getLastMove());
+
+            if (gameLogic.getHasWinner()) {
+                showWinAlert();
+                endRound();
+            }
+            else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
+                showTieAlert();
+                endRound();
+            }
+        }
     }
 
     private void endRound() {
@@ -394,6 +426,8 @@ public class desktopAppController {
     }
 
     public void setDiscInCol(int col, int playerId) {
+        // columns counting satrts from 1
+        col--;
         Node disc = null;
         ObservableList<Node> childrens = CenterPanel_boardArea_GridPane.getChildren();
 
@@ -413,6 +447,8 @@ public class desktopAppController {
 
     // assuming column has at least 1 disc in it (to be removed)
     public void removeDiscFromCol(int col) {
+        // columns counting satrts from 1
+        col--;
         Node discAbove = null, discBelow = null;
         ObservableList<Node> children = CenterPanel_boardArea_GridPane.getChildren();
         int rowBelow = gameLogic.getRows();
@@ -464,13 +500,6 @@ public class desktopAppController {
 
     @FXML
     public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) { }
-
-    private void playComputerIfNeeded() {
-        while ( gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER ) {
-            gameLogic.play(0, gameLogic.isPopout());
-            //TODO: update board
-        }
-    }
 
     @FXML
     public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
@@ -614,9 +643,9 @@ public class desktopAppController {
         }
     }
 
-    private void addMoveToTable(Move move, MoveType moveType) {
+    private void addMoveToTable(Move move) {
         String playerName = players.get(playerIdToPlayerIndex.get(move.getPlayerId())).getName();
-        MoveDisplay moveDisplay= new MoveDisplay(move, playerName, moveType);
+        MoveDisplay moveDisplay= new MoveDisplay(move, playerName);
         moves.add(moveDisplay);
         LeftPanel_movesHistory_TableView.getItems().add(moveDisplay);
     }

@@ -9,8 +9,8 @@ public class MoveDisplay {
     private int col;
     private String timestamp;
 
-    public MoveDisplay(Move move, String playerName, MoveType moveType) {
-        this.moveType = moveType;
+    public MoveDisplay(Move move, String playerName) {
+        this.moveType = move.getMoveType();
         this.playerName = playerName;
         this.col = move.getCol() + 1;
         this.timestamp = move.getTimeStamp();

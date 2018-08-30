@@ -1,5 +1,7 @@
 package engine;
 
+import common.MoveType;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -10,6 +12,11 @@ public class Move implements Serializable {
     private int playerId;
     private int col;
     private String timeStamp;
+    private MoveType moveType;
+
+    public MoveType getMoveType() {
+        return moveType;
+    }
 
     public String getTimeStamp() {
         return timeStamp;
@@ -29,11 +36,12 @@ public class Move implements Serializable {
         return col;
     }
 
-    public Move(int playerId, int col, String timeStamp) {
+    public Move(int playerId, int col, String timeStamp, MoveType moveType) {
         this.moveIndex = movesCount++;
         this.playerId = playerId;
         this.col = col;
         this.timeStamp = timeStamp;
+        this.moveType = moveType;
     }
 
     @Override

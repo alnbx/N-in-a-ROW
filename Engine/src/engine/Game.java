@@ -70,7 +70,7 @@ public class Game implements GameLogic, Serializable {
 
         if (board.playMove(col, playerID)) {
             //record move
-            this.lastMovePlayed = new Move(playerID, col, timeFromBegining());
+            this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), MoveType.INSERT);
             playedMoves.add(lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
@@ -99,7 +99,8 @@ public class Game implements GameLogic, Serializable {
         while(!board.playMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
 
         //record move
-        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining());
+        // columns counting statrs from 1, as ComputerPlayer makes a pseudo move in column 0
+        this.lastMovePlayed = new Move(playerID, rand + 1, timeFromBegining(), MoveType.INSERT);
         playedMoves.add(lastMovePlayed);
         getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 

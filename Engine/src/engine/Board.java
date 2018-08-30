@@ -65,28 +65,28 @@ public class Board implements Serializable {
         for (int i = 0; i < this.cols; i++) { board[i].connectDiscsUpDownCircular(); }
     }
 
-    private void connectDiscsToLeft(int loc)
+    private void connectDiscsToLeft(int col)
     {
-        if (loc != 0) {
-            board[loc].connectDiscsLeft(board[loc - 1]);
-            board[loc].connectDiscsLeftDown(board[loc - 1]);
-            board[loc].connectDiscsLeftUp(board[loc - 1]);
+        if (col != 0) {
+            board[col].connectDiscsLeft(board[col - 1]);
+            board[col].connectDiscsLeftDown(board[col - 1]);
+            board[col].connectDiscsLeftUp(board[col - 1]);
         }
     }
 
-    private void connectDiscsToRight(int loc)
+    private void connectDiscsToRight(int col)
     {
-        if (loc != this.cols - 1) {
-            board[loc].connectDiscsRight(board[loc + 1]);
-            board[loc].connectDiscsRightUp(board[loc + 1]);
-            board[loc].connectDiscsRightDown(board[loc + 1]);
+        if (col != this.cols - 1) {
+            board[col].connectDiscsRight(board[col + 1]);
+            board[col].connectDiscsRightUp(board[col + 1]);
+            board[col].connectDiscsRightDown(board[col + 1]);
         }
     }
 
-    private void connectDiscsToDownUp(int loc)
+    private void connectDiscsToDownUp(int col)
     {
-        board[loc].connectDiscsDown();
-        board[loc].connectDiscsUp();
+        board[col].connectDiscsDown();
+        board[col].connectDiscsUp();
     }
 
     public int getRows() { return rows; }
