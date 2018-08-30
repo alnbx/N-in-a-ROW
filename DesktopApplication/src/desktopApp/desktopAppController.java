@@ -9,7 +9,6 @@ import common.MoveType;
 import common.PlayerTypes;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,6 +32,7 @@ public class desktopAppController {
     private GameLogic gameLogic;
     private GameFactory gameFactory;
     private SimpleBooleanProperty isValidXML;
+    private SimpleBooleanProperty isRoundOn;
     private SimpleIntegerProperty isReplayMode;
     private Stage primaryStage;
     private List<PlayerDisplay> players;
@@ -157,6 +157,8 @@ public class desktopAppController {
         isReplayMode.setValue(0);
         xmlLoadedSuccessfully = false;
         this.players = new ArrayList<>();
+        isRoundOn = new SimpleBooleanProperty();
+        isRoundOn.set(false);
     }
 
     public void setApplication() {
@@ -166,8 +168,8 @@ public class desktopAppController {
         TopPanel_resignPlayer_Button.setDisable(true);
         TopPanel_exitGame_Button.setDisable(false);
 
-        TopPanel_loadXML_Button.disableProperty().bind(Bindings.selectBoolean(isValidXML));
-        TopPanel_playRound_Button.disableProperty().bind(TopPanel_loadXML_Button.disabledProperty().not());
+        TopPanel_loadXML_Button.disableProperty().bind(Bindings.selectBoolean(isRoundOn));
+        TopPanel_playRound_Button.disableProperty().bind(isValidXML.not());
         TopPanel_endRound_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
         TopPanel_resignPlayer_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
         LeftPanel_toggleReplay_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
@@ -286,6 +288,8 @@ public class desktopAppController {
     }
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
+        if (!isRoundOn.get())
+            isRoundOn.set(true);
         PlayerDisplay currentPlayer = players.get(
                         playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer())
@@ -298,17 +302,25 @@ public class desktopAppController {
             else
                 removeDiscFromCol(b.getCol() - 1);
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
-
-            if (gameLogic.getHasWinner())
-                showWinAlert();
-            else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull())
-                showTieAlert();
-
             addMoveToTable(gameLogic.getLastMove(), b.getButtonType());
+
+            if (gameLogic.getHasWinner()) {
+                showWinAlert();
+                endRound();
+            }
+            else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
+                showTieAlert();
+                endRound();
+            }
         }
         else {
             showInvalidMoveAlert();
         }
+    }
+
+    private void endRound() {
+        LeftPanel_movesHistory_TableView.getItems().clear();
+        isRoundOn.set(false);
     }
 
     private void clearBoard() {
@@ -535,6 +547,7 @@ public class desktopAppController {
                 //this.gameLogic = XMLLoader.getValue();
                 if (XMLLoader.getValue()) {
                     try {
+                        LeftPanel_playersTable_TableView.getItems().clear();
                         this.gameLogic = gameFactory.getNewGame();
                         this.gameLogic.setRoundFromSettings(true);
                         createBoard();
