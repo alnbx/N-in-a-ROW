@@ -169,8 +169,8 @@ public class desktopAppController {
         TopPanel_exitGame_Button.setDisable(false);
 
         TopPanel_loadXML_Button.disableProperty().bind(Bindings.selectBoolean(isRoundOn));
-        TopPanel_playRound_Button.disableProperty().bind(isValidXML.not());
-        TopPanel_endRound_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
+        TopPanel_playRound_Button.disableProperty().bind(Bindings.or(isValidXML.not(), isRoundOn));
+        TopPanel_endRound_Button.disableProperty().bind(isRoundOn.not());
         TopPanel_resignPlayer_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
         LeftPanel_toggleReplay_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
         LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
@@ -290,8 +290,8 @@ public class desktopAppController {
     }
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
-        if (!isRoundOn.get())
-            isRoundOn.set(true);
+        //if (!isRoundOn.get())
+        //    isRoundOn.set(true);
         PlayerDisplay currentPlayer = players.get(
                         playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer())
@@ -324,9 +324,8 @@ public class desktopAppController {
 
     // TODO: take care of the case that ComputerPlayer plays first
     private void playComputerIfNeeded() {
-        while (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER ) {
-            if (!isRoundOn.get())
-                isRoundOn.set(true);
+        boolean tieAlert = false, winAlert= false;
+        while (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
             PlayerDisplay currentPlayer = players.get(
                     playerIdToPlayerIndex.get(
                             gameLogic.getIdOfCurrentPlayer())
@@ -342,19 +341,31 @@ public class desktopAppController {
             addMoveToTable(gameLogic.getLastMove());
 
             if (gameLogic.getHasWinner()) {
-                showWinAlert();
-                endRound();
+                winAlert = true;
+                break;
             }
             else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
-                showTieAlert();
-                endRound();
+                tieAlert = true;
+                break;
             }
+        }
+
+        if (tieAlert) {
+            showTieAlert();
+            endRound();
+        }
+
+        if (winAlert) {
+            showWinAlert();
+            endRound();
         }
     }
 
     private void endRound() {
         LeftPanel_movesHistory_TableView.getItems().clear();
         isRoundOn.set(false);
+        clearBoard();
+        setDisableAllColButtons(true);
     }
 
     private void clearBoard() {
@@ -378,8 +389,7 @@ public class desktopAppController {
         String message = "Round is over with a tie!";
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         Optional<ButtonType> result = alert.showAndWait();
-        clearBoard();
-        setDisableAllColButtons(true);
+        endRound();
     }
 
     private void setDisableAllColButtons(boolean isEnable) {
@@ -412,8 +422,7 @@ public class desktopAppController {
         message = MessageFormat.format(message, namesMsg);
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         Optional<ButtonType> result = alert.showAndWait();
-        clearBoard();
-        setDisableAllColButtons(true);
+        endRound();
     }
 
     private Circle createNewDisc() {
@@ -482,7 +491,7 @@ public class desktopAppController {
 
     @FXML
     public void endRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
-
+        endRound();
     }
 
     @FXML
@@ -499,7 +508,13 @@ public class desktopAppController {
     }
 
     @FXML
-    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) { }
+    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        initTopDiscInColsArr();
+        setDisableAllColButtons(false);
+        this.moves = new ArrayList<>();
+        this.isRoundOn.set(true);
+        this.gameLogic.setRoundFromSettings(true);
+    }
 
     @FXML
     public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
@@ -599,11 +614,10 @@ public class desktopAppController {
                         this.gameLogic.setRoundFromSettings(true);
                         createBoard();
                         createPlayers();
-                        initTopDiscInColsArr();
                         this.xmlLoadedSuccessfully = true;
-                        setDisableAllColButtons(false);
+                        //setDisableAllColButtons(false);
                         this.isValidXML.set(true);
-                        this.moves = new ArrayList<>();
+                        //this.moves = new ArrayList<>();
                     }
                     catch (Exception e) { loadXmlFailed(); }
                 }
