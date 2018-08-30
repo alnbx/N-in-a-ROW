@@ -490,18 +490,30 @@ public class desktopAppController {
         while (true) {
             try {
                 settingsFile = fileChooser.showOpenDialog(primaryStage);
-                if (settingsFile == null) { throw new Exception(); }
+                if (settingsFile == null) { alertNoXMLFileWasChosen(); return; }
                 if (createLoadingTask(settingsFile)) { break; }
                 else { isValidXML.setValue(false); return; }
             } catch (Exception e) {
                 System.out.println("Error loading file");
                 continue;
-                //TODO: alert of invalid settings file
             }
         }
 
         CenterPanel_boardArea_GridPane.visibleProperty().setValue(true);
         isValidXML.setValue(true);
+    }
+
+    private void alertNoXMLFileWasChosen()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("File was not chosen");
+        alert.setHeaderText("File was not chosen");
+        alert.setContentText("File was not chosen. \n Please try again");
+        this.xmlLoadedSuccessfully = false;
+        alert.show();
+        try { Thread.sleep(2000); }
+        catch (Exception e) {}
+        alert.close();
     }
 
     private void initTopDiscInColsArr() {

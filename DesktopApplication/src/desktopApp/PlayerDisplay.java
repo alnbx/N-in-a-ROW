@@ -16,6 +16,7 @@ public class PlayerDisplay {
     private SimpleIntegerProperty numMoves;
     private String color;
     private boolean isActive;
+    private Player player;
 
     public PlayerDisplay(Player p) {
         this.name = p.getName();
@@ -25,6 +26,7 @@ public class PlayerDisplay {
         this.numMoves = new SimpleIntegerProperty();
         this.numMoves.set(0);
         this.isActive = true;
+        this.player = p;
     }
 
     public String getName() {
