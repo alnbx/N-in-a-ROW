@@ -316,6 +316,8 @@ public class desktopAppController {
         else {
             showInvalidMoveAlert();
         }
+
+        playComputerIfNeeded();
     }
 
     private void endRound() {
@@ -461,7 +463,7 @@ public class desktopAppController {
     }
 
     @FXML
-    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) { playComputerIfNeeded(); }
+    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) { }
 
     private void playComputerIfNeeded() {
         while ( gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER ) {
@@ -475,7 +477,6 @@ public class desktopAppController {
 
     }
 
-    // TODO: fix Cancel option in FileChooser
     @FXML
     public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
         File settingsFile;
@@ -527,8 +528,6 @@ public class desktopAppController {
     }
 
     private boolean createLoadingTask(File settingsFile) {
-        boolean res = false;
-
         try {
             loadXMLTask XMLLoader = new loadXMLTask(gameFactory, settingsFile.getAbsolutePath());
             FXMLLoader fxmlLoader = new FXMLLoader();
