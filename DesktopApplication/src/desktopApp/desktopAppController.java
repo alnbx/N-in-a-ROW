@@ -9,6 +9,8 @@ import common.MoveType;
 import common.PlayerTypes;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
+import javafx.beans.value.*;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -42,6 +44,7 @@ public class desktopAppController {
     private Boolean xmlLoadedSuccessfully;
     private ObservableList<MoveDisplay> moves = FXCollections.observableArrayList();
     private ObservableList<PlayerDisplay> players = FXCollections.observableArrayList();
+    private SimpleIntegerProperty currentPlayerID;
     @FXML
     private ResourceBundle resources;
     @FXML
@@ -159,6 +162,7 @@ public class desktopAppController {
         xmlLoadedSuccessfully = false;
         isRoundOn = new SimpleBooleanProperty();
         isRoundOn.set(false);
+        currentPlayerID = new SimpleIntegerProperty();
     }
 
     public void setApplication() {
@@ -293,7 +297,18 @@ public class desktopAppController {
             showInvalidMoveAlert();
         }
 
+        selectNextPlayer();
+
         playComputerIfNeeded();
+    }
+
+    private void selectNextPlayer() {
+        this.currentPlayerID.setValue(gameLogic.getIdOfCurrentPlayer());
+        LeftPanel_playersTable_TableView.
+                getSelectionModel().
+                clearAndSelect(playerIdToPlayerIndex.
+                        get(currentPlayerID.get()));
+        LeftPanel_playersTable_TableView.refresh();
     }
 
     // TODO: take care of the case that ComputerPlayer plays first
@@ -322,6 +337,8 @@ public class desktopAppController {
                 tieAlert = true;
                 break;
             }
+
+            selectNextPlayer();
         }
 
         if (tieAlert) {
@@ -489,6 +506,8 @@ public class desktopAppController {
         this.moves.clear();
         this.isRoundOn.set(true);
         this.gameLogic.setRoundFromSettings(true);
+        LeftPanel_playersTable_TableView.getSelectionModel().clearAndSelect(0);
+        LeftPanel_playersTable_TableView.refresh();
     }
 
     @FXML
