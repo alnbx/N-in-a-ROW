@@ -9,6 +9,8 @@ import common.MoveType;
 import common.PlayerTypes;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,12 +37,11 @@ public class desktopAppController {
     private SimpleBooleanProperty isRoundOn;
     private SimpleIntegerProperty isReplayMode;
     private Stage primaryStage;
-    private List<PlayerDisplay> players;
     private int[] topDiscInCols;
     private Map<Integer, Integer> playerIdToPlayerIndex;
     private Boolean xmlLoadedSuccessfully;
-    private List<MoveDisplay> moves;
-
+    private ObservableList<MoveDisplay> moves = FXCollections.observableArrayList();
+    private ObservableList<PlayerDisplay> players = FXCollections.observableArrayList();
     @FXML
     private ResourceBundle resources;
     @FXML
@@ -156,7 +157,6 @@ public class desktopAppController {
         isReplayMode = new SimpleIntegerProperty();
         isReplayMode.setValue(0);
         xmlLoadedSuccessfully = false;
-        this.players = new ArrayList<>();
         isRoundOn = new SimpleBooleanProperty();
         isRoundOn.set(false);
     }
@@ -212,32 +212,6 @@ public class desktopAppController {
                 };
 
         LeftPanel_playerColour_TableColumn.setCellFactory(colorCellFactory);
-
-        ///// why is this code not working ???  :(  ////////////
-        /*
-        Callback<TableColumn<PlayerDisplay, Integer>, TableCell<PlayerDisplay, Integer>> numMovesCellFactory =
-                new Callback<TableColumn<PlayerDisplay, Integer>, TableCell<PlayerDisplay, Integer>>() {
-                    @Override
-                    public TableCell call(TableColumn p) {
-                        TableCell cell = new TableCell<PlayerDisplay, Integer>() {
-                            @Override
-                            public void updateItem(Integer item, boolean empty) {
-                                super.updateItem(item, empty);
-                                if (item != null) {
-                                    setText(item.toString());
-                                }
-                                else {
-                                    setText("");
-                                }
-                            }
-                        };
-
-                        return cell;
-                    }
-                };
-
-        LeftPanel_playerMoves_TableColumn.setCellFactory(numMovesCellFactory);
-         */
         playerIdToPlayerIndex = new HashMap<>();
     }
 
@@ -303,6 +277,8 @@ public class desktopAppController {
                 removeDiscFromCol(b.getCol());
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
             addMoveToTable(gameLogic.getLastMove());
+            LeftPanel_playersTable_TableView.getColumns().get(3).setVisible(false);
+            LeftPanel_playersTable_TableView.getColumns().get(3).setVisible(true);
 
             if (gameLogic.getHasWinner()) {
                 showWinAlert();
@@ -461,7 +437,7 @@ public class desktopAppController {
         ObservableList<Node> children = CenterPanel_boardArea_GridPane.getChildren();
         int rowBelow = gameLogic.getRows();
 
-        while (rowBelow >= topDiscInCols[col]) {
+        do {
             for (Node node : children) {
                 if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow - 1 &&
                         CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
@@ -481,7 +457,7 @@ public class desktopAppController {
             discBelow.getStyleClass().clear();
             discBelow.getStyleClass().addAll(discAbove.getStyleClass());
             rowBelow--;
-        }
+        } while (rowBelow > topDiscInCols[col]);
 
         discAbove.getStyleClass().clear();
         discAbove.getStyleClass().add("emptyDisc");
@@ -510,7 +486,7 @@ public class desktopAppController {
     public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
         initTopDiscInColsArr();
         setDisableAllColButtons(false);
-        this.moves = new ArrayList<>();
+        this.moves.clear();
         this.isRoundOn.set(true);
         this.gameLogic.setRoundFromSettings(true);
     }
@@ -614,9 +590,7 @@ public class desktopAppController {
                         createBoard();
                         createPlayers();
                         this.xmlLoadedSuccessfully = true;
-                        //setDisableAllColButtons(false);
                         this.isValidXML.set(true);
-                        //this.moves = new ArrayList<>();
                     }
                     catch (Exception e) { loadXmlFailed(); }
                 }
