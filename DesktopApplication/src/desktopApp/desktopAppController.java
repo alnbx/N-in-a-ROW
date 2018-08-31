@@ -272,7 +272,7 @@ public class desktopAppController {
         }
     }
 
-    // to keep consistency with gameLogic, columns counting statrs from 1
+    // columns counting statrs from 1
     // as ComputerPlayer makes a pseudo move in column 0
     private void addColButtons(int cols, int row, MoveType buttonType) {
         for (int i = 0; i < cols; i++) {
@@ -290,8 +290,6 @@ public class desktopAppController {
     }
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
-        //if (!isRoundOn.get())
-        //    isRoundOn.set(true);
         PlayerDisplay currentPlayer = players.get(
                         playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer())
@@ -463,7 +461,7 @@ public class desktopAppController {
         ObservableList<Node> children = CenterPanel_boardArea_GridPane.getChildren();
         int rowBelow = gameLogic.getRows();
 
-        while (rowBelow != topDiscInCols[col] - 1) {
+        while (rowBelow >= topDiscInCols[col]) {
             for (Node node : children) {
                 if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow - 1 &&
                         CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
