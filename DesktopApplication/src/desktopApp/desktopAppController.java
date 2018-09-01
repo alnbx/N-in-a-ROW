@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 
+import common.GameVariant;
 import common.MoveType;
 import common.PlayerTypes;
 import javafx.application.Platform;
@@ -46,6 +47,7 @@ public class desktopAppController {
     private ObservableList<MoveDisplay> moves = FXCollections.observableArrayList();
     private ObservableList<PlayerDisplay> players = FXCollections.observableArrayList();
     private SimpleIntegerProperty currentPlayerID;
+
     @FXML
     private ResourceBundle resources;
     @FXML
@@ -103,8 +105,9 @@ public class desktopAppController {
     private Button LeftPanel_replayRightArrow_Button;
     @FXML
     private ScrollPane TopPanel_ScrollPane;
+
     @FXML
-    private VBox TopPanel_VBox;
+    private HBox TopPanel_MainLabel_HBox;
     @FXML
     private Label TopPanel_welcome_Label;
     @FXML
@@ -112,47 +115,35 @@ public class desktopAppController {
     @FXML
     private Button TopPanel_loadXML_Button;
     @FXML
+    private Button TopPanel_playRound_Button;
+    @FXML
+    private Button TopPanel_endRound_Button;
+    @FXML
     private Button TopPanel_resignPlayer_Button;
     @FXML
     private Button TopPanel_exitGame_Button;
     @FXML
-    private Button TopPanel_playRound_Button;
+    private HBox TopPanel_Info_HBox;
     @FXML
-    private Button TopPanel_endRound_Button;
-
+    private HBox TopPanel_GameInfo_HBox;
     @FXML
-    void initialize() {
-        assert MainPanel_ScrollPane != null : "fx:id=\"MainPanel_ScrollPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert MainPanel_BorderPane != null : "fx:id=\"MainPanel_BorderPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert CenterPanel_ScrollPane != null : "fx:id=\"CenterPanel_ScrollPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert CenterPanel_boardArea_GridPane != null : "fx:id=\"CenterPanel_boardArea_GridPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_ScrollPane != null : "fx:id=\"LeftPanel_ScrollPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_players_VBox != null : "fx:id=\"LeftPanel_players_VBox\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playersLabel_Label != null : "fx:id=\"LeftPanel_playersLabel_Label\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playersTable_TableView != null : "fx:id=\"LeftPanel_playersTable_TableView\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playerID_TableColumn != null : "fx:id=\"LeftPanel_playerID_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playerMoves_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playerColour_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumnLeftPanel_playerColour_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_playerType_TableColumn != null : "fx:id=\"LeftPanel_playerMoves_TableColumnLeftPanel_playerType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_movesHistory_Label != null : "fx:id=\"LeftPanel_movesHistory_Label\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_movesHistory_TableView != null : "fx:id=\"LeftPanel_movesHistory_TableView\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_moveType_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_moveColumn_TableColumn != null : "fx:id=\"LeftPanel_moveID_TableColumnLeftPanel_moveType_TableColumnLeftPanel_moveID_TableColumnLeftPanel_moveColumn_TableColumn\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_replay_ScrollPane != null : "fx:id=\"LeftPanel_replay_ScrollPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_replay_HBox != null : "fx:id=\"LeftPanel_replay_HBox\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_toggleReplay_Button != null : "fx:id=\"LeftPanel_toggleReplay_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_replayLeftArrow_Button != null : "fx:id=\"LeftPanel_replayLeftArrow_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert LeftPanel_replayRightArrow_Button != null : "fx:id=\"LeftPanel_replayRightArrow_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_ScrollPane != null : "fx:id=\"TopPanel_ScrollPane\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_VBox != null : "fx:id=\"TopPanel_VBox\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_welcome_Label != null : "fx:id=\"TopPanel_welcome_Label\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_buttons_HBox != null : "fx:id=\"TopPanel_buttons_HBox\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_loadXML_Button != null : "fx:id=\"TopPanel_loadXML_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_resignPlayer_Button != null : "fx:id=\"TopPanel_resignPlayer_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_exitGame_Button != null : "fx:id=\"TopPanel_exitGame_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_playRound_Button != null : "fx:id=\"TopPanel_playRound_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-        assert TopPanel_endRound_Button != null : "fx:id=\"TopPanel_endRound_Button\" was not injected: check your FXML file '/resources/desktopApp.fxml'.";
-    }
+    private Label TopPanel_GameFile_Label;
+    @FXML
+    private Label TopPanel_GameFileLabel_Label;
+    @FXML
+    private HBox TopPanel_GameVariant_HBox;
+    @FXML
+    private Label TopPanel_GameVariant_Label;
+    @FXML
+    private Label TopPanel_GameVariantLabel_Label;
+    @FXML
+    private HBox TopPanel_RoundsPlayed_HBox;
+    @FXML
+    private Label TopPanel_RoundsPlayed_Label;
+    @FXML
+    private Label TopPanel_RoundsPlayedLabel_Label;
+    @FXML
+    void initialize() { TopPanel_RoundsPlayedLabel_Label.setText("0"); }
 
     public desktopAppController() {
         gameFactory = new GameFactory();
@@ -299,7 +290,7 @@ public class desktopAppController {
         }
 
         selectNextPlayer();
-
+        //Thread.currentThread().
         playComputerIfNeeded();
     }
 
@@ -314,7 +305,8 @@ public class desktopAppController {
 
     // TODO: take care of the case that ComputerPlayer plays first
     private void playComputerIfNeeded() {
-        boolean tieAlert = false, winAlert= false;
+        boolean tieAlert = false;
+        boolean winAlert= false;
         while (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
             PlayerDisplay currentPlayer = players.get(
                     playerIdToPlayerIndex.get(
@@ -358,6 +350,8 @@ public class desktopAppController {
         isRoundOn.set(false);
         clearBoard();
         setDisableAllColButtons(true);
+        gameLogic.increaseRoundPlayed();
+        TopPanel_RoundsPlayedLabel_Label.setText(String.valueOf(gameLogic.getNumberOfRoundsPlayed()));
     }
 
     private void clearBoard() {
@@ -402,16 +396,16 @@ public class desktopAppController {
         for (Integer playerId : winners)
             names.add(players.get(playerIdToPlayerIndex.get(playerId)).getName());
 
-        String namesMsg = "";
+        StringBuilder namesMsg = new StringBuilder();
         for (int i = 0; i < names.size() - 1; ++i) {
-            namesMsg += names.get(i) + ", ";
+            namesMsg.append(names.get(i)).append(", ");
         }
 
         String lastName = names.get(names.size() - 1);
-        namesMsg = names.size() == 1 ? lastName :
-                (namesMsg.substring(0, namesMsg.length() - 2) + " and " + lastName);
+        namesMsg = new StringBuilder(names.size() == 1 ? lastName :
+                (namesMsg.substring(0, namesMsg.length() - 2) + " and " + lastName));
 
-        message = MessageFormat.format(message, namesMsg);
+        message = MessageFormat.format(message, namesMsg.toString());
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         Optional<ButtonType> result = alert.showAndWait();
         endRound();
@@ -640,6 +634,9 @@ public class desktopAppController {
                         createPlayers();
                         this.xmlLoadedSuccessfully = true;
                         this.isValidXML.set(true);
+                        this.TopPanel_GameFileLabel_Label.setText(settingsFile.getAbsolutePath());
+                        this.TopPanel_welcome_Label.setText("NinA is Ready to Play!");
+                        this.TopPanel_GameVariantLabel_Label.setText(getGameVariantAsText(gameLogic.getGameVariant()));
                     }
                     catch (Exception e) { loadXmlFailed(); }
                 }
@@ -651,6 +648,12 @@ public class desktopAppController {
         catch (Exception e) { loadXmlFailed(); }
 
         return this.xmlLoadedSuccessfully;
+    }
+
+    private String getGameVariantAsText(GameVariant gameVariant) {
+        if      (gameVariant == GameVariant.REGULAR)  { return "Regular"; }
+        else if (gameVariant == GameVariant.CIRCULAR) { return "Circular"; }
+        else    { return "Popout"; }
     }
 
     private void loadXmlFailed()

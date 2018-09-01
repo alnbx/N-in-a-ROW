@@ -15,7 +15,7 @@ public class App extends Application {
         primaryStage.setTitle("NinaRow Game");
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("/desktopApp/resources/desktopApp.fxml");
+        URL url = getClass().getResource("/desktopApp/resources/desktopApp1.fxml");
 
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());

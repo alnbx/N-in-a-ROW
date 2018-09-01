@@ -21,6 +21,7 @@ public class Game implements GameLogic, Serializable {
     protected List<Move> playedMoves;
     protected Move lastMovePlayed;
     protected int activePlayers;
+    protected int roundsPlayed;
 
     public Game()
     {
@@ -30,6 +31,7 @@ public class Game implements GameLogic, Serializable {
 
     public Game(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
+        this.roundsPlayed = 0;
     }
 
     public void setRoundFromSettings(boolean restartPlayers) {
@@ -304,6 +306,8 @@ public class Game implements GameLogic, Serializable {
         }
     }
 
+    public GameVariant getGameVariant() { return GameVariant.REGULAR; }
+
     public int getNumberOfActivePlayers() { return this.activePlayers; }
 
     private Set<Integer> checkWinnersAllBoard()
@@ -324,4 +328,7 @@ public class Game implements GameLogic, Serializable {
 
         return res;
     }
+
+    public int getNumberOfRoundsPlayed() { return this.roundsPlayed; }
+    public void increaseRoundPlayed()    { this.roundsPlayed++; }
 }

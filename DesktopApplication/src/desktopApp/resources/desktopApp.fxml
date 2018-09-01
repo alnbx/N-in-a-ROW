@@ -20,51 +20,105 @@
          <top>
             <ScrollPane fx:id="TopPanel_ScrollPane" fitToHeight="true" fitToWidth="true" prefHeight="102.0" prefWidth="898.0" BorderPane.alignment="CENTER">
                <content>
-                  <VBox fx:id="TopPanel_VBox" prefHeight="107.0" prefWidth="896.0">
-                     <children>
-                        <HBox alignment="CENTER">
-                           <VBox.margin>
-                              <Insets left="15.0" top="15.0" />
-                           </VBox.margin>
+                  <ScrollPane fx:id="TopPanel_ScrollPane">
+                     <content>
+                        <HBox fx:id="TopPanel_HBox">
                            <children>
-                              <Label fx:id="TopPanel_welcome_Label" alignment="CENTER" contentDisplay="CENTER" text="Welcome!">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
+                              <VBox fx:id="TopPanel_VBox" prefHeight="95.0" prefWidth="501.0">
+                                 <children>
+                                    <HBox fx:id="TopPanel_MainLabel_HBox" alignment="CENTER">
+                                       <VBox.margin>
+                                          <Insets left="15.0" top="15.0" />
+                                       </VBox.margin>
+                                       <children>
+                                          <Label fx:id="TopPanel_welcome_Label" alignment="CENTER" contentDisplay="CENTER" text="Welcome From Nina!">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                    <HBox fx:id="TopPanel_buttons_HBox" alignment="CENTER" prefHeight="61.0" prefWidth="896.0">
+                                       <children>
+                                          <Button fx:id="TopPanel_loadXML_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loadNewSettingFile_onButtonAction" text="Load XML">
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button fx:id="TopPanel_playRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playRound_onButtonAction" text="Play Round">
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button fx:id="TopPanel_endRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#endRound_onButtonAction" text="End Round">
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button fx:id="TopPanel_resignPlayer_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playerResign_onButtonAction" text="Player Resign">
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button fx:id="TopPanel_exitGame_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exitGame_onButtonAction" text="Exit Game">
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="TopPanel_Info_VBox" prefHeight="16.0" prefWidth="390.0">
+                                 <children>
+                                    <HBox fx:id="TopPanel_GameInfo_HBox">
+                                       <children>
+                                          <Label fx:id="TopPanel_GameFile_Label" text="Game File: ">
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="TopPanel_GameFileLabel__Label" />
+                                       </children>
+                                       <opaqueInsets>
+                                          <Insets bottom="10.0" top="10.0" />
+                                       </opaqueInsets>
+                                       <padding>
+                                          <Insets bottom="8.0" top="10.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox fx:id="TopPanel_GameVariant_HBox">
+                                       <children>
+                                          <Label fx:id="TopPanel_GameVariant_Label" text="Game Variant: ">
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="TopPanel_GameVariantLabel_Label" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="8.0" />
+                                       </padding>
+                                    </HBox>
+                                    <HBox fx:id="TopPanel_RoundsPlayed_HBox">
+                                       <children>
+                                          <Label fx:id="TopPanel_RoundsPlayed_Label" text="Rounds Played: ">
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="TopPanel_RoundsPlayedLabel_Label" />
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="10.0" />
+                                       </padding>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
-                        <HBox fx:id="TopPanel_buttons_HBox" alignment="CENTER" prefHeight="61.0" prefWidth="896.0">
-                           <children>
-                              <Button fx:id="TopPanel_loadXML_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loadNewSettingFile_onButtonAction" text="Load XML">
-                                 <HBox.margin>
-                                    <Insets right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="TopPanel_playRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playRound_onButtonAction" text="Play Round">
-                                 <HBox.margin>
-                                    <Insets right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="TopPanel_endRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#endRound_onButtonAction" text="End Round">
-                                 <HBox.margin>
-                                    <Insets right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="TopPanel_resignPlayer_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playerResign_onButtonAction" text="Player Resign">
-                                 <HBox.margin>
-                                    <Insets right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="TopPanel_exitGame_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exitGame_onButtonAction" text="Exit Game">
-                                 <HBox.margin>
-                                    <Insets right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
+                     </content>
+                  </ScrollPane>
                </content>
             </ScrollPane>
          </top>
@@ -88,9 +142,9 @@
          <left>
             <ScrollPane fx:id="LeftPanel_ScrollPane" prefHeight="449.0" prefWidth="346.0" BorderPane.alignment="CENTER">
                <content>
-                  <VBox fx:id="LeftPanel_players_VBox" prefHeight="475.0" prefWidth="355.0">
+                  <VBox fx:id="LeftPanel_players_VBox" prefHeight="493.0" prefWidth="343.0">
                      <children>
-                        <Label fx:id="LeftPanel_playersLabel_Label" alignment="CENTER" prefHeight="20.0" prefWidth="333.0" text="Players" textAlignment="CENTER">
+                        <Label fx:id="LeftPanel_playersLabel_Label" alignment="CENTER" prefHeight="25.0" prefWidth="343.0" text="Players" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
@@ -112,7 +166,7 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <TableView fx:id="LeftPanel_movesHistory_TableView" prefHeight="280.0" prefWidth="255.0">
+                        <TableView fx:id="LeftPanel_movesHistory_TableView" prefHeight="280.0" prefWidth="343.0">
                            <columns>
                               <TableColumn fx:id="LeftPanel_movePlayer_TableColumn" prefWidth="95.0" text="Player" />
                               <TableColumn fx:id="LeftPanel_moveType_TableColumn" prefWidth="80.0" text="Move Type" />
@@ -125,7 +179,7 @@
                         </TableView>
                         <ScrollPane fx:id="LeftPanel_replay_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="50.0" minViewportHeight="50.0" minViewportWidth="50.0" minWidth="50.0">
                            <content>
-                              <HBox fx:id="LeftPanel_replay_HBox" minHeight="20.0" minWidth="20.0" prefHeight="26.0" prefWidth="100.0">
+                              <HBox fx:id="LeftPanel_replay_HBox" minHeight="3.0" minWidth="20.0" prefHeight="3.0" prefWidth="341.0">
                                  <children>
                                     <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" />
                                     <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="&lt;-" />

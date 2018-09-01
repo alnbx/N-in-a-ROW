@@ -1,6 +1,7 @@
 package engine;
 
 import common.GameSettings;
+import common.GameVariant;
 
 import java.util.ArrayList;
 
@@ -19,4 +20,7 @@ public class CircularGame extends Game {
         this.startingTime = null;
         super.restartPlayers(restartPlayers);
     }
+
+    @Override
+    public GameVariant getGameVariant() { return GameVariant.CIRCULAR; }
 }

@@ -1,5 +1,6 @@
 package engine;
 
+import common.GameVariant;
 import common.PlayerSettings;
 import common.PlayerTypes;
 
@@ -34,4 +35,7 @@ public interface GameLogic {
     Move getLastMove();
     void resignPlayer();
     int getNumberOfActivePlayers();
+    GameVariant getGameVariant();
+    int getNumberOfRoundsPlayed();
+    void increaseRoundPlayed();
 }

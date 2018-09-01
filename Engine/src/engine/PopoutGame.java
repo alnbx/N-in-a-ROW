@@ -1,6 +1,7 @@
 package engine;
 
 import common.GameSettings;
+import common.GameVariant;
 import common.MoveType;
 
 import java.util.HashSet;
@@ -104,4 +105,6 @@ public class PopoutGame extends Game
 
         return res;
     }
+
+    public GameVariant getGameVariant() { return GameVariant.POPOUT; }
 }
