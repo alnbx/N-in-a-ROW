@@ -7,6 +7,7 @@ import java.util.*;
 
 import common.MoveType;
 import common.PlayerTypes;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.*;
@@ -18,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -26,10 +28,9 @@ import javafx.scene.layout.*;
 import engine.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.stage.*;
 import javafx.util.Callback;
+import sun.plugin2.ipc.windows.WindowsEvent;
 
 
 public class desktopAppController {
@@ -488,15 +489,44 @@ public class desktopAppController {
 
     @FXML
     public void exitGame_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        TopPanel_welcome_Label.setText("Bye Bye");
-        try { Thread.sleep(1000); }
-        catch (InterruptedException e) { }
-        System.exit(0);
+        //TopPanel_welcome_Label.setText("Bye Bye?");
+        //try { Thread.sleep(1000); }
+        //catch (InterruptedException e) { }
+        //System.exit(0);
+
+        VBox xmlLoading = null;
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        URL url = getClass().getResource("/desktopApp/resources/ExitConfirmBox.fxml");
+        fxmlLoader.setLocation(url);
+        try                 { xmlLoading = fxmlLoader.load(url.openStream()); }
+        catch (Exception e) { System.exit(0); }
+
+        ExitConfirmController exitController = fxmlLoader.getController();
+        Scene secondScene = new Scene(xmlLoading, 260, 200);
+        Stage ExitConfirm = new Stage();
+        exitController.setStage(ExitConfirm);
+
+        ExitConfirm.setTitle("Exit Confirmation");
+        ExitConfirm.setScene(secondScene);
+        ExitConfirm.initModality(Modality.WINDOW_MODAL);
+        ExitConfirm.initOwner(primaryStage);
+        ExitConfirm.setX(primaryStage.getX() + 300);
+        ExitConfirm.setY(primaryStage.getY() + 200);
+        ExitConfirm.showAndWait();
+        ExitConfirm.close();
+        TopPanel_welcome_Label.setText("Welcome Back!");
 
     }
 
-    void setPrimarySatge(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+    public void setPrimarySatge(Stage primaryStage) { this.primaryStage = primaryStage; }
+
+    public void setOnXButtonPress() {
+        this.primaryStage.setOnCloseRequest((WindowEvent e) ->  {
+            exitGame_onButtonAction(new javafx.event.ActionEvent());
+            e.consume();
+        });
+
     }
 
     @FXML

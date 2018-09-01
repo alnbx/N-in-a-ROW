@@ -12,7 +12,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Hello There in FXML");
+        primaryStage.setTitle("NinaRow Game");
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource("/desktopApp/resources/desktopApp.fxml");
@@ -23,9 +23,9 @@ public class App extends Application {
         desktopAppController controller = fxmlLoader.getController();
         controller.setApplication();
         controller.setPrimarySatge(primaryStage);
+        controller.setOnXButtonPress();
 
         Scene scene = new Scene(root, 900, 600);
-
         scene.getStylesheets().add(getClass().getResource("/desktopApp/resources/playersTable.css").toExternalForm());
 
         primaryStage.setScene(scene);
