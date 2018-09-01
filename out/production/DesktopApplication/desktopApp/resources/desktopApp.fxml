@@ -121,9 +121,9 @@
                            <content>
                               <HBox fx:id="LeftPanel_replay_HBox" minHeight="20.0" minWidth="20.0" prefHeight="26.0" prefWidth="100.0">
                                  <children>
-                                    <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" />
-                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="&lt;-" />
-                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="-&gt;" />
+                                    <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" onAction="#toggleReplay_onButtonAction" />
+                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" />
+                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" />
                                  </children>
                               </HBox>
                            </content>

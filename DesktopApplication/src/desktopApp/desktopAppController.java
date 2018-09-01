@@ -34,7 +34,7 @@ public class desktopAppController {
     private GameFactory gameFactory;
     private SimpleBooleanProperty isValidXML;
     private SimpleBooleanProperty isRoundOn;
-    private SimpleIntegerProperty isReplayMode;
+    private SimpleBooleanProperty isReplayMode;
     private Stage primaryStage;
     private int[] topDiscInCols;
     private Map<Integer, Integer> playerIdToPlayerIndex;
@@ -152,13 +152,10 @@ public class desktopAppController {
 
     public desktopAppController() {
         gameFactory = new GameFactory();
-        isValidXML = new SimpleBooleanProperty();
-        isValidXML.setValue(false);
-        isReplayMode = new SimpleIntegerProperty();
-        isReplayMode.setValue(0);
         xmlLoadedSuccessfully = false;
-        isRoundOn = new SimpleBooleanProperty();
-        isRoundOn.set(false);
+        isValidXML = new SimpleBooleanProperty(false);
+        isReplayMode = new SimpleBooleanProperty(false);
+        isRoundOn = new SimpleBooleanProperty(false);
         currentPlayerID = new SimpleIntegerProperty();
         tieAlert = false;
         winAlert = false;
@@ -174,10 +171,8 @@ public class desktopAppController {
         TopPanel_loadXML_Button.disableProperty().bind(Bindings.selectBoolean(isRoundOn));
         TopPanel_playRound_Button.disableProperty().bind(Bindings.or(isValidXML.not(), isRoundOn));
         TopPanel_endRound_Button.disableProperty().bind(isRoundOn.not());
-        TopPanel_resignPlayer_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
-        LeftPanel_toggleReplay_Button.disableProperty().bind(TopPanel_playRound_Button.disabledProperty());
-        LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
-        LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.isEqualTo(0).not());
+        LeftPanel_toggleReplay_Button.disableProperty().bind(isRoundOn.not());
+        TopPanel_resignPlayer_Button.disableProperty().bind(isRoundOn.not());
 
         LeftPanel_playerID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         LeftPanel_playerName_TableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -216,6 +211,27 @@ public class desktopAppController {
 
         LeftPanel_playerColour_TableColumn.setCellFactory(colorCellFactory);
         playerIdToPlayerIndex = new HashMap<>();
+        LeftPanel_replayRightArrow_Button.setId("rightReplayButton");
+        LeftPanel_replayRightArrow_Button.getStyleClass().add("replayButton");
+        LeftPanel_replayLeftArrow_Button.setId("leftReplayButton");
+        LeftPanel_replayLeftArrow_Button.getStyleClass().add("replayButton");
+
+        LeftPanel_playersTable_TableView.setRowFactory(new Callback<TableView<PlayerDisplay>, TableRow<PlayerDisplay>>() {
+            @Override
+            public TableRow<PlayerDisplay> call(TableView<PlayerDisplay> tableView) {
+                TableRow<PlayerDisplay> row = new TableRow<PlayerDisplay>() {
+                    @Override
+                    protected void updateItem(PlayerDisplay playerDisplay, boolean empty) {
+                        super.updateItem(playerDisplay, empty);
+                        if (playerDisplay != null)
+                            disableProperty().bind(playerDisplay.isActive.not());
+                    }
+                };
+
+                return row;
+            }
+        });
+
     }
 
     private void createBoard() {
@@ -241,9 +257,9 @@ public class desktopAppController {
             for (int j = 0; j < cols; j++) {
                 Circle c = createNewDisc();
 
-                CenterPanel_boardArea_GridPane.setRowIndex(c, i);
-                CenterPanel_boardArea_GridPane.setColumnIndex(c, j);
-                CenterPanel_boardArea_GridPane.setMargin(c, new Insets(7, 10, 7, 0));
+                GridPane.setRowIndex(c, i);
+                GridPane.setColumnIndex(c, j);
+                GridPane.setMargin(c, new Insets(7, 10, 7, 0));
                 CenterPanel_boardArea_GridPane.getChildren().add(c);
             }
         }
@@ -259,8 +275,8 @@ public class desktopAppController {
                 playSingleMove((ColumnButton) b, buttonType);
             });
 
-            CenterPanel_boardArea_GridPane.setRowIndex(b, row);
-            CenterPanel_boardArea_GridPane.setColumnIndex(b, i);
+            GridPane.setRowIndex(b, row);
+            GridPane.setColumnIndex(b, i);
             CenterPanel_boardArea_GridPane.getChildren().add(b);
         }
 
@@ -276,11 +292,10 @@ public class desktopAppController {
             if (b.getButtonType() == MoveType.INSERT)
                 setDiscInCol(b.getCol(), currentPlayer.getId());
             else
-                removeDiscFromCol(b.getCol());
+                removeBottomDiscFromCol(b.getCol());
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
             addMoveToTable(gameLogic.getLastMove());
-            LeftPanel_playersTable_TableView.getColumns().get(3).setVisible(false);
-            LeftPanel_playersTable_TableView.getColumns().get(3).setVisible(true);
+            LeftPanel_playersTable_TableView.refresh();
 
             if (gameLogic.getHasWinner()) {
                 this.winAlert = true;
@@ -310,9 +325,12 @@ public class desktopAppController {
 
     private void selectNextPlayer() {
         this.currentPlayerID.setValue(gameLogic.getIdOfCurrentPlayer());
+        int selectedIndex = LeftPanel_playersTable_TableView.getSelectionModel().getSelectedIndex();
+        LeftPanel_playersTable_TableView.getSelectionModel().clearSelection(selectedIndex);
+
         LeftPanel_playersTable_TableView.
                 getSelectionModel().
-                clearAndSelect(playerIdToPlayerIndex.
+                select(playerIdToPlayerIndex.
                         get(currentPlayerID.get()));
         LeftPanel_playersTable_TableView.refresh();
     }
@@ -336,7 +354,7 @@ public class desktopAppController {
                 if (move.getMoveType() == MoveType.INSERT)
                     setDiscInCol(move.getCol(), currentPlayer.getId());
                 else
-                    removeDiscFromCol(move.getCol());
+                    removeBottomDiscFromCol(move.getCol());
                 currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
                 addMoveToTable(gameLogic.getLastMove());
 
@@ -453,8 +471,8 @@ public class desktopAppController {
         int row = topDiscInCols[col] == -1 ? gameLogic.getRows(): topDiscInCols[col] - 1;
 
         for (Node node : childrens) {
-            if(CenterPanel_boardArea_GridPane.getRowIndex(node) == row &&
-                    CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
+            if(GridPane.getRowIndex(node) == row &&
+                    GridPane.getColumnIndex(node) == col) {
                 disc = node;
                 break;
             }
@@ -466,37 +484,65 @@ public class desktopAppController {
     }
 
     // assuming column has at least 1 disc in it (to be removed)
-    public void removeDiscFromCol(int col) {
+    private void removeBottomDiscFromCol(int col) {
         // columns counting satrts from 1
         col--;
         Node discAbove = null, discBelow = null;
-        ObservableList<Node> children = CenterPanel_boardArea_GridPane.getChildren();
-        int rowBelow = gameLogic.getRows();
+        ObservableList<Node> gridCells = CenterPanel_boardArea_GridPane.getChildren();
+        int bottomRow = gameLogic.getRows();
+
+        removeSingleDiscFromBoard(gridCells, col, bottomRow);
+    }
+
+    private void removePlayerDiscsFromBoard(int playerId) {
+        String playerStyle = "player" + Integer.toString(playerIdToPlayerIndex.get(playerId));
+
+        ObservableList<Node> gridCells = CenterPanel_boardArea_GridPane.getChildren();
+
+        for (Node cell : gridCells) {
+            if (cell instanceof Circle && cell.getStyleClass().contains(playerStyle)) {
+                int bottomRow = GridPane.getRowIndex(cell);
+                int col = GridPane.getColumnIndex(cell);
+                removeSingleDiscFromBoard(gridCells, col, bottomRow);
+            }
+        }
+    }
+
+    private void removeSingleDiscFromBoard(ObservableList<Node> gridCells, int col, int bottomRow) {
+        Node discAbove = null, discBelow = null;
 
         do {
-            for (Node node : children) {
-                if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow - 1 &&
-                        CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
+            for (Node node : gridCells) {
+                if(GridPane.getRowIndex(node) == bottomRow - 1 &&
+                        GridPane.getColumnIndex(node) == col &&
+                        node instanceof Circle) {
                     discAbove = node;
                     break;
                 }
             }
 
-            for (Node node : children) {
-                if(CenterPanel_boardArea_GridPane.getRowIndex(node) == rowBelow &&
-                        CenterPanel_boardArea_GridPane.getColumnIndex(node) == col) {
+            for (Node node : gridCells) {
+                if(GridPane.getRowIndex(node) == bottomRow &&
+                        GridPane.getColumnIndex(node) == col &&
+                        node instanceof Circle) {
                     discBelow = node;
                     break;
                 }
             }
 
-            discBelow.getStyleClass().clear();
-            discBelow.getStyleClass().addAll(discAbove.getStyleClass());
-            rowBelow--;
-        } while (rowBelow > topDiscInCols[col]);
+            if (discBelow != null) {
+                discBelow.getStyleClass().clear();
+                if (discAbove != null)
+                    discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+            }
 
-        discAbove.getStyleClass().clear();
-        discAbove.getStyleClass().add("emptyDisc");
+            bottomRow--;
+        } while (bottomRow > topDiscInCols[col]);
+
+        if (discAbove != null) {
+            discAbove.getStyleClass().clear();
+            discAbove.getStyleClass().add("emptyDisc");
+        }
         topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ? -1 : topDiscInCols[col] + 1;
     }
 
@@ -513,6 +559,17 @@ public class desktopAppController {
 
     @FXML
     void lightTheme_onButtonAction(javafx.event.ActionEvent event) { }
+
+    @FXML
+    public void toggleReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        isReplayMode.set(!isReplayMode.get());
+        if (isReplayMode.get() == true) {
+            LeftPanel_toggleReplay_Button.setText("Replay OFF");
+        }
+        else {
+            LeftPanel_toggleReplay_Button.setText("Replay ON");
+        }
+    }
 
     @FXML
     public void exitGame_onButtonAction(javafx.event.ActionEvent actionEvent) {
@@ -569,13 +626,23 @@ public class desktopAppController {
     @FXML
     public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
         gameLogic.resignPlayer();
+        int playerIndex = playerIdToPlayerIndex.get(currentPlayerID.get());
 
-        //TODO: update board
+        PlayerDisplay p = players.get(playerIndex);
+        p.setActive(false);
+        LeftPanel_playersTable_TableView.refresh();
+
+        removePlayerDiscsFromBoard(currentPlayerID.get());
+
+        // TODO: remove/draken row from players table
+        players.remove(p);
 
         if (gameLogic.getHasWinner()) {
             showWinAlert();
             endRound();
         }
+
+        selectNextPlayer();
     }
 
     @FXML

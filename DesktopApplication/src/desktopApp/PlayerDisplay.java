@@ -3,29 +3,30 @@ package desktopApp;
 import common.PlayerTypes;
 import engine.Player;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.paint.Color;
 
+import javax.swing.text.TabableView;
+
 public class PlayerDisplay {
     private String name;
     private int id;
     private PlayerTypes type;
-    //private int numMoves;
     private SimpleIntegerProperty numMoves;
     private String color;
-    private boolean isActive;
+    public SimpleBooleanProperty isActive;
     private Player player;
 
     public PlayerDisplay(Player p) {
         this.name = p.getName();
         this.id = p.getId();
         this.type = p.getPlayerType();
-        //this.numMoves = p.getNumMovesMade();
         this.numMoves = new SimpleIntegerProperty();
         this.numMoves.set(0);
-        this.isActive = true;
+        this.isActive = new SimpleBooleanProperty(true);
         this.player = p;
     }
 
@@ -41,9 +42,6 @@ public class PlayerDisplay {
         return type;
     }
 
-//    public int getNumMoves() {
-//        return numMoves;
-//    }
     public int getNumMoves() {
         return numMoves.get();
     }
@@ -53,7 +51,7 @@ public class PlayerDisplay {
     }
 
     public boolean isActive() {
-        return isActive;
+        return isActive.get();
     }
 
     public void setName(String name) {
@@ -68,9 +66,6 @@ public class PlayerDisplay {
         this.type = type;
     }
 
-//    public void setNumMoves(int numMoves) {
-//        this.numMoves = numMoves;
-//    }
     public void setNumMoves(int numMoves) {
         this.numMoves.set(numMoves);
     }
@@ -80,6 +75,6 @@ public class PlayerDisplay {
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        isActive.set(active);
     }
 }

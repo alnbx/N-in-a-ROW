@@ -48,9 +48,6 @@ public class Game implements GameLogic, Serializable {
     protected void restartPlayers(boolean isNewPlayers) {
         if (isNewPlayers) {
             this.players = new ArrayList<Player>();
-
-     //       if (gameSettings.getGameType() == GameType.MULTIPLAYER ||
-     //               gameSettings.getGameType() == GameType.DYNAMIC_MULTIPLAYER) {
                 List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
                 for (PlayerSettings ps : playersSettings) {
                     players.add(new Player(ps));
@@ -152,7 +149,7 @@ public class Game implements GameLogic, Serializable {
 
         if (ret) {
             //change current player after turn is completed succefully
-            nextPlayer();
+            setNextPlayer();
 
             if (popout) { board.increaseEmptySpace(); }
             else { board.decreaseEmptySpace(); }
@@ -164,7 +161,7 @@ public class Game implements GameLogic, Serializable {
         return ret;
     }
 
-    private void nextPlayer()
+    private void setNextPlayer()
     {
         currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size());
         while(!currentPlayer.isActive()) { currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size()); }
@@ -295,6 +292,7 @@ public class Game implements GameLogic, Serializable {
     public void resignPlayer()
     {
         currentPlayer.deactivatePlayer();
+        setNextPlayer();
         this.board.removeAllDiscsofPlayer(currentPlayer.getId());
         this.activePlayers--;
 
