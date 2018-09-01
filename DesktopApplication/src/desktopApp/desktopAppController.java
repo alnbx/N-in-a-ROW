@@ -8,19 +8,14 @@ import java.util.*;
 import common.GameVariant;
 import common.MoveType;
 import common.PlayerTypes;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.beans.value.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -31,7 +26,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.*;
 import javafx.util.Callback;
-import sun.plugin2.ipc.windows.WindowsEvent;
 
 
 public class desktopAppController {
@@ -47,6 +41,8 @@ public class desktopAppController {
     private ObservableList<MoveDisplay> moves = FXCollections.observableArrayList();
     private ObservableList<PlayerDisplay> players = FXCollections.observableArrayList();
     private SimpleIntegerProperty currentPlayerID;
+    private boolean tieAlert;
+    private boolean winAlert;
 
     @FXML
     private ResourceBundle resources;
@@ -155,6 +151,8 @@ public class desktopAppController {
         isRoundOn = new SimpleBooleanProperty();
         isRoundOn.set(false);
         currentPlayerID = new SimpleIntegerProperty();
+        tieAlert = false;
+        winAlert = false;
     }
 
     public void setApplication() {
@@ -261,9 +259,8 @@ public class desktopAppController {
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
         PlayerDisplay currentPlayer = players.get(
-                        playerIdToPlayerIndex.get(
-                        gameLogic.getIdOfCurrentPlayer())
-        );
+                playerIdToPlayerIndex.get(
+                        gameLogic.getIdOfCurrentPlayer()));
 
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
         if (isValidMove) {
@@ -277,20 +274,19 @@ public class desktopAppController {
             LeftPanel_playersTable_TableView.getColumns().get(3).setVisible(true);
 
             if (gameLogic.getHasWinner()) {
+                this.winAlert = true;
                 showWinAlert();
                 endRound();
-            }
-            else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
+            } else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
+                this.tieAlert = true;
                 showTieAlert();
                 endRound();
             }
-        }
-        else {
+        } else {
             showInvalidMoveAlert();
         }
 
         selectNextPlayer();
-        //Thread.currentThread().
         playComputerIfNeeded();
     }
 
@@ -303,45 +299,48 @@ public class desktopAppController {
         LeftPanel_playersTable_TableView.refresh();
     }
 
-    // TODO: take care of the case that ComputerPlayer plays first
     private void playComputerIfNeeded() {
-        boolean tieAlert = false;
-        boolean winAlert= false;
+
         while (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
+            ComputerTurnTask turn = new ComputerTurnTask(this.gameLogic, this);
+            Thread computerTurn = new Thread(turn);
             PlayerDisplay currentPlayer = players.get(
                     playerIdToPlayerIndex.get(
                             gameLogic.getIdOfCurrentPlayer())
             );
-            gameLogic.play(0, gameLogic.isPopout());
-            Move move = gameLogic.getLastMove();
 
-            if (move.getMoveType() == MoveType.INSERT)
-                setDiscInCol(move.getCol(), currentPlayer.getId());
-            else
-                removeDiscFromCol(move.getCol());
-            currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
-            addMoveToTable(gameLogic.getLastMove());
+            computerTurn.start();
 
-            if (gameLogic.getHasWinner()) {
-                winAlert = true;
-                break;
-            }
-            else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
-                tieAlert = true;
-                break;
-            }
+            turn.setOnSucceeded(e -> {
+                //gameLogic.play(0, gameLogic.isPopout());
+                //Move move = gameLogic.getLastMove();
+                Move move = turn.getValue();
 
-            selectNextPlayer();
-        }
+                if (move.getMoveType() == MoveType.INSERT)
+                    setDiscInCol(move.getCol(), currentPlayer.getId());
+                else
+                    removeDiscFromCol(move.getCol());
+                currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
+                addMoveToTable(gameLogic.getLastMove());
 
-        if (tieAlert) {
-            showTieAlert();
-            endRound();
-        }
+                if (gameLogic.getHasWinner()) {
+                    winAlert = true;
+                } else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
+                    tieAlert = true;
+                }
 
-        if (winAlert) {
-            showWinAlert();
-            endRound();
+                selectNextPlayer();
+
+                if (tieAlert) {
+                    showTieAlert();
+                    endRound();
+                }
+
+                if (winAlert) {
+                    showWinAlert();
+                    endRound();
+                }
+            });
         }
     }
 
@@ -650,7 +649,8 @@ public class desktopAppController {
         return this.xmlLoadedSuccessfully;
     }
 
-    private String getGameVariantAsText(GameVariant gameVariant) {
+    private String getGameVariantAsText(GameVariant gameVariant)
+    {
         if      (gameVariant == GameVariant.REGULAR)  { return "Regular"; }
         else if (gameVariant == GameVariant.CIRCULAR) { return "Circular"; }
         else    { return "Popout"; }
