@@ -44,7 +44,6 @@ public class desktopAppController {
     private SimpleIntegerProperty currentPlayerID;
     private boolean tieAlert;
     private boolean winAlert;
-    private AtomicBoolean inComputerTurnTask;
 
     @FXML
     private ResourceBundle resources;
@@ -155,7 +154,6 @@ public class desktopAppController {
         currentPlayerID = new SimpleIntegerProperty();
         tieAlert = false;
         winAlert = false;
-        inComputerTurnTask = new AtomicBoolean(false);
     }
 
     public void setApplication() {
@@ -261,7 +259,6 @@ public class desktopAppController {
     }
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
-        if (this.inComputerTurnTask.get()) { showComputerIsPlayingAlert(); return; }
         PlayerDisplay currentPlayer = players.get(
                 playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer()));
@@ -314,7 +311,6 @@ public class desktopAppController {
 
     private void playComputerIfNeeded() {
         if (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
-            this.inComputerTurnTask.set(true);
             ComputerTurnTask turn = new ComputerTurnTask(this.gameLogic, this);
             Thread computerTurn = new Thread(turn);
             PlayerDisplay currentPlayer = players.get(
@@ -555,7 +551,6 @@ public class desktopAppController {
 
     @FXML
     public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        if (this.inComputerTurnTask.get()) { showComputerIsPlayingAlert(); return; }
         gameLogic.resignPlayer();
 
         //TODO: update board
