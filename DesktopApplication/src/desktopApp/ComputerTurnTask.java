@@ -12,15 +12,18 @@ public class ComputerTurnTask extends Task<Move>
     private GameLogic gameLogic;
     private desktopAppController controller;
 
-    ComputerTurnTask(GameLogic gameLogic, desktopAppController controller){
+    ComputerTurnTask(GameLogic gameLogic, desktopAppController controller)
+    {
         this.gameLogic = gameLogic;
         this.controller = controller;
     }
 
     @Override
-    protected Move call() throws Exception {
+    protected Move call() throws Exception
+    {
         gameLogic.play(0, gameLogic.isPopout());
-        Thread.sleep(150);
-        return gameLogic.getLastMove();
+        Thread.sleep(1200);
+        Move move = gameLogic.getLastMove();
+        return move;
     }
 }

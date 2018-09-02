@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import common.GameVariant;
 import common.MoveType;
@@ -43,6 +44,7 @@ public class desktopAppController {
     private SimpleIntegerProperty currentPlayerID;
     private boolean tieAlert;
     private boolean winAlert;
+    private AtomicBoolean inComputerTurnTask;
 
     @FXML
     private ResourceBundle resources;
@@ -153,6 +155,7 @@ public class desktopAppController {
         currentPlayerID = new SimpleIntegerProperty();
         tieAlert = false;
         winAlert = false;
+        inComputerTurnTask = new AtomicBoolean(false);
     }
 
     public void setApplication() {
@@ -258,6 +261,7 @@ public class desktopAppController {
     }
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
+        if (this.inComputerTurnTask.get()) { showComputerIsPlayingAlert(); return; }
         PlayerDisplay currentPlayer = players.get(
                 playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer()));
@@ -290,6 +294,15 @@ public class desktopAppController {
         playComputerIfNeeded();
     }
 
+    private void showComputerIsPlayingAlert()
+    {
+        String message = "Computer is making a move!";
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Interrupting to Computer's turn");
+        alert.setHeaderText("Please let the computer finish\nand then try again.");
+        Optional<ButtonType> result = alert.showAndWait();
+    }
+
     private void selectNextPlayer() {
         this.currentPlayerID.setValue(gameLogic.getIdOfCurrentPlayer());
         LeftPanel_playersTable_TableView.
@@ -300,8 +313,8 @@ public class desktopAppController {
     }
 
     private void playComputerIfNeeded() {
-
-        while (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
+        if (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
+            this.inComputerTurnTask.set(true);
             ComputerTurnTask turn = new ComputerTurnTask(this.gameLogic, this);
             Thread computerTurn = new Thread(turn);
             PlayerDisplay currentPlayer = players.get(
@@ -340,6 +353,8 @@ public class desktopAppController {
                     showWinAlert();
                     endRound();
                 }
+
+                playComputerIfNeeded();
             });
         }
     }
@@ -367,12 +382,16 @@ public class desktopAppController {
     private void showInvalidMoveAlert() {
         String message = "Invalid move, try again!";
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Invalid move");
+        alert.setHeaderText("Invalid move");
         Optional<ButtonType> result = alert.showAndWait();
     }
 
     private void showTieAlert() {
         String message = "Round is over with a tie!";
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Round over");
+        alert.setHeaderText("Round is over with a tie!");
         Optional<ButtonType> result = alert.showAndWait();
         endRound();
     }
@@ -406,6 +425,8 @@ public class desktopAppController {
 
         message = MessageFormat.format(message, namesMsg.toString());
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("We have a winner!");
+        alert.setHeaderText("We have a winner!");
         Optional<ButtonType> result = alert.showAndWait();
         endRound();
     }
@@ -519,7 +540,6 @@ public class desktopAppController {
             exitGame_onButtonAction(new javafx.event.ActionEvent());
             e.consume();
         });
-
     }
 
     @FXML
@@ -535,6 +555,7 @@ public class desktopAppController {
 
     @FXML
     public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        if (this.inComputerTurnTask.get()) { showComputerIsPlayingAlert(); return; }
         gameLogic.resignPlayer();
 
         //TODO: update board
@@ -574,15 +595,11 @@ public class desktopAppController {
 
     private void alertNoXMLFileWasChosen()
     {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "File was not chosen. \n Please try again", ButtonType.OK);
         alert.setTitle("File was not chosen");
         alert.setHeaderText("File was not chosen");
-        alert.setContentText("File was not chosen. \n Please try again");
         this.xmlLoadedSuccessfully = false;
-        alert.show();
-        try { Thread.sleep(2000); }
-        catch (Exception e) {}
-        alert.close();
+        alert.showAndWait();
     }
 
     private void initTopDiscInColsArr() {
