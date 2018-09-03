@@ -120,6 +120,14 @@ public class desktopAppController {
     @FXML
     private Button TopPanel_exitGame_Button;
     @FXML
+    private MenuButton TopPanel_Themes_Button;
+    @FXML
+    private MenuItem TopPanel_Themes_funTheme_Button;
+    @FXML
+    private MenuItem TopPanel_Themes_draculaTheme_Button;
+    @FXML
+    private MenuItem TopPanel_Themes_lightTheme_Button;
+    @FXML
     private HBox TopPanel_Info_HBox;
     @FXML
     private HBox TopPanel_GameInfo_HBox;
@@ -498,6 +506,15 @@ public class desktopAppController {
     }
 
     @FXML
+    void draculaTheme_onButtonAction(javafx.event.ActionEvent event) { }
+
+    @FXML
+    void funTheme_onButtonAction(javafx.event.ActionEvent event) { }
+
+    @FXML
+    void lightTheme_onButtonAction(javafx.event.ActionEvent event) { }
+
+    @FXML
     public void exitGame_onButtonAction(javafx.event.ActionEvent actionEvent) {
         //TopPanel_welcome_Label.setText("Bye Bye?");
         //try { Thread.sleep(1000); }
@@ -513,7 +530,7 @@ public class desktopAppController {
         catch (Exception e) { System.exit(0); }
 
         ExitConfirmController exitController = fxmlLoader.getController();
-        Scene secondScene = new Scene(xmlLoading, 260, 200);
+        Scene secondScene = new Scene(xmlLoading, 200, 110);
         Stage ExitConfirm = new Stage();
         exitController.setStage(ExitConfirm);
 

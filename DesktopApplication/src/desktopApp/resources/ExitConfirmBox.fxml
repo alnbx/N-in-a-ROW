@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="Outer_ConfirmExit_VBox" alignment="CENTER" minHeight="160.0" minWidth="250.0" spacing="20.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.ExitConfirmController">
+<VBox fx:id="Outer_ConfirmExit_VBox" alignment="CENTER" minHeight="109.0" minWidth="250.0" prefHeight="109.0" prefWidth="250.0" spacing="20.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.ExitConfirmController">
    <children>
       <Label fx:id="ConfirmExit_ExitMessageLabel" alignment="CENTER" prefHeight="88.0" prefWidth="229.0" text="Are You Sure You Want To Exit?" textAlignment="CENTER" wrapText="true">
          <font>

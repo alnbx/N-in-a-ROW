@@ -3,6 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -58,9 +60,19 @@
                                           <Insets right="10.0" />
                                        </HBox.margin>
                                     </Button>
+                                    <MenuButton fx:id="TopPanel_Themes_Button" mnemonicParsing="false" text="Themes">
+                                      <items>
+                                        <MenuItem fx:id="TopPanel_Themes_funTheme_Button" mnemonicParsing="false" onAction="#funTheme_onButtonAction" text="Fun" />
+                                        <MenuItem fx:id="TopPanel_Themes_draculaTheme_Button" mnemonicParsing="false" onAction="#draculaTheme_onButtonAction" text="Dracula" />
+                                          <MenuItem fx:id="TopPanel_Themes_lightTheme_Button" mnemonicParsing="false" onAction="#lightTheme_onButtonAction" text="Light" />
+                                      </items>
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
+                                    </MenuButton>
                                     <Button fx:id="TopPanel_exitGame_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exitGame_onButtonAction" text="Exit Game">
                                        <HBox.margin>
-                                          <Insets />
+                                          <Insets right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
