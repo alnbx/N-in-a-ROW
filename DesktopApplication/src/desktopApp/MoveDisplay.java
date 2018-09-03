@@ -13,7 +13,7 @@ public class MoveDisplay {
     public MoveDisplay(Move move, String playerName) {
         this.moveType = move.getMoveType();
         this.playerName = playerName;
-        this.col = move.getCol() + 1;
+        this.col = move.getCol();
         this.timestamp = move.getTimeStamp();
         this.playerid = move.getPlayerId();
 

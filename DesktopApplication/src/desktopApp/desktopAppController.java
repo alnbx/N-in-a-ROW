@@ -174,7 +174,7 @@ public class desktopAppController {
         TopPanel_playRound_Button.disableProperty().bind(Bindings.or(isValidXML.not(), isRoundOn));
         TopPanel_endRound_Button.disableProperty().bind(isRoundOn.not());
         LeftPanel_toggleReplay_Button.disableProperty().bind(isRoundOn.not());
-        TopPanel_resignPlayer_Button.disableProperty().bind(isRoundOn.not());
+        TopPanel_resignPlayer_Button.disableProperty().bind(Bindings.or(isRoundOn.not(), isReplayMode));
         LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.not());
         LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.not());
 
@@ -837,14 +837,57 @@ public class desktopAppController {
             else {
                 addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
             }
-
-            moveIndexForReplay--;
-            if(moveIndexForReplay >= 0)
-                LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
-            else
-                LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
         }
 
+        moveIndexForReplay--;
+        while (moveIndexForReplay >= 0 &&
+                !isPlayerActive(moves.get(moveIndexForReplay).getPlayerid()))
+            moveIndexForReplay--;
+
+        if(moveIndexForReplay >= 0)
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
+        else
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+    }
+
+//    @FXML
+//    private void leftReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
+//        if (moveIndexForReplay >= 0) {
+//            MoveDisplay move = moves.get(moveIndexForReplay);
+//
+//            if (move.getMoveType() == MoveType.INSERT) {
+//                removeDiscOfInsert(move.getCol() - 1);
+//            }
+//            else {
+//                addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
+//            }
+//
+//            moveIndexForReplay--;
+//            if(moveIndexForReplay >= 0)
+//                LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
+//            else
+//                LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+//        }
+//
+//    }
+
+//    private void unplayMove(MoveDisplay move) {
+//        if (move.getMoveType() == MoveType.INSERT) {
+//            removeDiscOfInsert(move.getCol() - 1);
+//        }
+//        else {
+//            addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
+//        }
+//
+//        moveIndexForReplay--;
+//        if(moveIndexForReplay >= 0)
+//            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
+//        else
+//            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+//    }
+
+    private boolean isPlayerActive (int playerId) {
+        return players.get(playerIdToPlayerIndex.get(playerId)).isActive();
     }
 
     private void addDiscOfPopout(int col, int playerId) {
@@ -896,6 +939,11 @@ public class desktopAppController {
 
     @FXML
     private void rightReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        while (moveIndexForReplay < moves.size() - 1 &&
+                !isPlayerActive(moves.get(moveIndexForReplay + 1).getPlayerid())) {
+            moveIndexForReplay++;
+        }
+
         if (moveIndexForReplay < moves.size() - 1) {
             moveIndexForReplay++;
             LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
