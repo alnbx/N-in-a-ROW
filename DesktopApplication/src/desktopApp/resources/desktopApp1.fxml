@@ -150,11 +150,11 @@
                         </Label>
                         <TableView fx:id="LeftPanel_playersTable_TableView" prefHeight="226.0" prefWidth="354.0">
                           <columns>
-                              <TableColumn fx:id="LeftPanel_playerColour_TableColumn" prefWidth="58.0" text="Colour" />
-                            <TableColumn fx:id="LeftPanel_playerID_TableColumn" prefWidth="37.0" text="ID" />
-                              <TableColumn fx:id="LeftPanel_playerName_TableColumn" prefWidth="71.0" text="Name" />
-                            <TableColumn fx:id="LeftPanel_playerMoves_TableColumn" prefWidth="94.0" text="Moves Made" />
-                              <TableColumn fx:id="LeftPanel_playerType_TableColumn" prefWidth="62.0" text="Type" />
+                              <TableColumn fx:id="LeftPanel_playerColour_TableColumn" prefWidth="52.0" text="Colour" />
+                            <TableColumn fx:id="LeftPanel_playerID_TableColumn" prefWidth="41.0" text="ID" />
+                              <TableColumn fx:id="LeftPanel_playerName_TableColumn" prefWidth="95.0" text="Name" />
+                            <TableColumn fx:id="LeftPanel_playerMoves_TableColumn" prefWidth="83.0" text="Moves" />
+                              <TableColumn fx:id="LeftPanel_playerType_TableColumn" prefWidth="50.0" text="Type" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
