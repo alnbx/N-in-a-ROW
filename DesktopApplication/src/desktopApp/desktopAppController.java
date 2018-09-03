@@ -242,6 +242,224 @@ public class desktopAppController {
         LeftPanel_playersTable_TableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
+    private void showComputerIsPlayingAlert()
+    {
+        String message = "Computer is making a move!";
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Interrupting to Computer's turn");
+        alert.setHeaderText("Please let the computer finish\nand then try again.");
+        Optional<ButtonType> result = alert.showAndWait();
+    }
+
+    private Node getDiscInRowCol(int row, int col) {
+        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+        Node res = null;
+
+        for (Node cell : gridPaneCells) {
+            if (GridPane.getRowIndex(cell) == row && GridPane.getColumnIndex(cell) == col) {
+                res = cell;
+                break;
+            }
+        }
+
+        return res;
+    }
+
+    /********************* THEMES *********************/
+
+    @FXML
+    void draculaTheme_onButtonAction(javafx.event.ActionEvent event) { }
+
+    @FXML
+    void funTheme_onButtonAction(javafx.event.ActionEvent event) { }
+
+    @FXML
+    void lightTheme_onButtonAction(javafx.event.ActionEvent event) { }
+
+    /**************** CONTROLLER SETUP ****************/
+
+    public void setPrimarySatge(Stage primaryStage) { this.primaryStage = primaryStage; }
+
+    public void setOnXButtonPress() {
+        this.primaryStage.setOnCloseRequest((WindowEvent e) ->  {
+            exitGame_onButtonAction(new javafx.event.ActionEvent());
+            e.consume();
+        });
+    }
+
+    /******************** GAME FLOW *******************/
+
+    @FXML
+    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        initTopDiscInColsArr();
+        this.moves.clear();
+        this.isRoundOn.set(true);
+        this.gameLogic.setRoundFromSettings(true);
+        LeftPanel_playersTable_TableView.getSelectionModel().clearAndSelect(0);
+        LeftPanel_playersTable_TableView.refresh();
+    }
+
+    @FXML
+    public void exitGame_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        //TopPanel_welcome_Label.setText("Bye Bye?");
+        //try { Thread.sleep(1000); }
+        //catch (InterruptedException e) { }
+        //System.exit(0);
+
+        VBox xmlLoading = null;
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        URL url = getClass().getResource("/desktopApp/resources/ExitConfirmBox.fxml");
+        fxmlLoader.setLocation(url);
+        try                 { xmlLoading = fxmlLoader.load(url.openStream()); }
+        catch (Exception e) { System.exit(0); }
+
+        ExitConfirmController exitController = fxmlLoader.getController();
+        Scene secondScene = new Scene(xmlLoading, 200, 110);
+        Stage ExitConfirm = new Stage();
+        exitController.setStage(ExitConfirm);
+
+        ExitConfirm.setTitle("Exit Confirmation");
+        ExitConfirm.setScene(secondScene);
+        ExitConfirm.initModality(Modality.WINDOW_MODAL);
+        ExitConfirm.initOwner(primaryStage);
+        ExitConfirm.setX(primaryStage.getX() + 300);
+        ExitConfirm.setY(primaryStage.getY() + 200);
+        ExitConfirm.showAndWait();
+        ExitConfirm.close();
+        TopPanel_welcome_Label.setText("Welcome Back!");
+
+    }
+
+    @FXML
+    public void endRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        endRound();
+    }
+
+    private void endRound() {
+        LeftPanel_movesHistory_TableView.getItems().clear();
+        isRoundOn.set(false);
+        clearBoard();
+        gameLogic.increaseRoundPlayed();
+        TopPanel_RoundsPlayedLabel_Label.setText(String.valueOf(gameLogic.getNumberOfRoundsPlayed()));
+    }
+
+    private void clearBoard() {
+        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+
+        for (Node cell : gridPaneCells) {
+            if (cell instanceof Circle) {
+                cell.getStyleClass().clear();
+                cell.getStyleClass().add("emptyDisc");
+            }
+        }
+    }
+
+    /****************** PLAYER RESIGN *****************/
+
+    @FXML
+    public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        gameLogic.resignPlayer();
+
+        players.get(playerIdToPlayerIndex.get(currentPlayerID.get())).setActive(false);
+        removePlayerDiscsFromBoard(currentPlayerID.get());
+
+        // TODO: remove/draken row from players table
+
+        if (gameLogic.getHasWinner()) {
+            showWinAlert();
+            endRound();
+        }
+
+        selectNextPlayer();
+    }
+
+    private void removePlayerDiscsFromBoard(int playerId) {
+        String playerStyle = "player" + Integer.toString(playerIdToPlayerIndex.get(playerId));
+
+        ObservableList<Node> gridCells = CenterPanel_boardArea_GridPane.getChildren();
+
+        for (Node cell : gridCells) {
+            if (cell instanceof Circle && cell.getStyleClass().contains(playerStyle)) {
+                int bottomRow = GridPane.getRowIndex(cell);
+                int col = GridPane.getColumnIndex(cell);
+                removeSingleDiscFromBoard(gridCells, col, bottomRow);
+            }
+        }
+    }
+
+    // assuming column has at least 1 disc in it (to be removed)
+    private void removeSingleDiscFromBoard(ObservableList<Node> gridCells, int col, int bottomRow) {
+        Node discAbove = null, discBelow = null;
+
+        while (bottomRow >= topDiscInCols[col]) {
+            if (bottomRow == topDiscInCols[col]) {
+                Node topDisc = getDiscInRowCol(bottomRow, col);
+                if (topDisc != null) {
+                    topDisc.getStyleClass().clear();
+                    topDisc.getStyleClass().add("emptyDisc");
+                }
+                break;
+            }
+            else {
+                discAbove = getDiscInRowCol(bottomRow - 1, col);
+                discBelow = getDiscInRowCol(bottomRow, col);
+
+                if (discBelow != null) {
+                    discBelow.getStyleClass().clear();
+                    if (discAbove != null)
+                        discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+                }
+
+                bottomRow--;
+            }
+        }
+
+        topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ? -1 : topDiscInCols[col] + 1;
+    }
+
+    /****************** INIT NEW GAME *****************/
+
+    private String getGameVariantAsText(GameVariant gameVariant)
+    {
+        if      (gameVariant == GameVariant.REGULAR)  { return "Regular"; }
+        else if (gameVariant == GameVariant.CIRCULAR) { return "Circular"; }
+        else    { return "Popout"; }
+    }
+
+    private void createPlayers() {
+        List<Player> players = gameLogic.getPlayers();
+        int i = 0;
+
+        for (Player p : players) {
+            PlayerDisplay playerDisplay = new PlayerDisplay(p);
+            this.players.add(playerDisplay);
+            playerIdToPlayerIndex.put(p.getId(), i);
+            i++;
+        }
+
+        LeftPanel_playersTable_TableView.setItems(this.players);
+    }
+
+    private void initTopDiscInColsArr() {
+        int cols = gameLogic.getCols();
+        topDiscInCols = new int[cols];
+
+        // row index of top disc in column is set to -1 when a column is empty
+        for (int i = 0; i < cols; ++i) {
+            topDiscInCols[i] = -1;
+        }
+    }
+
+    private Circle createNewDisc() {
+        Circle c = new Circle();
+        c.setRadius(25);
+        c.setFill(Color.TRANSPARENT);
+        c.setStroke(Color.BLACK);
+
+        return c;
+    }
+
     private void createBoard() {
         CenterPanel_boardArea_GridPane = new GridPane();
         int cols = gameLogic.getCols();
@@ -291,6 +509,8 @@ public class desktopAppController {
 
     }
 
+    /****************** MAKING MOVES ******************/
+
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
         PlayerDisplay currentPlayer = players.get(
                 playerIdToPlayerIndex.get(
@@ -322,27 +542,6 @@ public class desktopAppController {
 
         selectNextPlayer();
         playComputerIfNeeded();
-    }
-
-    private void playPopoutMove(int col) {
-        removeDiscOfPopout(col);
-        topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ?
-                -1 : topDiscInCols[col] + 1;
-    }
-
-    private void playInsertMove(int col, int playerId) {
-        addDiscOfInsert(col, playerId);
-        topDiscInCols[col] = topDiscInCols[col] == -1 ?
-                gameLogic.getRows() : topDiscInCols[col]  - 1;
-    }
-
-    private void showComputerIsPlayingAlert()
-    {
-        String message = "Computer is making a move!";
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
-        alert.setTitle("Interrupting to Computer's turn");
-        alert.setHeaderText("Please let the computer finish\nand then try again.");
-        Optional<ButtonType> result = alert.showAndWait();
     }
 
     private void selectNextPlayer() {
@@ -403,24 +602,78 @@ public class desktopAppController {
         }
     }
 
-    private void endRound() {
-        LeftPanel_movesHistory_TableView.getItems().clear();
-        isRoundOn.set(false);
-        clearBoard();
-        gameLogic.increaseRoundPlayed();
-        TopPanel_RoundsPlayedLabel_Label.setText(String.valueOf(gameLogic.getNumberOfRoundsPlayed()));
+    private void playPopoutMove(int col) {
+        removeDiscOfPopout(col);
+        topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ?
+                -1 : topDiscInCols[col] + 1;
     }
 
-    private void clearBoard() {
-        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+    private void playInsertMove(int col, int playerId) {
+        addDiscOfInsert(col, playerId);
+        topDiscInCols[col] = topDiscInCols[col] == -1 ?
+                gameLogic.getRows() : topDiscInCols[col]  - 1;
+    }
 
-        for (Node cell : gridPaneCells) {
-            if (cell instanceof Circle) {
-                cell.getStyleClass().clear();
-                cell.getStyleClass().add("emptyDisc");
+    private void removeDiscOfPopout(int col) {
+        Node discBelow = null, discAbove = null;
+        boolean reachedTop = false;
+        int i = gameLogic.getRows();
+
+        while (!reachedTop && i > 1) {
+            discAbove = getDiscInRowCol(i - 1, col);
+            discBelow = getDiscInRowCol(i, col);
+            reachedTop = discAbove.getStyleClass().contains("emptyDisc") &&
+                    !discBelow.getStyleClass().contains("emptyDisc");
+            if (discBelow != null) {
+                discBelow.getStyleClass().clear();
+                if (discAbove != null) {
+                    discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+                }
             }
+            i--;
+        }
+
+        // adding top disc in column
+        if (i == 1 && discAbove != null) {
+            discAbove.getStyleClass().clear();
+            discAbove.getStyleClass().add("emptyDisc");
         }
     }
+
+    private void addDiscOfInsert(int col, int playerid) {
+        Node discBelow = null, discAbove = null;
+        String style = "player" + Integer.toString(playerIdToPlayerIndex.get(playerid));
+        int i = 1;
+        while (i < gameLogic.getRows()) {
+            discAbove = getDiscInRowCol(i, col);
+            discBelow = getDiscInRowCol(i + 1, col);
+            if (discAbove != null && discBelow != null) {
+                if (discAbove.getStyleClass().contains("emptyDisc") &&
+                        !discBelow.getStyleClass().contains("emptyDisc")) {
+                    discAbove.getStyleClass().clear();
+                    discAbove.getStyleClass().addAll(style);
+                    break;
+                }
+            }
+
+            i++;
+        }
+
+        // adding bottom disc in column
+        if (i == gameLogic.getRows() && discBelow != null) {
+            discBelow.getStyleClass().clear();
+            discBelow.getStyleClass().add(style);
+        }
+    }
+
+    private void addMoveToTable(Move move) {
+        String playerName = players.get(playerIdToPlayerIndex.get(move.getPlayerId())).getName();
+        MoveDisplay moveDisplay= new MoveDisplay(move, playerName);
+        moves.add(moveDisplay);
+        LeftPanel_movesHistory_TableView.getItems().add(moveDisplay);
+    }
+
+    /******************* MOVE ALERTS ******************/
 
     private void showInvalidMoveAlert() {
         String message = "Invalid move, try again!";
@@ -464,271 +717,19 @@ public class desktopAppController {
         endRound();
     }
 
-    private Circle createNewDisc() {
-        Circle c = new Circle();
-        c.setRadius(25);
-        c.setFill(Color.TRANSPARENT);
-        c.setStroke(Color.BLACK);
+    /******************* XML LOADING ******************/
 
-        return c;
-    }
-
-    private void removePlayerDiscsFromBoard(int playerId) {
-        String playerStyle = "player" + Integer.toString(playerIdToPlayerIndex.get(playerId));
-
-        ObservableList<Node> gridCells = CenterPanel_boardArea_GridPane.getChildren();
-
-        for (Node cell : gridCells) {
-            if (cell instanceof Circle && cell.getStyleClass().contains(playerStyle)) {
-                int bottomRow = GridPane.getRowIndex(cell);
-                int col = GridPane.getColumnIndex(cell);
-                removeSingleDiscFromBoard(gridCells, col, bottomRow);
-            }
-        }
-    }
-
-    // assuming column has at least 1 disc in it (to be removed)
-    private void removeSingleDiscFromBoard(ObservableList<Node> gridCells, int col, int bottomRow) {
-        Node discAbove = null, discBelow = null;
-
-        while (bottomRow >= topDiscInCols[col]) {
-            if (bottomRow == topDiscInCols[col]) {
-                Node topDisc = getDiscInRowCol(bottomRow, col);
-                if (topDisc != null) {
-                    topDisc.getStyleClass().clear();
-                    topDisc.getStyleClass().add("emptyDisc");
-                }
-                break;
-            }
-            else {
-                discAbove = getDiscInRowCol(bottomRow - 1, col);
-                discBelow = getDiscInRowCol(bottomRow, col);
-
-                if (discBelow != null) {
-                    discBelow.getStyleClass().clear();
-                    if (discAbove != null)
-                        discBelow.getStyleClass().addAll(discAbove.getStyleClass());
-                }
-
-                bottomRow--;
-            }
-        }
-
-//        do {
-//            discAbove = getDiscInRowCol(bottomRow - 1, col);
-//            discBelow = getDiscInRowCol(bottomRow, col);
-//
-//            if (discBelow != null) {
-//                discBelow.getStyleClass().clear();
-//                if (discAbove != null)
-//                    discBelow.getStyleClass().addAll(discAbove.getStyleClass());
-//            }
-//
-//            bottomRow--;
-//        } while (bottomRow > topDiscInCols[col]);
-
-//        if (discAbove != null) {
-//            discAbove.getStyleClass().clear();
-//            discAbove.getStyleClass().add("emptyDisc");
-//        }
-        topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ? -1 : topDiscInCols[col] + 1;
-    }
-
-    @FXML
-    public void endRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        endRound();
-    }
-
-    @FXML
-    void draculaTheme_onButtonAction(javafx.event.ActionEvent event) { }
-
-    @FXML
-    void funTheme_onButtonAction(javafx.event.ActionEvent event) { }
-
-    @FXML
-    void lightTheme_onButtonAction(javafx.event.ActionEvent event) { }
-
-    @FXML
-    public void toggleReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        isReplayMode.set(!isReplayMode.get());
-        if (isReplayMode.get() == true) {
-            moveIndexForReplay = moves.size() - 1;
-            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
-            LeftPanel_toggleReplay_Button.setText("Replay OFF");
-            saveGridPaneStyles();
-        }
-        else {
-            LeftPanel_toggleReplay_Button.setText("Replay ON");
-            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
-            reconstructBoard();
-        }
-    }
-
-    private void reconstructBoard() {
-        Node discToUpdate = null;
-        for (int i = 1; i <= gameLogic.getRows(); ++i) {
-            ArrayList<ArrayList<String>> rowStyles = savedGridPaneStyles.get(i - 1);
-            for (int j = 0; j < gameLogic.getCols(); ++j) {
-                discToUpdate = getDiscInRowCol(i, j);
-                ArrayList<String> cellStyles = rowStyles.get(j);
-                if (discToUpdate != null) {
-                    discToUpdate.getStyleClass().clear();
-                    discToUpdate.getStyleClass().addAll(cellStyles);
-                }
-            }
-        }
-    }
-
-    private void saveGridPaneStyles() {
-        savedGridPaneStyles =  new ArrayList<ArrayList<ArrayList<String>>>();
-        for (int i = 1; i <= gameLogic.getRows(); ++i) {
-            ArrayList<ArrayList<String>> rowStyles = new ArrayList<ArrayList<String>>();
-            for (int j = 0; j < gameLogic.getCols(); ++j) {
-                Node cell = getDiscInRowCol(i, j);
-                ArrayList<String> cellStyles = getAllStyles(cell.getStyleClass());
-                rowStyles.add(cellStyles);
-            }
-            savedGridPaneStyles.add(rowStyles);
-        }
-    }
-
-    private ArrayList<String> getAllStyles(ObservableList<String> styleClass) {
-        ArrayList<String> styles = new ArrayList<>();
-
-        for (int i = 0; i < styleClass.size(); ++i) {
-            String str = styleClass.get(i);
-            styles.add(str);
-        }
-
-        return styles;
-    }
-
-    private Node getDiscInRowCol(int row, int col) {
-        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
-        Node res = null;
-
-        for (Node cell : gridPaneCells) {
-            if (GridPane.getRowIndex(cell) == row && GridPane.getColumnIndex(cell) == col) {
-                res = cell;
-                break;
-            }
-        }
-
-        return res;
-    }
-
-    @FXML
-    public void exitGame_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        //TopPanel_welcome_Label.setText("Bye Bye?");
-        //try { Thread.sleep(1000); }
-        //catch (InterruptedException e) { }
-        //System.exit(0);
-
-        VBox xmlLoading = null;
-
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("/desktopApp/resources/ExitConfirmBox.fxml");
-        fxmlLoader.setLocation(url);
-        try                 { xmlLoading = fxmlLoader.load(url.openStream()); }
-        catch (Exception e) { System.exit(0); }
-
-        ExitConfirmController exitController = fxmlLoader.getController();
-        Scene secondScene = new Scene(xmlLoading, 200, 110);
-        Stage ExitConfirm = new Stage();
-        exitController.setStage(ExitConfirm);
-
-        ExitConfirm.setTitle("Exit Confirmation");
-        ExitConfirm.setScene(secondScene);
-        ExitConfirm.initModality(Modality.WINDOW_MODAL);
-        ExitConfirm.initOwner(primaryStage);
-        ExitConfirm.setX(primaryStage.getX() + 300);
-        ExitConfirm.setY(primaryStage.getY() + 200);
-        ExitConfirm.showAndWait();
-        ExitConfirm.close();
-        TopPanel_welcome_Label.setText("Welcome Back!");
-
-    }
-
-    public void setPrimarySatge(Stage primaryStage) { this.primaryStage = primaryStage; }
-
-    public void setOnXButtonPress() {
-        this.primaryStage.setOnCloseRequest((WindowEvent e) ->  {
-            exitGame_onButtonAction(new javafx.event.ActionEvent());
-            e.consume();
-        });
-    }
-
-    @FXML
-    public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        initTopDiscInColsArr();
-        this.moves.clear();
-        this.isRoundOn.set(true);
-        this.gameLogic.setRoundFromSettings(true);
-        LeftPanel_playersTable_TableView.getSelectionModel().clearAndSelect(0);
-        LeftPanel_playersTable_TableView.refresh();
-    }
-
-    @FXML
-    public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        gameLogic.resignPlayer();
-
-        players.get(playerIdToPlayerIndex.get(currentPlayerID.get())).setActive(false);
-        removePlayerDiscsFromBoard(currentPlayerID.get());
-
-        // TODO: remove/draken row from players table
-
-        if (gameLogic.getHasWinner()) {
-            showWinAlert();
-            endRound();
-        }
-
-        selectNextPlayer();
-    }
-
-    @FXML
-    public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        File settingsFile;
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Settings File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
-        //File settingsFile = fileChooser.showOpenDialog(primaryStage);
-        //if (settingsFile == null)
-         //   return;
-
-        while (true) {
-            try {
-                settingsFile = fileChooser.showOpenDialog(primaryStage);
-                if (settingsFile == null) { alertNoXMLFileWasChosen(); return; }
-                if (createLoadingTask(settingsFile)) { break; }
-                else { isValidXML.setValue(false); return; }
-            } catch (Exception e) {
-                System.out.println("Error loading file");
-                continue;
-            }
-        }
-
-        CenterPanel_boardArea_GridPane.visibleProperty().setValue(true);
-        isValidXML.setValue(true);
-    }
-
-    private void alertNoXMLFileWasChosen()
+    private void loadXmlFailed()
     {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "File was not chosen. \n Please try again", ButtonType.OK);
-        alert.setTitle("File was not chosen");
-        alert.setHeaderText("File was not chosen");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Loading File Failed");
+        alert.setHeaderText("Loading File Failed");
+        alert.setContentText("Loading XML file failed. \n Please try again");
         this.xmlLoadedSuccessfully = false;
-        alert.showAndWait();
-    }
-
-    private void initTopDiscInColsArr() {
-        int cols = gameLogic.getCols();
-        topDiscInCols = new int[cols];
-
-        // row index of top disc in column is set to -1 when a column is empty
-        for (int i = 0; i < cols; ++i) {
-            topDiscInCols[i] = -1;
-        }
+        alert.show();
+        try { Thread.sleep(2000); }
+        catch (Exception e) {}
+        alert.close();
     }
 
     private boolean createLoadingTask(File settingsFile) {
@@ -785,106 +786,43 @@ public class desktopAppController {
         return this.xmlLoadedSuccessfully;
     }
 
-    private String getGameVariantAsText(GameVariant gameVariant)
-    {
-        if      (gameVariant == GameVariant.REGULAR)  { return "Regular"; }
-        else if (gameVariant == GameVariant.CIRCULAR) { return "Circular"; }
-        else    { return "Popout"; }
-    }
-
-    private void loadXmlFailed()
-    {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Loading File Failed");
-        alert.setHeaderText("Loading File Failed");
-        alert.setContentText("Loading XML file failed. \n Please try again");
-        this.xmlLoadedSuccessfully = false;
-        alert.show();
-        try { Thread.sleep(2000); }
-        catch (Exception e) {}
-        alert.close();
-    }
-
-    private void createPlayers() {
-        List<Player> players = gameLogic.getPlayers();
-        int i = 0;
-
-        for (Player p : players) {
-            PlayerDisplay playerDisplay = new PlayerDisplay(p);
-            this.players.add(playerDisplay);
-            playerIdToPlayerIndex.put(p.getId(), i);
-            i++;
-        }
-
-        LeftPanel_playersTable_TableView.setItems(this.players);
-    }
-
-    private void addMoveToTable(Move move) {
-        String playerName = players.get(playerIdToPlayerIndex.get(move.getPlayerId())).getName();
-        MoveDisplay moveDisplay= new MoveDisplay(move, playerName);
-        moves.add(moveDisplay);
-        LeftPanel_movesHistory_TableView.getItems().add(moveDisplay);
-    }
-
     @FXML
-    private void leftReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
-        if (moveIndexForReplay >= 0) {
-            MoveDisplay move = moves.get(moveIndexForReplay);
+    public void loadNewSettingFile_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        File settingsFile;
 
-            if (move.getMoveType() == MoveType.INSERT) {
-                removeDiscOfInsert(move.getCol() - 1);
-            }
-            else {
-                addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Settings File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", "*.xml"));
+        //File settingsFile = fileChooser.showOpenDialog(primaryStage);
+        //if (settingsFile == null)
+        //   return;
+
+        while (true) {
+            try {
+                settingsFile = fileChooser.showOpenDialog(primaryStage);
+                if (settingsFile == null) { alertNoXMLFileWasChosen(); return; }
+                if (createLoadingTask(settingsFile)) { break; }
+                else { isValidXML.setValue(false); return; }
+            } catch (Exception e) {
+                System.out.println("Error loading file");
+                continue;
             }
         }
 
-        moveIndexForReplay--;
-        while (moveIndexForReplay >= 0 &&
-                !isPlayerActive(moves.get(moveIndexForReplay).getPlayerid()))
-            moveIndexForReplay--;
-
-        if(moveIndexForReplay >= 0)
-            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
-        else
-            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+        CenterPanel_boardArea_GridPane.visibleProperty().setValue(true);
+        isValidXML.setValue(true);
     }
 
-//    @FXML
-//    private void leftReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
-//        if (moveIndexForReplay >= 0) {
-//            MoveDisplay move = moves.get(moveIndexForReplay);
-//
-//            if (move.getMoveType() == MoveType.INSERT) {
-//                removeDiscOfInsert(move.getCol() - 1);
-//            }
-//            else {
-//                addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
-//            }
-//
-//            moveIndexForReplay--;
-//            if(moveIndexForReplay >= 0)
-//                LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
-//            else
-//                LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
-//        }
-//
-//    }
+    private void alertNoXMLFileWasChosen()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "File was not chosen. \n Please try again", ButtonType.OK);
+        alert.setTitle("File was not chosen");
+        alert.setHeaderText("File was not chosen");
+        this.xmlLoadedSuccessfully = false;
+        alert.showAndWait();
+    }
 
-//    private void unplayMove(MoveDisplay move) {
-//        if (move.getMoveType() == MoveType.INSERT) {
-//            removeDiscOfInsert(move.getCol() - 1);
-//        }
-//        else {
-//            addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
-//        }
-//
-//        moveIndexForReplay--;
-//        if(moveIndexForReplay >= 0)
-//            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
-//        else
-//            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
-//    }
+    /********************* REPLAY *********************/
 
     private boolean isPlayerActive (int playerId) {
         return players.get(playerIdToPlayerIndex.get(playerId)).isActive();
@@ -957,55 +895,83 @@ public class desktopAppController {
         }
     }
 
-    private void removeDiscOfPopout(int col) {
-        Node discBelow = null, discAbove = null;
-        boolean reachedTop = false;
-        int i = gameLogic.getRows();
+    @FXML
+    private void leftReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        if (moveIndexForReplay >= 0) {
+            MoveDisplay move = moves.get(moveIndexForReplay);
 
-        while (!reachedTop && i > 1) {
-            discAbove = getDiscInRowCol(i - 1, col);
-            discBelow = getDiscInRowCol(i, col);
-            reachedTop = discAbove.getStyleClass().contains("emptyDisc") &&
-                    !discBelow.getStyleClass().contains("emptyDisc");
-            if (discBelow != null) {
-                discBelow.getStyleClass().clear();
-                if (discAbove != null) {
-                    discBelow.getStyleClass().addAll(discAbove.getStyleClass());
-                }
+            if (move.getMoveType() == MoveType.INSERT) {
+                removeDiscOfInsert(move.getCol() - 1);
             }
-            i--;
+            else {
+                addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
+            }
         }
 
-        // adding top disc in column
-        if (i == 1 && discAbove != null) {
-            discAbove.getStyleClass().clear();
-            discAbove.getStyleClass().add("emptyDisc");
+        moveIndexForReplay--;
+        while (moveIndexForReplay >= 0 &&
+                !isPlayerActive(moves.get(moveIndexForReplay).getPlayerid()))
+            moveIndexForReplay--;
+
+        if(moveIndexForReplay >= 0)
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
+        else
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+    }
+
+    @FXML
+    public void toggleReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        isReplayMode.set(!isReplayMode.get());
+        if (isReplayMode.get() == true) {
+            moveIndexForReplay = moves.size() - 1;
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
+            LeftPanel_toggleReplay_Button.setText("Replay OFF");
+            saveGridPaneStyles();
+        }
+        else {
+            LeftPanel_toggleReplay_Button.setText("Replay ON");
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+            reconstructBoard();
         }
     }
 
-    private void addDiscOfInsert(int col, int playerid) {
-        Node discBelow = null, discAbove = null;
-        String style = "player" + Integer.toString(playerIdToPlayerIndex.get(playerid));
-        int i = 1;
-        while (i < gameLogic.getRows()) {
-            discAbove = getDiscInRowCol(i, col);
-            discBelow = getDiscInRowCol(i + 1, col);
-            if (discAbove != null && discBelow != null) {
-                if (discAbove.getStyleClass().contains("emptyDisc") &&
-                        !discBelow.getStyleClass().contains("emptyDisc")) {
-                    discAbove.getStyleClass().clear();
-                    discAbove.getStyleClass().addAll(style);
-                    break;
+    private void reconstructBoard() {
+        Node discToUpdate = null;
+        for (int i = 1; i <= gameLogic.getRows(); ++i) {
+            ArrayList<ArrayList<String>> rowStyles = savedGridPaneStyles.get(i - 1);
+            for (int j = 0; j < gameLogic.getCols(); ++j) {
+                discToUpdate = getDiscInRowCol(i, j);
+                ArrayList<String> cellStyles = rowStyles.get(j);
+                if (discToUpdate != null) {
+                    discToUpdate.getStyleClass().clear();
+                    discToUpdate.getStyleClass().addAll(cellStyles);
                 }
             }
-
-            i++;
-        }
-
-        // adding bottom disc in column
-        if (i == gameLogic.getRows() && discBelow != null) {
-            discBelow.getStyleClass().clear();
-            discBelow.getStyleClass().add(style);
         }
     }
+
+    private void saveGridPaneStyles() {
+        savedGridPaneStyles =  new ArrayList<ArrayList<ArrayList<String>>>();
+        for (int i = 1; i <= gameLogic.getRows(); ++i) {
+            ArrayList<ArrayList<String>> rowStyles = new ArrayList<ArrayList<String>>();
+            for (int j = 0; j < gameLogic.getCols(); ++j) {
+                Node cell = getDiscInRowCol(i, j);
+                ArrayList<String> cellStyles = getAllStyles(cell.getStyleClass());
+                rowStyles.add(cellStyles);
+            }
+            savedGridPaneStyles.add(rowStyles);
+        }
+    }
+
+    private ArrayList<String> getAllStyles(ObservableList<String> styleClass) {
+        ArrayList<String> styles = new ArrayList<>();
+
+        for (int i = 0; i < styleClass.size(); ++i) {
+            String str = styleClass.get(i);
+            styles.add(str);
+        }
+
+        return styles;
+    }
+
 }
