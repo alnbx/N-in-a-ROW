@@ -99,7 +99,7 @@ public class Game implements GameLogic, Serializable {
 
         //record move
         // columns counting statrs from 1, as ComputerPlayer makes a pseudo move in column 0
-        this.lastMovePlayed = new Move(playerID, rand + 1, timeFromBegining(), MoveType.INSERT);
+        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining(), MoveType.INSERT);
         playedMoves.add(lastMovePlayed);
         getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 

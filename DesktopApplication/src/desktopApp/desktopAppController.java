@@ -46,6 +46,8 @@ public class desktopAppController {
     private boolean winAlert;
     private ArrayList<ArrayList<ArrayList<String>>> savedGridPaneStyles;
     private int moveIndexForReplay;
+    private HashMap<String, Button> myButtons = new HashMap<>();
+
 
     @FXML
     private ResourceBundle resources;
@@ -223,6 +225,7 @@ public class desktopAppController {
         LeftPanel_replayLeftArrow_Button.setId("leftReplayButton");
         LeftPanel_replayLeftArrow_Button.getStyleClass().add("replayButton");
 
+
 //        LeftPanel_playersTable_TableView.setRowFactory(new Callback<TableView<PlayerDisplay>, TableRow<PlayerDisplay>>() {
 //            @Override
 //            public TableRow<PlayerDisplay> call(TableView<PlayerDisplay> tableView) {
@@ -279,6 +282,8 @@ public class desktopAppController {
         for (int i = 0; i < cols; i++) {
             Button b = new ColumnButton(i + 1, buttonType);
             b.getStyleClass().add("colButton");
+            String buttonId = Integer.toString(i) + (buttonType == MoveType.INSERT ? "I" : "P");
+            b.setId(buttonId);
             b.setOnAction((ActionEvent) -> {
                 playSingleMove((ColumnButton) b, buttonType);
             });
@@ -287,6 +292,7 @@ public class desktopAppController {
             GridPane.setRowIndex(b, row);
             GridPane.setColumnIndex(b, i);
             CenterPanel_boardArea_GridPane.getChildren().add(b);
+            this.myButtons.put(buttonId, b);
         }
 
     }
@@ -297,14 +303,16 @@ public class desktopAppController {
                         gameLogic.getIdOfCurrentPlayer()));
 
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
+        Move move = gameLogic.getLastMove();
         if (isValidMove) {
             if (b.getButtonType() == MoveType.INSERT)
-                playInsertMove(b.getCol() - 1, currentPlayer.getId());
+                //playInsertMove(b.getCol() - 1, currentPlayer.getId());
+                playInsertMove(move.getCol(), currentPlayer.getId());
             else
-                playPopoutMove(b.getCol() - 1);
+                playPopoutMove(move.getCol());
 
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
-            addMoveToTable(gameLogic.getLastMove());
+            addMoveToTable(move);
             LeftPanel_playersTable_TableView.refresh();
 
             if (gameLogic.getHasWinner()) {
@@ -357,6 +365,11 @@ public class desktopAppController {
         LeftPanel_playersTable_TableView.refresh();
     }
 
+    private Button getButtonByMove(Move move) {
+        String expectedId = move.getCol() + (move.getMoveType() == MoveType.INSERT ? "I" : "P");
+        return myButtons.get(expectedId);
+    }
+
     private void playComputerIfNeeded() {
         if (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
             ComputerTurnTask turn = new ComputerTurnTask(this.gameLogic, this);
@@ -371,34 +384,41 @@ public class desktopAppController {
             turn.setOnSucceeded(e -> {
                 //gameLogic.play(0, gameLogic.isPopout());
                 //Move move = gameLogic.getLastMove();
-                Move move = turn.getValue();
-                if (move.getMoveType() == MoveType.INSERT)
-                    playInsertMove(move.getCol() - 1, currentPlayer.getId());
-                else
-                    playPopoutMove(move.getCol() - 1);
-
-                currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
-                addMoveToTable(gameLogic.getLastMove());
-
-                if (gameLogic.getHasWinner()) {
-                    winAlert = true;
-                } else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
-                    tieAlert = true;
+                // Patch...
+                Move move = gameLogic.getLastMove();
+                Button b = getButtonByMove(move);
+                if (b != null) {
+                    b.fire();
+                } else {
+                    // Something went horribly wrong :(
                 }
-
-                selectNextPlayer();
-
-                if (tieAlert) {
-                    showTieAlert();
-                    endRound();
-                }
-
-                if (winAlert) {
-                    showWinAlert();
-                    endRound();
-                }
-
-                playComputerIfNeeded();
+//                if (move.getMoveType() == MoveType.INSERT)
+//                    playInsertMove(move.getCol() - 1, currentPlayer.getId());
+//                else
+//                    playPopoutMove(move.getCol() - 1);
+//
+//                currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
+//                addMoveToTable(gameLogic.getLastMove());
+//
+//                if (gameLogic.getHasWinner()) {
+//                    winAlert = true;
+//                } else if (!gameLogic.isPopout() && gameLogic.getIsBoardFull()) {
+//                    tieAlert = true;
+//                }
+//
+//                selectNextPlayer();
+//
+//                if (tieAlert) {
+//                    showTieAlert();
+//                    endRound();
+//                }
+//
+//                if (winAlert) {
+//                    showWinAlert();
+//                    endRound();
+//                }
+//
+//                playComputerIfNeeded();
             });
         }
     }

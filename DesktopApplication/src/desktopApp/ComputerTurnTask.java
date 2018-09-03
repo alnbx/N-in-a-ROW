@@ -7,7 +7,7 @@ import javafx.concurrent.Task;
 /**
  * Created by user on 01/09/2018.
  */
-public class ComputerTurnTask extends Task<Move>
+public class ComputerTurnTask extends Task<Void>
 {
     private GameLogic gameLogic;
     private desktopAppController controller;
@@ -19,11 +19,12 @@ public class ComputerTurnTask extends Task<Move>
     }
 
     @Override
-    protected Move call() throws Exception
+    protected Void call() throws Exception
     {
-        gameLogic.play(0, gameLogic.isPopout());
+        //gameLogic.play(0, gameLogic.isPopout());
         Thread.sleep(1200);
-        Move move = gameLogic.getLastMove();
-        return move;
+        //Move move = gameLogic.getLastMove();
+        //return move;
+        return null;
     }
 }
