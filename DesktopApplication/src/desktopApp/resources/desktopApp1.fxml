@@ -72,7 +72,7 @@
                                     </MenuButton>
                                     <Button fx:id="TopPanel_exitGame_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exitGame_onButtonAction" text="Exit Game">
                                        <HBox.margin>
-                                          <Insets right="10.0" />
+                                          <Insets />
                                        </HBox.margin>
                                     </Button>
                                  </children>
@@ -176,13 +176,13 @@
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
                         </TableView>
-                        <ScrollPane fx:id="LeftPanel_replay_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="50.0" minViewportHeight="50.0" minViewportWidth="50.0" minWidth="50.0">
+                        <ScrollPane fx:id="LeftPanel_replay_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="27.0" minViewportHeight="50.0" minViewportWidth="50.0" minWidth="50.0" prefWidth="343.0">
                            <content>
-                              <HBox fx:id="LeftPanel_replay_HBox" minHeight="3.0" minWidth="20.0" prefHeight="3.0" prefWidth="341.0">
+                              <HBox fx:id="LeftPanel_replay_HBox" minHeight="0.0" minWidth="20.0" prefHeight="0.0" prefWidth="341.0">
                                  <children>
-                                    <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" />
-                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="&lt;-" />
-                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="-&gt;" />
+                                    <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="214.0" text="Replay ON" />
+                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="&lt;-" />
+                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="78.0" text="-&gt;" />
                                  </children>
                               </HBox>
                            </content>
