@@ -44,6 +44,8 @@ public class desktopAppController {
     private SimpleIntegerProperty currentPlayerID;
     private boolean tieAlert;
     private boolean winAlert;
+    private ArrayList<ArrayList<ArrayList<String>>> savedGridPaneStyles;
+    private int moveIndexForReplay;
 
     @FXML
     private ResourceBundle resources;
@@ -173,6 +175,8 @@ public class desktopAppController {
         TopPanel_endRound_Button.disableProperty().bind(isRoundOn.not());
         LeftPanel_toggleReplay_Button.disableProperty().bind(isRoundOn.not());
         TopPanel_resignPlayer_Button.disableProperty().bind(isRoundOn.not());
+        LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.not());
+        LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.not());
 
         LeftPanel_playerID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         LeftPanel_playerName_TableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -193,15 +197,18 @@ public class desktopAppController {
                             @Override
                             public void updateItem(String item, boolean empty) {
                                 super.updateItem(item, empty);
-                                setText("");
-                                int row = getTableRow().getIndex();
-                                String styleClass = row >= gameLogic.getNumberOfPlayersToInitialized() ?
-                                        "" : "player" + row;
-                                this.getStyleClass().add(styleClass);
-                            }
 
-                            private String getString() {
-                                return getItem() == null ? "" : getItem();
+                                if (item != null) {
+                                    setText("");
+                                    int row = getTableRow().getIndex();
+                                    String styleClass = row >= gameLogic.getNumberOfPlayersToInitialized() ?
+                                            "" : "player" + row;
+                                    setId(styleClass);
+                                    getStyleClass().add(styleClass);
+                                }
+                                else {
+                                    getStyleClass().clear();
+                                }
                             }
                         };
 
@@ -216,22 +223,23 @@ public class desktopAppController {
         LeftPanel_replayLeftArrow_Button.setId("leftReplayButton");
         LeftPanel_replayLeftArrow_Button.getStyleClass().add("replayButton");
 
-        LeftPanel_playersTable_TableView.setRowFactory(new Callback<TableView<PlayerDisplay>, TableRow<PlayerDisplay>>() {
-            @Override
-            public TableRow<PlayerDisplay> call(TableView<PlayerDisplay> tableView) {
-                TableRow<PlayerDisplay> row = new TableRow<PlayerDisplay>() {
-                    @Override
-                    protected void updateItem(PlayerDisplay playerDisplay, boolean empty) {
-                        super.updateItem(playerDisplay, empty);
-                        if (playerDisplay != null)
-                            disableProperty().bind(playerDisplay.isActive.not());
-                    }
-                };
+//        LeftPanel_playersTable_TableView.setRowFactory(new Callback<TableView<PlayerDisplay>, TableRow<PlayerDisplay>>() {
+//            @Override
+//            public TableRow<PlayerDisplay> call(TableView<PlayerDisplay> tableView) {
+//                TableRow<PlayerDisplay> row = new TableRow<PlayerDisplay>() {
+//                    @Override
+//                    protected void updateItem(PlayerDisplay playerDisplay, boolean empty) {
+//                        super.updateItem(playerDisplay, empty);
+//                        if (playerDisplay != null)
+//                            disableProperty().bind(playerDisplay.isActive.not());
+//                    }
+//                };
+//
+//                return row;
+//            }
+//        });
 
-                return row;
-            }
-        });
-
+        LeftPanel_playersTable_TableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     private void createBoard() {
@@ -256,7 +264,7 @@ public class desktopAppController {
         for (int i = 1; i <= rows; i++) {
             for (int j = 0; j < cols; j++) {
                 Circle c = createNewDisc();
-
+                c.getStyleClass().addAll("emptyDisc");
                 GridPane.setRowIndex(c, i);
                 GridPane.setColumnIndex(c, j);
                 GridPane.setMargin(c, new Insets(7, 10, 7, 0));
@@ -274,6 +282,7 @@ public class desktopAppController {
             b.setOnAction((ActionEvent) -> {
                 playSingleMove((ColumnButton) b, buttonType);
             });
+            b.disableProperty().bind(Bindings.or(isReplayMode, isRoundOn.not()));
 
             GridPane.setRowIndex(b, row);
             GridPane.setColumnIndex(b, i);
@@ -290,9 +299,9 @@ public class desktopAppController {
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
         if (isValidMove) {
             if (b.getButtonType() == MoveType.INSERT)
-                setDiscInCol(b.getCol(), currentPlayer.getId());
+                addDiscOfInsert(b.getCol() - 1, currentPlayer.getId());
             else
-                removeBottomDiscFromCol(b.getCol());
+                removeDiscOfPopout(b.getCol() - 1);
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
             addMoveToTable(gameLogic.getLastMove());
             LeftPanel_playersTable_TableView.refresh();
@@ -352,9 +361,9 @@ public class desktopAppController {
                 Move move = turn.getValue();
 
                 if (move.getMoveType() == MoveType.INSERT)
-                    setDiscInCol(move.getCol(), currentPlayer.getId());
+                    addDiscOfInsert(move.getCol() - 1, currentPlayer.getId());
                 else
-                    removeBottomDiscFromCol(move.getCol());
+                    removeDiscOfPopout(move.getCol() - 1);
                 currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
                 addMoveToTable(gameLogic.getLastMove());
 
@@ -385,7 +394,6 @@ public class desktopAppController {
         LeftPanel_movesHistory_TableView.getItems().clear();
         isRoundOn.set(false);
         clearBoard();
-        setDisableAllColButtons(true);
         gameLogic.increaseRoundPlayed();
         TopPanel_RoundsPlayedLabel_Label.setText(String.valueOf(gameLogic.getNumberOfRoundsPlayed()));
     }
@@ -416,16 +424,6 @@ public class desktopAppController {
         alert.setHeaderText("Round is over with a tie!");
         Optional<ButtonType> result = alert.showAndWait();
         endRound();
-    }
-
-    private void setDisableAllColButtons(boolean isEnable) {
-        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
-
-        for (Node cell : gridPaneCells) {
-            if (cell instanceof Button) {
-                cell.setDisable(isEnable);
-            }
-        }
     }
 
     private void showWinAlert() {
@@ -462,38 +460,6 @@ public class desktopAppController {
         return c;
     }
 
-    public void setDiscInCol(int col, int playerId) {
-        // columns counting satrts from 1
-        col--;
-        Node disc = null;
-        ObservableList<Node> childrens = CenterPanel_boardArea_GridPane.getChildren();
-
-        int row = topDiscInCols[col] == -1 ? gameLogic.getRows(): topDiscInCols[col] - 1;
-
-        for (Node node : childrens) {
-            if(GridPane.getRowIndex(node) == row &&
-                    GridPane.getColumnIndex(node) == col) {
-                disc = node;
-                break;
-            }
-        }
-
-        disc.getStyleClass().clear();
-        disc.getStyleClass().add("player" + playerIdToPlayerIndex.get(playerId));
-        topDiscInCols[col] = row;
-    }
-
-    // assuming column has at least 1 disc in it (to be removed)
-    private void removeBottomDiscFromCol(int col) {
-        // columns counting satrts from 1
-        col--;
-        Node discAbove = null, discBelow = null;
-        ObservableList<Node> gridCells = CenterPanel_boardArea_GridPane.getChildren();
-        int bottomRow = gameLogic.getRows();
-
-        removeSingleDiscFromBoard(gridCells, col, bottomRow);
-    }
-
     private void removePlayerDiscsFromBoard(int playerId) {
         String playerStyle = "player" + Integer.toString(playerIdToPlayerIndex.get(playerId));
 
@@ -508,27 +474,13 @@ public class desktopAppController {
         }
     }
 
+    // assuming column has at least 1 disc in it (to be removed)
     private void removeSingleDiscFromBoard(ObservableList<Node> gridCells, int col, int bottomRow) {
         Node discAbove = null, discBelow = null;
 
         do {
-            for (Node node : gridCells) {
-                if(GridPane.getRowIndex(node) == bottomRow - 1 &&
-                        GridPane.getColumnIndex(node) == col &&
-                        node instanceof Circle) {
-                    discAbove = node;
-                    break;
-                }
-            }
-
-            for (Node node : gridCells) {
-                if(GridPane.getRowIndex(node) == bottomRow &&
-                        GridPane.getColumnIndex(node) == col &&
-                        node instanceof Circle) {
-                    discBelow = node;
-                    break;
-                }
-            }
+            discAbove = getDiscInRowCol(bottomRow - 1, col);
+            discBelow = getDiscInRowCol(bottomRow, col);
 
             if (discBelow != null) {
                 discBelow.getStyleClass().clear();
@@ -564,11 +516,69 @@ public class desktopAppController {
     public void toggleReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
         isReplayMode.set(!isReplayMode.get());
         if (isReplayMode.get() == true) {
+            moveIndexForReplay = moves.size() - 1;
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
             LeftPanel_toggleReplay_Button.setText("Replay OFF");
+            saveGridPaneStyles();
         }
         else {
             LeftPanel_toggleReplay_Button.setText("Replay ON");
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+            reconstructBoard();
         }
+    }
+
+    private void reconstructBoard() {
+        Node discToUpdate = null;
+        for (int i = 1; i <= gameLogic.getRows(); ++i) {
+            ArrayList<ArrayList<String>> rowStyles = savedGridPaneStyles.get(i - 1);
+            for (int j = 0; j < gameLogic.getCols(); ++j) {
+                discToUpdate = getDiscInRowCol(i, j);
+                ArrayList<String> cellStyles = rowStyles.get(j);
+                if (discToUpdate != null) {
+                    discToUpdate.getStyleClass().clear();
+                    discToUpdate.getStyleClass().addAll(cellStyles);
+                }
+            }
+        }
+    }
+
+    private void saveGridPaneStyles() {
+        savedGridPaneStyles =  new ArrayList<ArrayList<ArrayList<String>>>();
+        for (int i = 1; i <= gameLogic.getRows(); ++i) {
+            ArrayList<ArrayList<String>> rowStyles = new ArrayList<ArrayList<String>>();
+            for (int j = 0; j < gameLogic.getCols(); ++j) {
+                Node cell = getDiscInRowCol(i, j);
+                ArrayList<String> cellStyles = getAllStyles(cell.getStyleClass());
+                rowStyles.add(cellStyles);
+            }
+            savedGridPaneStyles.add(rowStyles);
+        }
+    }
+
+    private ArrayList<String> getAllStyles(ObservableList<String> styleClass) {
+        ArrayList<String> styles = new ArrayList<>();
+
+        for (int i = 0; i < styleClass.size(); ++i) {
+            String str = styleClass.get(i);
+            styles.add(str);
+        }
+
+        return styles;
+    }
+
+    private Node getDiscInRowCol(int row, int col) {
+        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+        Node res = null;
+
+        for (Node cell : gridPaneCells) {
+            if (GridPane.getRowIndex(cell) == row && GridPane.getColumnIndex(cell) == col) {
+                res = cell;
+                break;
+            }
+        }
+
+        return res;
     }
 
     @FXML
@@ -615,7 +625,6 @@ public class desktopAppController {
     @FXML
     public void playRound_onButtonAction(javafx.event.ActionEvent actionEvent) {
         initTopDiscInColsArr();
-        setDisableAllColButtons(false);
         this.moves.clear();
         this.isRoundOn.set(true);
         this.gameLogic.setRoundFromSettings(true);
@@ -629,13 +638,10 @@ public class desktopAppController {
         int playerIndex = playerIdToPlayerIndex.get(currentPlayerID.get());
 
         PlayerDisplay p = players.get(playerIndex);
-        p.setActive(false);
-        LeftPanel_playersTable_TableView.refresh();
 
         removePlayerDiscsFromBoard(currentPlayerID.get());
 
         // TODO: remove/draken row from players table
-        players.remove(p);
 
         if (gameLogic.getHasWinner()) {
             showWinAlert();
@@ -772,10 +778,11 @@ public class desktopAppController {
         for (Player p : players) {
             PlayerDisplay playerDisplay = new PlayerDisplay(p);
             this.players.add(playerDisplay);
-            LeftPanel_playersTable_TableView.getItems().add(playerDisplay);
             playerIdToPlayerIndex.put(p.getId(), i);
             i++;
         }
+
+        LeftPanel_playersTable_TableView.setItems(this.players);
     }
 
     private void addMoveToTable(Move move) {
@@ -783,5 +790,140 @@ public class desktopAppController {
         MoveDisplay moveDisplay= new MoveDisplay(move, playerName);
         moves.add(moveDisplay);
         LeftPanel_movesHistory_TableView.getItems().add(moveDisplay);
+    }
+
+    @FXML
+    private void leftReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        if (moveIndexForReplay >= 0) {
+            MoveDisplay move = moves.get(moveIndexForReplay);
+
+            if (move.getMoveType() == MoveType.INSERT) {
+                removeDiscOfInsert(move.getCol() - 1);
+            }
+            else {
+                addDiscOfPopout(move.getCol() - 1, move.getPlayerid());
+            }
+
+            moveIndexForReplay--;
+            if(moveIndexForReplay >= 0)
+                LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
+            else
+                LeftPanel_movesHistory_TableView.getSelectionModel().select(null);
+        }
+
+    }
+
+    private void addDiscOfPopout(int col, int playerId) {
+        for (int i = 1; i <= gameLogic.getRows() - 1; ++i) {
+            Node cellAbove = getDiscInRowCol(i, col);
+            Node cellBelow = getDiscInRowCol(i + 1, col);
+            if (cellAbove != null && cellBelow != null) {
+                if (cellAbove.getStyleClass().contains("emptyDisc") &&
+                        !cellBelow.getStyleClass().contains("emptyDisc")) {
+                    moveDiscsUp(i + 1, col, playerId);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void moveDiscsUp(int rowDiscBelow, int col, int playerId) {
+        Node discBelow = null, discAbove = null;
+
+        while (rowDiscBelow <= gameLogic.getRows()) {
+            discAbove = getDiscInRowCol(rowDiscBelow - 1, col);
+            discBelow = getDiscInRowCol(rowDiscBelow, col);
+
+            if (discAbove != null && discBelow !=null ) {
+                discAbove.getStyleClass().clear();
+                discAbove.getStyleClass().addAll(discBelow.getStyleClass());
+            }
+            rowDiscBelow++;
+        }
+
+        int playerIndex = playerIdToPlayerIndex.get(playerId);
+        String style = "player" + Integer.toString(playerIndex);
+        if (discBelow != null) {
+            discBelow.getStyleClass().clear();
+            discBelow.getStyleClass().add(style);
+        }
+    }
+
+    private void removeDiscOfInsert(int col) {
+        for (int i = 1; i <= gameLogic.getRows(); ++i) {
+            Node cell = getDiscInRowCol(i, col);
+            if (cell != null && !cell.getStyleClass().contains("emptyDisc")) {
+                cell.getStyleClass().clear();
+                cell.getStyleClass().addAll("emptyDisc");
+                break;
+            }
+        }
+    }
+
+    @FXML
+    private void rightReplay_onButtonAction(javafx.event.ActionEvent actionEvent) {
+        if (moveIndexForReplay < moves.size() - 1) {
+            moveIndexForReplay++;
+            LeftPanel_movesHistory_TableView.getSelectionModel().select(moveIndexForReplay);
+            MoveDisplay move = moves.get(moveIndexForReplay);
+            if (move.getMoveType() == MoveType.INSERT) {
+                addDiscOfInsert(move.getCol() - 1, move.getPlayerid());
+            }
+            else {
+                removeDiscOfPopout(move.getCol() - 1);
+            }
+        }
+    }
+
+    private void removeDiscOfPopout(int col) {
+        Node discBelow = null, discAbove = null;
+        boolean reachedTop = false;
+        int i = gameLogic.getRows();
+
+        while (!reachedTop && i > 1) {
+            discAbove = getDiscInRowCol(i - 1, col);
+            discBelow = getDiscInRowCol(i, col);
+            reachedTop = discAbove.getStyleClass().contains("emptyDisc") &&
+                    !discBelow.getStyleClass().contains("emptyDisc");
+            if (discBelow != null) {
+                discBelow.getStyleClass().clear();
+                if (discAbove != null) {
+                    discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+                }
+            }
+            i--;
+        }
+
+        // adding top disc in column
+        if (i == 1 && discAbove != null) {
+            discAbove.getStyleClass().clear();
+            discAbove.getStyleClass().add("emptyDisc");
+        }
+    }
+
+    private void addDiscOfInsert(int col, int playerid) {
+        Node discBelow = null, discAbove = null;
+        String style = "player" + Integer.toString(playerIdToPlayerIndex.get(playerid));
+        int i = 1;
+        while (i < gameLogic.getRows()) {
+            discAbove = getDiscInRowCol(i, col);
+            discBelow = getDiscInRowCol(i + 1, col);
+            if (discAbove != null && discBelow != null) {
+                if (discAbove.getStyleClass().contains("emptyDisc") &&
+                        !discBelow.getStyleClass().contains("emptyDisc")) {
+                    discAbove.getStyleClass().clear();
+                    discAbove.getStyleClass().addAll(style);
+                    break;
+                }
+            }
+
+            i++;
+        }
+
+        // adding bottom disc in column
+        if (i == gameLogic.getRows() && discBelow != null) {
+            discBelow.getStyleClass().clear();
+            discBelow.getStyleClass().add(style);
+        }
     }
 }

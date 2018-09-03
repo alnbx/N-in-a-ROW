@@ -24,9 +24,9 @@ public class PlayerDisplay {
         this.name = p.getName();
         this.id = p.getId();
         this.type = p.getPlayerType();
-        this.numMoves = new SimpleIntegerProperty();
-        this.numMoves.set(0);
+        this.numMoves = new SimpleIntegerProperty(0);
         this.isActive = new SimpleBooleanProperty(true);
+        this.color = "dummy";
         this.player = p;
     }
 

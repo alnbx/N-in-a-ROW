@@ -6,6 +6,7 @@ import engine.*;
 public class MoveDisplay {
     private MoveType moveType;
     private  String playerName;
+    private int playerid;
     private int col;
     private String timestamp;
 
@@ -14,6 +15,8 @@ public class MoveDisplay {
         this.playerName = playerName;
         this.col = move.getCol() + 1;
         this.timestamp = move.getTimeStamp();
+        this.playerid = move.getPlayerId();
+
     }
 
     public void setMoveType(MoveType moveType) {
@@ -46,5 +49,9 @@ public class MoveDisplay {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public int getPlayerid() {
+        return playerid;
     }
 }

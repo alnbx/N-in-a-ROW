@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="Outer_ConfirmExit_VBox" alignment="CENTER" minHeight="160.0" minWidth="250.0" spacing="20.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.ExitConfirmController">
+   <children>
+      <Label fx:id="ConfirmExit_ExitMessageLabel" alignment="CENTER" prefHeight="88.0" prefWidth="229.0" text="Are You Sure You Want To Exit?" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <HBox fx:id="Inner_ConfirmExit_HBox" alignment="TOP_CENTER" spacing="50.0">
+         <children>
+            <Button fx:id="No_Button" mnemonicParsing="false" onAction="#exitConfirmNoButtonPressed" text="No" />
+            <Button fx:id="Yes_Button" mnemonicParsing="false" onAction="#exitConfirmYesButtonPressed" text="Yes" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

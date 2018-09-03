@@ -103,6 +103,9 @@
                             <TableColumn fx:id="LeftPanel_playerMoves_TableColumn" prefWidth="94.0" text="Moves Made" />
                               <TableColumn fx:id="LeftPanel_playerType_TableColumn" prefWidth="62.0" text="Type" />
                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
                         </TableView>
                         <Label fx:id="LeftPanel_movesHistory_Label" alignment="CENTER" prefHeight="20.0" prefWidth="335.0" text="Moves History" textAlignment="CENTER">
                            <font>
@@ -116,14 +119,17 @@
                               <TableColumn fx:id="LeftPanel_moveColumn_TableColumn" prefWidth="80.0" text="Column" />
                               <TableColumn fx:id="LeftPanel_moveTimeStamp_TableColumn" prefWidth="80.0" text="Timestamp" />
                            </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
                         </TableView>
                         <ScrollPane fx:id="LeftPanel_replay_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="50.0" minViewportHeight="50.0" minViewportWidth="50.0" minWidth="50.0">
                            <content>
                               <HBox fx:id="LeftPanel_replay_HBox" minHeight="20.0" minWidth="20.0" prefHeight="26.0" prefWidth="100.0">
                                  <children>
                                     <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" onAction="#toggleReplay_onButtonAction" />
-                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" />
-                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" />
+                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" onAction="#leftReplay_onButtonAction" />
+                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" onAction="#rightReplay_onButtonAction" />
                                  </children>
                               </HBox>
                            </content>

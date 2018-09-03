@@ -26,7 +26,7 @@ public class App extends Application {
         controller.setOnXButtonPress();
 
         Scene scene = new Scene(root, 900, 600);
-        
+
         scene.getStylesheets().add(getClass().getResource("/desktopApp/resources/mainStyle.css").toExternalForm());
 
         primaryStage.setScene(scene);
