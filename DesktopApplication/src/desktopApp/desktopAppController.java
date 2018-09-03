@@ -40,7 +40,7 @@ public class desktopAppController {
     private Map<Integer, Integer> playerIdToPlayerIndex;
     private Boolean xmlLoadedSuccessfully;
     private ObservableList<MoveDisplay> moves = FXCollections.observableArrayList();
-    private ObservableList<PlayerDisplay> players = FXCollections.observableArrayList();
+    private ObservableList<TogglePlayerDisplayActive> players = FXCollections.observableArrayList();
     private SimpleIntegerProperty currentPlayerID;
     private boolean tieAlert;
     private boolean winAlert;
@@ -67,17 +67,17 @@ public class desktopAppController {
     @FXML
     private Label LeftPanel_playersLabel_Label;
     @FXML
-    private TableView<PlayerDisplay> LeftPanel_playersTable_TableView;
+    private TableView<TogglePlayerDisplayActive> LeftPanel_playersTable_TableView;
     @FXML
-    private TableColumn<PlayerDisplay, Integer> LeftPanel_playerID_TableColumn;
+    private TableColumn<TogglePlayerDisplayActive, Integer> LeftPanel_playerID_TableColumn;
     @FXML
-    private TableColumn<PlayerDisplay, String> LeftPanel_playerName_TableColumn;
+    private TableColumn<TogglePlayerDisplayActive, String> LeftPanel_playerName_TableColumn;
     @FXML
-    private TableColumn<PlayerDisplay, Integer> LeftPanel_playerMoves_TableColumn;
+    private TableColumn<TogglePlayerDisplayActive, Integer> LeftPanel_playerMoves_TableColumn;
     @FXML
-    private TableColumn<PlayerDisplay, String> LeftPanel_playerColour_TableColumn;
+    private TableColumn<TogglePlayerDisplayActive, String> LeftPanel_playerColour_TableColumn;
     @FXML
-    private TableColumn<PlayerDisplay, PlayerTypes> LeftPanel_playerType_TableColumn;
+    private TableColumn<TogglePlayerDisplayActive, PlayerTypes> LeftPanel_playerType_TableColumn;
 
     @FXML
     private Label LeftPanel_movesHistory_Label;
@@ -178,7 +178,7 @@ public class desktopAppController {
         LeftPanel_replayLeftArrow_Button.disableProperty().bind(isReplayMode.not());
         LeftPanel_replayRightArrow_Button.disableProperty().bind(isReplayMode.not());
 
-        LeftPanel_playerID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        LeftPanel_playerID_TableColumn.setCellValueFactory(new PropertyValueFactory<>("playerId"));
         LeftPanel_playerName_TableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         LeftPanel_playerColour_TableColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
         LeftPanel_playerMoves_TableColumn.setCellValueFactory(new PropertyValueFactory<>("numMoves"));
@@ -189,11 +189,11 @@ public class desktopAppController {
         LeftPanel_moveColumn_TableColumn.setCellValueFactory(new PropertyValueFactory<>("col"));
         LeftPanel_moveTimeStamp_TableColumn.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
 
-        Callback<TableColumn<PlayerDisplay, String>, TableCell<PlayerDisplay, String>> colorCellFactory =
-                new Callback<TableColumn<PlayerDisplay, String>, TableCell<PlayerDisplay, String>>() {
+        Callback<TableColumn<TogglePlayerDisplayActive, String>, TableCell<TogglePlayerDisplayActive, String>> colorCellFactory =
+                new Callback<TableColumn<TogglePlayerDisplayActive, String>, TableCell<TogglePlayerDisplayActive, String>>() {
                     @Override
                     public TableCell call(TableColumn p) {
-                        TableCell cell = new TableCell<PlayerDisplay, String>() {
+                        TableCell cell = new TableCell<TogglePlayerDisplayActive, String>() {
                             @Override
                             public void updateItem(String item, boolean empty) {
                                 super.updateItem(item, empty);
@@ -222,24 +222,9 @@ public class desktopAppController {
         LeftPanel_replayRightArrow_Button.getStyleClass().add("replayButton");
         LeftPanel_replayLeftArrow_Button.setId("leftReplayButton");
         LeftPanel_replayLeftArrow_Button.getStyleClass().add("replayButton");
-
-//        LeftPanel_playersTable_TableView.setRowFactory(new Callback<TableView<PlayerDisplay>, TableRow<PlayerDisplay>>() {
-//            @Override
-//            public TableRow<PlayerDisplay> call(TableView<PlayerDisplay> tableView) {
-//                TableRow<PlayerDisplay> row = new TableRow<PlayerDisplay>() {
-//                    @Override
-//                    protected void updateItem(PlayerDisplay playerDisplay, boolean empty) {
-//                        super.updateItem(playerDisplay, empty);
-//                        if (playerDisplay != null)
-//                            disableProperty().bind(playerDisplay.isActive.not());
-//                    }
-//                };
-//
-//                return row;
-//            }
-//        });
-
         LeftPanel_playersTable_TableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        LeftPanel_playersTable_TableView.setEditable(true);
+        LeftPanel_playersTable_TableView.setRowFactory(p -> new ToggleTableRow<>());
     }
 
     private void showComputerIsPlayingAlert()
@@ -340,8 +325,17 @@ public class desktopAppController {
         LeftPanel_movesHistory_TableView.getItems().clear();
         isRoundOn.set(false);
         clearBoard();
+        activateAllPlayers();
         gameLogic.increaseRoundPlayed();
         TopPanel_RoundsPlayedLabel_Label.setText(String.valueOf(gameLogic.getNumberOfRoundsPlayed()));
+        LeftPanel_playersTable_TableView.getSelectionModel().clearSelection();
+        LeftPanel_playersTable_TableView.refresh();
+    }
+
+    private void activateAllPlayers() {
+        for (TogglePlayerDisplayActive player : players) {
+            player.setActive(true);
+        }
     }
 
     private void clearBoard() {
@@ -432,7 +426,7 @@ public class desktopAppController {
         int i = 0;
 
         for (Player p : players) {
-            PlayerDisplay playerDisplay = new PlayerDisplay(p);
+            TogglePlayerDisplayActive playerDisplay = new TogglePlayerDisplayActive(p);
             this.players.add(playerDisplay);
             playerIdToPlayerIndex.put(p.getId(), i);
             i++;
@@ -512,14 +506,14 @@ public class desktopAppController {
     /****************** MAKING MOVES ******************/
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
-        PlayerDisplay currentPlayer = players.get(
+        TogglePlayerDisplayActive currentPlayer = players.get(
                 playerIdToPlayerIndex.get(
                         gameLogic.getIdOfCurrentPlayer()));
 
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
         if (isValidMove) {
             if (b.getButtonType() == MoveType.INSERT)
-                playInsertMove(b.getCol() - 1, currentPlayer.getId());
+                playInsertMove(b.getCol() - 1, currentPlayer.getPlayerId());
             else
                 playPopoutMove(b.getCol() - 1);
 
@@ -560,7 +554,7 @@ public class desktopAppController {
         if (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
             ComputerTurnTask turn = new ComputerTurnTask(this.gameLogic, this);
             Thread computerTurn = new Thread(turn);
-            PlayerDisplay currentPlayer = players.get(
+            TogglePlayerDisplayActive currentPlayer = players.get(
                     playerIdToPlayerIndex.get(
                             gameLogic.getIdOfCurrentPlayer())
             );
@@ -572,7 +566,7 @@ public class desktopAppController {
                 //Move move = gameLogic.getLastMove();
                 Move move = turn.getValue();
                 if (move.getMoveType() == MoveType.INSERT)
-                    playInsertMove(move.getCol() - 1, currentPlayer.getId());
+                    playInsertMove(move.getCol() - 1, currentPlayer.getPlayerId());
                 else
                     playPopoutMove(move.getCol() - 1);
 
