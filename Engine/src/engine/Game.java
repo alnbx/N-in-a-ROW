@@ -297,11 +297,38 @@ public class Game implements GameLogic, Serializable {
         this.activePlayers--;
 
         Set<Integer> winners = checkWinnersAllBoard();
+        // check if there's a single active player left in the game
+        int winner = getLastActivePlayerId();
+        if (winner != -1)
+            winners.add(winner);
+
         if (!winners.isEmpty()) {
             this.board.setWinner(winners);
             this.board.setHasWinner(true);
             this.hasWinner = true;
         }
+    }
+
+    // if there's a single player left in the game: returns player ID
+    // otherwise: returns -1
+    private int getLastActivePlayerId() {
+        int lastPlayerId = - 1;
+        boolean foundActivePlayer = false;
+
+        for (Player player : players) {
+            if (player.isActive()) {
+                if (foundActivePlayer) {
+                    lastPlayerId = -1;
+                    break;
+                }
+                else {
+                    foundActivePlayer = true;
+                    lastPlayerId = player.getId();
+                }
+            }
+        }
+
+        return lastPlayerId;
     }
 
     public GameVariant getGameVariant() { return GameVariant.REGULAR; }

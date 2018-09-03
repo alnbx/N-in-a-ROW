@@ -299,9 +299,10 @@ public class desktopAppController {
         boolean isValidMove = gameLogic.play(b.getCol(), buttonType == MoveType.POPOUT);
         if (isValidMove) {
             if (b.getButtonType() == MoveType.INSERT)
-                addDiscOfInsert(b.getCol() - 1, currentPlayer.getId());
+                playInsertMove(b.getCol() - 1, currentPlayer.getId());
             else
-                removeDiscOfPopout(b.getCol() - 1);
+                playPopoutMove(b.getCol() - 1);
+
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
             addMoveToTable(gameLogic.getLastMove());
             LeftPanel_playersTable_TableView.refresh();
@@ -321,6 +322,18 @@ public class desktopAppController {
 
         selectNextPlayer();
         playComputerIfNeeded();
+    }
+
+    private void playPopoutMove(int col) {
+        removeDiscOfPopout(col);
+        topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ?
+                -1 : topDiscInCols[col] + 1;
+    }
+
+    private void playInsertMove(int col, int playerId) {
+        addDiscOfInsert(col, playerId);
+        topDiscInCols[col] = topDiscInCols[col] == -1 ?
+                gameLogic.getRows() : topDiscInCols[col]  - 1;
     }
 
     private void showComputerIsPlayingAlert()
@@ -359,11 +372,11 @@ public class desktopAppController {
                 //gameLogic.play(0, gameLogic.isPopout());
                 //Move move = gameLogic.getLastMove();
                 Move move = turn.getValue();
-
                 if (move.getMoveType() == MoveType.INSERT)
-                    addDiscOfInsert(move.getCol() - 1, currentPlayer.getId());
+                    playInsertMove(move.getCol() - 1, currentPlayer.getId());
                 else
-                    removeDiscOfPopout(move.getCol() - 1);
+                    playPopoutMove(move.getCol() - 1);
+
                 currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
                 addMoveToTable(gameLogic.getLastMove());
 
@@ -478,23 +491,46 @@ public class desktopAppController {
     private void removeSingleDiscFromBoard(ObservableList<Node> gridCells, int col, int bottomRow) {
         Node discAbove = null, discBelow = null;
 
-        do {
-            discAbove = getDiscInRowCol(bottomRow - 1, col);
-            discBelow = getDiscInRowCol(bottomRow, col);
-
-            if (discBelow != null) {
-                discBelow.getStyleClass().clear();
-                if (discAbove != null)
-                    discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+        while (bottomRow >= topDiscInCols[col]) {
+            if (bottomRow == topDiscInCols[col]) {
+                Node topDisc = getDiscInRowCol(bottomRow, col);
+                if (topDisc != null) {
+                    topDisc.getStyleClass().clear();
+                    topDisc.getStyleClass().add("emptyDisc");
+                }
+                break;
             }
+            else {
+                discAbove = getDiscInRowCol(bottomRow - 1, col);
+                discBelow = getDiscInRowCol(bottomRow, col);
 
-            bottomRow--;
-        } while (bottomRow > topDiscInCols[col]);
+                if (discBelow != null) {
+                    discBelow.getStyleClass().clear();
+                    if (discAbove != null)
+                        discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+                }
 
-        if (discAbove != null) {
-            discAbove.getStyleClass().clear();
-            discAbove.getStyleClass().add("emptyDisc");
+                bottomRow--;
+            }
         }
+
+//        do {
+//            discAbove = getDiscInRowCol(bottomRow - 1, col);
+//            discBelow = getDiscInRowCol(bottomRow, col);
+//
+//            if (discBelow != null) {
+//                discBelow.getStyleClass().clear();
+//                if (discAbove != null)
+//                    discBelow.getStyleClass().addAll(discAbove.getStyleClass());
+//            }
+//
+//            bottomRow--;
+//        } while (bottomRow > topDiscInCols[col]);
+
+//        if (discAbove != null) {
+//            discAbove.getStyleClass().clear();
+//            discAbove.getStyleClass().add("emptyDisc");
+//        }
         topDiscInCols[col] = topDiscInCols[col] == gameLogic.getRows() ? -1 : topDiscInCols[col] + 1;
     }
 
@@ -635,10 +671,8 @@ public class desktopAppController {
     @FXML
     public void playerResign_onButtonAction(javafx.event.ActionEvent actionEvent) {
         gameLogic.resignPlayer();
-        int playerIndex = playerIdToPlayerIndex.get(currentPlayerID.get());
 
-        PlayerDisplay p = players.get(playerIndex);
-
+        players.get(playerIdToPlayerIndex.get(currentPlayerID.get())).setActive(false);
         removePlayerDiscsFromBoard(currentPlayerID.get());
 
         // TODO: remove/draken row from players table
