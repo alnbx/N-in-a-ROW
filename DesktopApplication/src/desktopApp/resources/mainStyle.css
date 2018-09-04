@@ -67,3 +67,8 @@
 .nonActivePlayer {
     -fx-background-color: green;
 }
+
+.table-row-cell:disabled {
+    -fx-background-color: #c1c1c1;
+    -fx-control-inner-background: #c1c1c1;
+}
