@@ -143,10 +143,10 @@ public class PopoutGame extends Game
         Set<Integer> res = new HashSet<>();
 
         for (int i = board.getRows() - 1; i >= 0; i--) {
-            if ( board.leftRightSequencePopout(col, i) == targetSequence    ||
-                    board.upDownSequencePopout(col, i) == targetSequence       ||
-                    board.diagonalDownSequencePopout(col, i) == targetSequence ||
-                    board.diagonalUpSequencePopout(col, i) == targetSequence)
+            if ( board.leftRightSequencePopout(col, i) >= targetSequence    ||
+                    board.upDownSequencePopout(col, i) >= targetSequence       ||
+                    board.diagonalDownSequencePopout(col, i) >= targetSequence ||
+                    board.diagonalUpSequencePopout(col, i) >= targetSequence)
             { res.add(board.getPlayerInDisc(col, i)); }
         }
 

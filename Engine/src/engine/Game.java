@@ -195,10 +195,10 @@ public class Game implements GameLogic, Serializable {
     {
         int targetSequence = this.gameSettings.getTarget();
 
-        return  board.leftRightSequence(col, player) == targetSequence    ||
-                board.upDownSequence(col, player) == targetSequence       ||
-                board.diagonalDownSequence(col, player) == targetSequence ||
-                board.diagonalUpSequence(col, player) == targetSequence;
+        return  board.leftRightSequence(col, player) >= targetSequence    ||
+                board.upDownSequence(col, player) >= targetSequence       ||
+                board.diagonalDownSequence(col, player) >= targetSequence ||
+                board.diagonalUpSequence(col, player) >= targetSequence;
     }
 
     public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }
@@ -292,8 +292,8 @@ public class Game implements GameLogic, Serializable {
     public void resignPlayer()
     {
         currentPlayer.deactivatePlayer();
-        setNextPlayer();
         this.board.removeAllDiscsofPlayer(currentPlayer.getId());
+        setNextPlayer();
         this.activePlayers--;
 
         Set<Integer> winners = checkWinnersAllBoard();
@@ -342,10 +342,10 @@ public class Game implements GameLogic, Serializable {
 
         for (int col = board.getCols() - 1; col >= 0; col--) {
             for (int i = board.getRows() - 1; i >= 0; i--) {
-                if (board.leftRightSequencePopout(col, i) == targetSequence ||
-                        board.upDownSequencePopout(col, i) == targetSequence ||
-                        board.diagonalDownSequencePopout(col, i) == targetSequence ||
-                        board.diagonalUpSequencePopout(col, i) == targetSequence) {
+                if (board.leftRightSequencePopout(col, i) >= targetSequence ||
+                        board.upDownSequencePopout(col, i) >= targetSequence ||
+                        board.diagonalDownSequencePopout(col, i) >= targetSequence ||
+                        board.diagonalUpSequencePopout(col, i) >= targetSequence) {
                     res.add(board.getPlayerInDisc(col, i));
                 }
             }

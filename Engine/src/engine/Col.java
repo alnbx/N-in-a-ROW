@@ -133,9 +133,7 @@ public class Col implements Serializable {
         }
 
         this.discs[0].setDiscOfPlayer(0);
-        //if (this.lastRowInserted < discs.length - 1) {
         this.lastRowInserted++;
-        //}
         this.freeSpace++;
     }
 
@@ -146,9 +144,7 @@ public class Col implements Serializable {
         }
 
         this.discs[0].setDiscOfPlayer(0);
-        //if (this.lastRowInserted < discs.length - 1) {
         this.lastRowInserted++;
-        ///}
         this.freeSpace++;
     }
 

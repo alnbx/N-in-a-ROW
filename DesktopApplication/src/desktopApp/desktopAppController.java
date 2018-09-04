@@ -360,8 +360,6 @@ public class desktopAppController {
         players.get(playerIdToPlayerIndex.get(currentPlayerID.get())).setActive(false);
         removePlayerDiscsFromBoard(currentPlayerID.get());
 
-        // TODO: remove/draken row from players table
-
         if (gameLogic.getHasWinner()) {
             showWinAlert();
             endRound();
