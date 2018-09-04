@@ -69,7 +69,7 @@ public class Game implements GameLogic, Serializable {
 
         if (board.playMove(col, playerID)) {
             //record move
-            this.lastMovePlayed = new Move(playerID, col + 1, timeFromBegining(), MoveType.INSERT);
+            this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), MoveType.INSERT);
             playedMoves.add(lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
@@ -142,6 +142,7 @@ public class Game implements GameLogic, Serializable {
     public boolean play(int col, boolean popout)
     {
         boolean ret = true;
+        PlayerTypes player = this.currentPlayer.getPlayerType();
 
         if (this.currentPlayer.getPlayerType() == PlayerTypes.HUMAN) { ret = playHumanPlayer(col, popout); }
         else { ret = playComputerPlayer(); }
@@ -150,7 +151,7 @@ public class Game implements GameLogic, Serializable {
             //change current player after turn is completed succefully
             setNextPlayer();
 
-            if (popout) { board.increaseEmptySpace(); }
+            if (getLastMove().getMoveType() == MoveType.POPOUT) { board.increaseEmptySpace(); }
             else { board.decreaseEmptySpace(); }
 
             if (board.isFull()) { this.isBoardFull = true; }

@@ -15,35 +15,82 @@ public class PopoutGame extends Game
     }
 
     @Override
-    protected boolean playHumanPlayer(int col, boolean popout)
-    {
+    protected boolean playHumanPlayer(int col, boolean popout) {
         int playerID = this.currentPlayer.getId();
         col--;
 
         MoveType moveType = popout ? MoveType.POPOUT : MoveType.INSERT;
-        boolean turnPlayed =  popout ? playHumanPlayerPopout(col, playerID) : playHumanPlayerRegular(col, playerID);
+        boolean turnPlayed = popout ? playHumanPlayerPopout(col, playerID) : playHumanPlayerRegular(col, playerID);
         if (turnPlayed) {
             //record move
             this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), moveType);
             playedMoves.add(this.lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
-            if (checkWinningMove(col, playerID)) {
-                board.setWinner(playerID);
+            Set<Integer> winners = checkWinningMove(col);
+            if (!winners.isEmpty()) {
+                board.setWinner(winners);
                 board.setHasWinner(true);
                 this.hasWinner = true;
             }
+
             return true;
         }
 
         return false;
     }
 
-    private boolean playHumanPlayerPopout(int col, int playerID) { return board.playPopoutMove(col, playerID); }
+    private boolean playHumanPlayerPopout(int col, int playerID) {
+        if (!this.board.playPopoutMove(col, playerID)) { return false; }
 
-    private boolean playHumanPlayerRegular(int col, int playerID) { return super.board.playMove(col, playerID); }
+        this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), MoveType.POPOUT);
+        playedMoves.add(this.lastMovePlayed);
 
-    private boolean playComputerPlayerRegular() { return super.playComputerPlayer(); }
+        Set<Integer> winners = checkWinningMove(col);
+        if (!winners.isEmpty()) {
+            board.setWinner(winners);
+            board.setHasWinner(true);
+            this.hasWinner = true;
+        }
+
+        return true;
+    }
+
+    private boolean playHumanPlayerRegular(int col, int playerID) {
+        if (!this.board.playMove(col, playerID)) { return false; }
+
+        this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), MoveType.INSERT);
+        playedMoves.add(this.lastMovePlayed);
+
+        Set<Integer> winners = checkWinningMove(col);
+        if (!winners.isEmpty()) {
+            board.setWinner(winners);
+            board.setHasWinner(true);
+            this.hasWinner = true;
+        }
+
+        return true;
+    }
+
+    private boolean playComputerPlayerRegular() {
+        Random r = new Random();
+        int playerID = currentPlayer.getId();
+        // columns counting statrs from 1, as ComputerPlayer makes a pseudo move in column 0
+        int rand = r.nextInt(board.getCols());
+
+        while(!board.playMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
+        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining(), MoveType.INSERT);
+        playedMoves.add(this.lastMovePlayed);
+
+        Set<Integer> winners = checkWinningMove(rand);
+        if (!winners.isEmpty()) {
+            board.setWinner(winners);
+            board.setHasWinner(true);
+            this.hasWinner = true;
+        }
+
+        return true;
+    }
 
     private boolean playComputerPlayerPopout()
     {
@@ -53,16 +100,13 @@ public class PopoutGame extends Game
         int rand = r.nextInt(board.getCols());
 
         if (!super.board.isPopoutAvaliableForPlayer(playerID)) { return false; }
-
         while(!board.playPopoutMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
 
         //record move
         // columns counting statrs from 1, as ComputerPlayer makes a pseudo move in column 0
-        this.lastMovePlayed = new Move(playerID, rand + 1, timeFromBegining(), MoveType.POPOUT);
+        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining(), MoveType.POPOUT);
         playedMoves.add(this.lastMovePlayed);
 
-
-        //todo: After Popout check winning move must be for all column...
         Set<Integer> winners = checkWinningMove(rand);
         if (!winners.isEmpty()) {
             board.setWinner(winners);
@@ -74,22 +118,25 @@ public class PopoutGame extends Game
     }
 
     @Override
-    protected boolean playComputerPlayer()
-    {
+    protected boolean playComputerPlayer() {
         Random r = new Random();
         int playerID = currentPlayer.getId();
         int rand = r.nextInt(2);
         boolean canPopOut = false;
 
-        if (1 == rand) { return playComputerPlayerRegular(); }
-        else { canPopOut = playComputerPlayerPopout(); }
+        if (!this.board.isFull() && 1 == rand) {
+            return playComputerPlayerRegular();
+        } else {
+            canPopOut = playComputerPlayerPopout();
+        }
 
-        if (!canPopOut) { return playComputerPlayerRegular(); }
+        if (!canPopOut) {
+            return playComputerPlayerRegular();
+        }
 
         return true;
     }
 
-    //todo: you do not know which player are you checking. handle it.
     private Set<Integer> checkWinningMove(int col)
     {
         int targetSequence = this.gameSettings.getTarget();

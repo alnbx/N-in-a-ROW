@@ -291,9 +291,12 @@ public class Board implements Serializable {
 
     public boolean playPopoutMove(int col, int playerID)
     {
-        if (board[col].getDiscInCol(rows - 1).getPlayerDisc() != playerID) { return false; }
+        if (board[col].getDiscInCol(rows - 1).getPlayerDisc() != playerID) {
+            return false;
+        }
 
         board[col].dropDiscsDown();
+        this.emptySpaces++;
 
         return true;
     }

@@ -129,15 +129,14 @@ public class Col implements Serializable {
     public void dropDiscsDown()
     {
         for (int i = this.discs.length - 1; i > 0; i--) {
-            this.discs[i].setDiscOfPlayer(this.discs[i - 1].getPlayerDisc());
+            this.discs[i].setDiscOfPlayer(this.discs[i-1].getPlayerDisc());
         }
 
         this.discs[0].setDiscOfPlayer(0);
-        if (this.lastRowInserted < discs.length - 2) {
-            this.lastRowInserted++;
-        }
-
-        //TODO: call dropDiscsDown(this.discs.length - 1);
+        //if (this.lastRowInserted < discs.length - 1) {
+        this.lastRowInserted++;
+        //}
+        this.freeSpace++;
     }
 
     private void dropDiscsDown(int posInCol)
@@ -147,9 +146,10 @@ public class Col implements Serializable {
         }
 
         this.discs[0].setDiscOfPlayer(0);
-        if (this.lastRowInserted < discs.length - 2) {
-            this.lastRowInserted++;
-        }
+        //if (this.lastRowInserted < discs.length - 1) {
+        this.lastRowInserted++;
+        ///}
+        this.freeSpace++;
     }
 
     public int removeDiscsFromCol(int playerID)
@@ -162,7 +162,6 @@ public class Col implements Serializable {
                 res++;
             }
         }
-
         return res;
     }
 }

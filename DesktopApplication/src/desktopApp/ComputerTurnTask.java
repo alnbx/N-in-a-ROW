@@ -1,5 +1,6 @@
 package desktopApp;
 
+import common.Lock;
 import engine.GameLogic;
 import engine.Move;
 import javafx.concurrent.Task;
