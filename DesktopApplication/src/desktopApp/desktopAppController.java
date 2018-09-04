@@ -221,9 +221,7 @@ public class desktopAppController {
         LeftPanel_playerColour_TableColumn.setCellFactory(colorCellFactory);
         playerIdToPlayerIndex = new HashMap<>();
         LeftPanel_replayRightArrow_Button.setId("rightReplayButton");
-        LeftPanel_replayRightArrow_Button.getStyleClass().add("replayButton");
         LeftPanel_replayLeftArrow_Button.setId("leftReplayButton");
-        LeftPanel_replayLeftArrow_Button.getStyleClass().add("replayButton");
         LeftPanel_playersTable_TableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         LeftPanel_playersTable_TableView.setEditable(true);
         LeftPanel_playersTable_TableView.setRowFactory(p -> new ToggleTableRow<>());
@@ -238,13 +236,14 @@ public class desktopAppController {
         Optional<ButtonType> result = alert.showAndWait();
     }
 
-    private Node getDiscInRowCol(int row, int col) {
+    private StackPane getDiscContainerInRowCol(int row, int col)
+    {
         ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
-        Node res = null;
+        StackPane res = null;
 
         for (Node cell : gridPaneCells) {
             if (GridPane.getRowIndex(cell) == row && GridPane.getColumnIndex(cell) == col) {
-                res = cell;
+                res = (StackPane)cell;
                 break;
             }
         }
@@ -252,16 +251,44 @@ public class desktopAppController {
         return res;
     }
 
+    private Node getDiscInRowCol(int row, int col) {
+        ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+        Node res = null;
+        StackPane container = null;
+
+        container = getDiscContainerInRowCol(row, col);
+        res = container.getChildren().get(0);
+
+//        for (Node cell : gridPaneCells) {
+//            if (GridPane.getRowIndex(cell) == row && GridPane.getColumnIndex(cell) == col) {
+//                res = cell;
+//                break;
+//            }
+//        }
+
+        return res;
+    }
+
     /********************* THEMES *********************/
 
     @FXML
-    void draculaTheme_onButtonAction(javafx.event.ActionEvent event) { }
+    void draculaTheme_onButtonAction(javafx.event.ActionEvent event) {
+        MainPanel_BorderPane.getStyleClass().clear();
+        MainPanel_BorderPane.getStyleClass().addAll("main-container", "theme-dracula");
+    }
 
     @FXML
-    void funTheme_onButtonAction(javafx.event.ActionEvent event) { }
+    void funTheme_onButtonAction(javafx.event.ActionEvent event) {
+        MainPanel_BorderPane.getStyleClass().clear();
+        MainPanel_BorderPane.getStyleClass().addAll("main-container", "theme-ocean");
+    }
 
     @FXML
-    void lightTheme_onButtonAction(javafx.event.ActionEvent event) { }
+    void lightTheme_onButtonAction(javafx.event.ActionEvent event) {
+
+        MainPanel_BorderPane.getStyleClass().clear();
+        MainPanel_BorderPane.getStyleClass().addAll("main-container", "theme-light");
+    }
 
     /**************** CONTROLLER SETUP ****************/
 
@@ -342,11 +369,15 @@ public class desktopAppController {
 
     private void clearBoard() {
         ObservableList<Node> gridPaneCells = CenterPanel_boardArea_GridPane.getChildren();
+        Node cell = null;
 
-        for (Node cell : gridPaneCells) {
-            if (cell instanceof Circle) {
-                cell.getStyleClass().clear();
-                cell.getStyleClass().add("emptyDisc");
+        for (Node sp : gridPaneCells) {
+            if (sp instanceof StackPane) {
+                cell = ((StackPane) sp).getChildren().get(0);
+                if (cell instanceof Circle) {
+                    cell.getStyleClass().clear();
+                    cell.getStyleClass().add("emptyDisc");
+                }
             }
         }
     }
@@ -370,14 +401,17 @@ public class desktopAppController {
 
     private void removePlayerDiscsFromBoard(int playerId) {
         String playerStyle = "player" + Integer.toString(playerIdToPlayerIndex.get(playerId));
-
+        Node cell = null;
         ObservableList<Node> gridCells = CenterPanel_boardArea_GridPane.getChildren();
 
-        for (Node cell : gridCells) {
-            if (cell instanceof Circle && cell.getStyleClass().contains(playerStyle)) {
-                int bottomRow = GridPane.getRowIndex(cell);
-                int col = GridPane.getColumnIndex(cell);
-                removeSingleDiscFromBoard(gridCells, col, bottomRow);
+        for (Node sp : gridCells) {
+            if (sp instanceof StackPane) {
+                cell = ((StackPane) sp).getChildren().get(0);
+                if (cell instanceof Circle && cell.getStyleClass().contains(playerStyle)) {
+                    int bottomRow = GridPane.getRowIndex(cell);
+                    int col = GridPane.getColumnIndex(cell);
+                    removeSingleDiscFromBoard(gridCells, col, bottomRow);
+                }
             }
         }
     }
@@ -447,11 +481,21 @@ public class desktopAppController {
 
     private Circle createNewDisc() {
         Circle c = new Circle();
-        c.setRadius(25);
+        c.setRadius(20);
         c.setFill(Color.TRANSPARENT);
-        c.setStroke(Color.BLACK);
+        //c.setStroke(Color.BLACK);
 
         return c;
+    }
+
+    private StackPane createNewDiscContainer() {
+        StackPane sp = new StackPane();
+        sp.getStyleClass().add("game-cell");
+        Circle c = createNewDisc();
+        c.getStyleClass().addAll("emptyDisc");
+        sp.getChildren().addAll(c);
+
+        return sp;
     }
 
     private void createBoard() {
@@ -475,12 +519,17 @@ public class desktopAppController {
     private void addBoardCells(int cols, int rows) {
         for (int i = 1; i <= rows; i++) {
             for (int j = 0; j < cols; j++) {
-                Circle c = createNewDisc();
-                c.getStyleClass().addAll("emptyDisc");
-                GridPane.setRowIndex(c, i);
-                GridPane.setColumnIndex(c, j);
-                GridPane.setMargin(c, new Insets(7, 10, 7, 0));
-                CenterPanel_boardArea_GridPane.getChildren().add(c);
+                StackPane sp = createNewDiscContainer();
+                //Circle c = createNewDisc();
+                //c.getStyleClass().addAll("emptyDisc");
+                //sp.getChildren().add(c);
+                //GridPane.setRowIndex(c, i);
+                GridPane.setRowIndex(sp, i);
+                //GridPane.setColumnIndex(c, j);
+                GridPane.setColumnIndex(sp, j);
+                GridPane.setMargin(sp, new Insets(0, 0, 0, 0));
+                //CenterPanel_boardArea_GridPane.getChildren().add(c);
+                CenterPanel_boardArea_GridPane.getChildren().add(sp);
             }
         }
     }
@@ -490,7 +539,7 @@ public class desktopAppController {
     private void addColButtons(int cols, int row, MoveType buttonType) {
         for (int i = 0; i < cols; i++) {
             Button b = new ColumnButton(i + 1, buttonType);
-            b.getStyleClass().add("colButton");
+            b.getStyleClass().addAll("colButton", buttonType == MoveType.INSERT ? "insert" : "pop");
             String buttonId = Integer.toString(i) + (buttonType == MoveType.INSERT ? "I" : "P");
             b.setId(buttonId);
             b.setOnAction((ActionEvent) -> {
@@ -500,6 +549,11 @@ public class desktopAppController {
 
             GridPane.setRowIndex(b, row);
             GridPane.setColumnIndex(b, i);
+            if (buttonType == MoveType.INSERT) {
+                GridPane.setMargin(b, new Insets(0, 0, 10, 0));
+            } else {
+                GridPane.setMargin(b, new Insets(10, 0, 0, 0));
+            }
             CenterPanel_boardArea_GridPane.getChildren().add(b);
             this.myButtons.put(buttonId, b);
         }
@@ -749,10 +803,7 @@ public class desktopAppController {
         alert.setHeaderText("Loading File Failed");
         alert.setContentText("Loading XML file failed. \n Please try again");
         this.xmlLoadedSuccessfully = false;
-        alert.show();
-        try { Thread.sleep(2000); }
-        catch (Exception e) {}
-        alert.close();
+        alert.showAndWait();
     }
 
     private boolean createLoadingTask(File settingsFile) {
@@ -825,9 +876,13 @@ public class desktopAppController {
                 settingsFile = fileChooser.showOpenDialog(primaryStage);
                 if (settingsFile == null) { alertNoXMLFileWasChosen(); return; }
                 if (createLoadingTask(settingsFile)) { break; }
-                else { isValidXML.setValue(false); return; }
+                else {
+                    isValidXML.setValue(false);
+                    return;
+                }
             } catch (Exception e) {
                 System.out.println("Error loading file");
+                loadXmlFailed();
                 continue;
             }
         }

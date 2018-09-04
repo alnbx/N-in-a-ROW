@@ -37,12 +37,14 @@
 }
 
 .colButton {
-    -fx-background-image: url(/desktopApp/resources/downArrow.png);
-    -fx-min-height: 40px;
-    -fx-min-width: 50px;
-    -fx-background-size: 25px 25px;
+    -fx-min-height: 23px;
+    -fx-min-width: 53px;
+    -fx-max-height: 23px;
+    -fx-max-width: 53px;
+    -fx-pref-height: 23px;
+    -fx-pref-height: 53px;
     -fx-background-repeat: no-repeat;
-    -fx-background-position: center 8px;
+    -fx-background-size: stretch;
 }
 
 .emptyDisc {
@@ -56,13 +58,6 @@
     -fx-background-position: center 70%;
 }
 
-#rightReplayButton {
-    -fx-background-image: url(/desktopApp/resources/rightArrow.png);
-}
-
-#leftReplayButton {
-    -fx-background-image: url(/desktopApp/resources/leftArrow.png);
-}
 
 .nonActivePlayer {
     -fx-background-color: green;
@@ -71,4 +66,200 @@
 .table-row-cell:disabled {
     -fx-background-color: #c1c1c1;
     -fx-control-inner-background: #c1c1c1;
+}
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.main-container .s-button {
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: transparent;
+}
+
+.main-container.theme-ocean .themed-text {
+    -fx-text-fill: #000;
+}
+.main-container.theme-ocean {
+    -fx-background-image: url("./Ocean/Background.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+.main-container.theme-ocean .replay-toggle,
+.main-container.theme-ocean .table-view .column-header .label {
+    -fx-background-color: #6e0a3c;
+    -fx-text-fill: #fff;
+    -fx-border-color: #6e0a3c;
+}
+.main-container.theme-ocean .s-button.xml {
+    -fx-background-image: url("./Ocean/loadXML.png");
+}
+.main-container.theme-ocean .s-button.play-round {
+    -fx-background-image: url("./Ocean/playRound.png");
+}
+.main-container.theme-ocean .s-button.end-round {
+    -fx-background-image: url("./Ocean/endRound.png");
+}
+.main-container.theme-ocean .s-button.resign {
+    -fx-background-image: url("./Ocean/playerResign.png");
+}
+.main-container.theme-ocean .s-button.theme {
+    -fx-background-image: url("./Ocean/themes.png");
+}
+.main-container.theme-ocean .s-button.exit {
+    -fx-background-image: url("./Ocean/exitGame.png");
+}
+.main-container.theme-ocean .s-button.back {
+    -fx-background-image: url("./Ocean/left.png");
+}
+.main-container.theme-ocean .s-button.next {
+    -fx-background-image: url("./Ocean/right.png");
+}
+.main-container.theme-ocean .game-cell {
+    -fx-background-image: url("./Ocean/purpleRounding.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: stretch;
+    -fx-min-height: 53px;
+    -fx-min-width: 53px;
+    -fx-max-height: 53px;
+    -fx-max-width: 53px;
+    -fx-pref-height: 53px;
+    -fx-pref-height: 53px;
+}
+.main-container.theme-ocean .colButton.pop {
+    -fx-background-image: url("./Ocean/pop.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+}
+.main-container.theme-ocean .colButton.insert {
+    -fx-background-image: url("./Ocean/insert.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+}
+.main-container.theme-dracula {
+    -fx-background-image: url("./Dracula/Background.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+.main-container.theme-dracula .themed-text {
+    -fx-text-fill: #FFF;
+}
+.main-container.theme-dracula .replay-toggle,
+.main-container.theme-dracula .table-view .column-header .label {
+    -fx-background-color: #7b0906;
+    -fx-text-fill: #fff;
+    -fx-border-color: #7b0906;
+}
+.main-container.theme-dracula .s-button.xml {
+    -fx-background-image: url("./Dracula/loadXML.png");
+}
+.main-container.theme-dracula .s-button.play-round {
+    -fx-background-image: url("./Dracula/playRound.png");
+}
+.main-container.theme-dracula .s-button.end-round {
+    -fx-background-image: url("./Dracula/endRound.png");
+}
+.main-container.theme-dracula .s-button.resign {
+    -fx-background-image: url("./Dracula/playerRessign.png");
+}
+.main-container.theme-dracula .s-button.theme {
+    -fx-background-image: url("./Dracula/themes.png");
+}
+.main-container.theme-dracula .s-button.exit {
+    -fx-background-image: url("./Dracula/exitGame.png");
+}
+.main-container.theme-dracula .s-button.back {
+    -fx-background-image: url("./Dracula/left.png");
+}
+.main-container.theme-dracula .s-button.next {
+    -fx-background-image: url("./Dracula/right.png");
+}
+.main-container.theme-dracula .game-cell {
+    -fx-background-image: url("./Dracula/silverRounding.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: stretch;
+    -fx-min-height: 53px;
+    -fx-min-width: 53px;
+    -fx-max-height: 53px;
+    -fx-max-width: 53px;
+    -fx-pref-height: 53px;
+    -fx-pref-height: 53px;
+    -fx-background-repeat: no-repeat;
+}
+.main-container.theme-dracula .colButton.pop {
+    -fx-background-image: url("./Dracula/pop.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+}
+.main-container.theme-dracula .colButton.insert {
+    -fx-background-image: url("./Dracula/insert.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+}
+
+
+.main-container.theme-light {
+    -fx-background-image: url("./Clouds/Background.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+.main-container.theme-light .themed-text {
+    -fx-text-fill: #000;
+}
+.main-container.theme-light .replay-toggle,
+.main-container.theme-light .table-view .column-header .label {
+    -fx-background-color: #cf4bae;
+    -fx-text-fill: #fff;
+    -fx-border-color: #cf4bae;
+}
+.main-container.theme-light .s-button.xml {
+    -fx-background-image: url("./Clouds/loadXML.png");
+}
+.main-container.theme-light .s-button.play-round {
+    -fx-background-image: url("./Clouds/playRound.png");
+}
+.main-container.theme-light .s-button.end-round {
+    -fx-background-image: url("./Clouds/endRound.png");
+}
+.main-container.theme-light .s-button.resign {
+    -fx-background-image: url("./Clouds/playerResign.png");
+}
+.main-container.theme-light .s-button.theme {
+    -fx-background-image: url("./Clouds/thems.png");
+}
+.main-container.theme-light .s-button.exit {
+    -fx-background-image: url("./Clouds/exitGame.png");
+}
+.main-container.theme-light .s-button.back {
+    -fx-background-image: url("./Clouds/left.png");
+}
+.main-container.theme-light .s-button.next {
+    -fx-background-image: url("./Clouds/right.png");
+}
+.main-container.theme-light .game-cell {
+    -fx-background-image: url("./Clouds/navyRounding.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: stretch;
+    -fx-min-height: 53px;
+    -fx-min-width: 53px;
+    -fx-max-height: 53px;
+    -fx-max-width: 53px;
+    -fx-pref-height: 53px;
+    -fx-pref-height: 53px;
+    -fx-background-repeat: no-repeat;
+}
+.main-container.theme-light .colButton.pop {
+    -fx-background-image: url("./Clouds/pop.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+}
+.main-container.theme-light .colButton.insert {
+    -fx-background-image: url("./Clouds/insert.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
 }

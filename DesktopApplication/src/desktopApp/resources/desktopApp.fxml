@@ -14,17 +14,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="MainPanel_ScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.desktopAppController">
+<ScrollPane fx:id="MainPanel_ScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minViewportHeight="500.0" minViewportWidth="500.0" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.desktopAppController">
    <content>
-      <BorderPane fx:id="MainPanel_BorderPane" prefHeight="598.0" prefWidth="897.0">
+      <BorderPane fx:id="MainPanel_BorderPane" prefHeight="598.0" prefWidth="897.0" style="-fx-background-color: red;">
          <top>
-            <ScrollPane fx:id="TopPanel_ScrollPane" fitToHeight="true" fitToWidth="true" prefHeight="102.0" prefWidth="898.0" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="TopPanel_ScrollPane" fitToHeight="true" fitToWidth="true" prefHeight="102.0" prefWidth="898.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
                <content>
                   <ScrollPane fx:id="TopPanel_ScrollPane">
                      <content>
                         <HBox fx:id="TopPanel_HBox">
                            <children>
-                              <VBox fx:id="TopPanel_VBox" prefHeight="95.0" prefWidth="501.0">
+                              <VBox fx:id="TopPanel_VBox" prefHeight="95.0" prefWidth="159.0" style="-fx-background-color: transparent;">
                                  <children>
                                     <HBox fx:id="TopPanel_MainLabel_HBox" alignment="CENTER">
                                        <VBox.margin>
@@ -38,7 +38,7 @@
                                           </Label>
                                        </children>
                                     </HBox>
-                                    <HBox fx:id="TopPanel_buttons_HBox" alignment="CENTER" prefHeight="61.0" prefWidth="896.0">
+                                    <HBox fx:id="TopPanel_buttons_HBox" alignment="CENTER" prefHeight="61.0" prefWidth="439.0">
                                        <children>
                                           <Button fx:id="TopPanel_loadXML_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loadNewSettingFile_onButtonAction" text="Load XML">
                                              <HBox.margin>
@@ -123,9 +123,9 @@
             </ScrollPane>
          </top>
          <center>
-            <ScrollPane fx:id="CenterPanel_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="300.0" minViewportHeight="300.0" minViewportWidth="300.0" minWidth="300.0" prefHeight="519.0" prefWidth="607.0" BorderPane.alignment="CENTER">
+            <ScrollPane fx:id="CenterPanel_ScrollPane" fitToHeight="true" fitToWidth="true" minHeight="300.0" minViewportHeight="300.0" minViewportWidth="300.0" minWidth="300.0" prefHeight="519.0" prefWidth="607.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
                <content>
-                  <GridPane fx:id="CenterPanel_boardArea_GridPane" gridLinesVisible="false" minHeight="300.0" minWidth="500.0">
+                  <GridPane fx:id="CenterPanel_boardArea_GridPane" gridLinesVisible="false" minHeight="300.0" minWidth="500.0" style="-fx-background-color: transparent;">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -181,9 +181,9 @@
                            <content>
                               <HBox fx:id="LeftPanel_replay_HBox" minHeight="3.0" minWidth="20.0" prefHeight="3.0" prefWidth="341.0">
                                  <children>
-                                    <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="Replay ON" onAction="#toggleReplay_onButtonAction" />
-                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" onAction="#leftReplay_onButtonAction" />
-                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="115.0" text="" onAction="#rightReplay_onButtonAction" />
+                                    <Button fx:id="LeftPanel_toggleReplay_Button" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#toggleReplay_onButtonAction" prefHeight="25.0" prefWidth="115.0" text="Replay ON" />
+                                    <Button fx:id="LeftPanel_replayLeftArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#leftReplay_onButtonAction" prefHeight="25.0" prefWidth="115.0" text="" />
+                                    <Button fx:id="LeftPanel_replayRightArrow_Button" disable="true" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#rightReplay_onButtonAction" prefHeight="25.0" prefWidth="115.0" text="" />
                                  </children>
                               </HBox>
                            </content>
