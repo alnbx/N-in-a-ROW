@@ -355,10 +355,17 @@ public class desktopAppController {
         isRoundOn.set(false);
         clearBoard();
         activateAllPlayers();
+        zeroizeMovesCountAllPlayers();
         gameLogic.increaseRoundPlayed();
         TopPanel_RoundsPlayedLabel_Label.setText(String.valueOf(gameLogic.getNumberOfRoundsPlayed()));
         LeftPanel_playersTable_TableView.getSelectionModel().clearSelection();
         LeftPanel_playersTable_TableView.refresh();
+    }
+
+    private void zeroizeMovesCountAllPlayers() {
+        for (TogglePlayerDisplayActive player : players) {
+            player.setNumMoves(0);
+        }
     }
 
     private void activateAllPlayers() {
@@ -844,7 +851,7 @@ public class desktopAppController {
                         createPlayers();
                         this.xmlLoadedSuccessfully = true;
                         this.isValidXML.set(true);
-                        this.TopPanel_GameFileLabel_Label.setText(settingsFile.getAbsolutePath());
+                        this.TopPanel_GameFileLabel_Label.setText(settingsFile.getName());
                         this.TopPanel_welcome_Label.setText("NinA is Ready to Play!");
                         this.TopPanel_GameVariantLabel_Label.setText(getGameVariantAsText(gameLogic.getGameVariant()));
                     }
