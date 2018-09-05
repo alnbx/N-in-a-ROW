@@ -43,6 +43,7 @@ public class desktopAppController {
     private ObservableList<MoveDisplay> moves = FXCollections.observableArrayList();
     private ObservableList<TogglePlayerDisplayActive> players = FXCollections.observableArrayList();
     private SimpleIntegerProperty currentPlayerID;
+    private SimpleBooleanProperty isCurrentPlayerComputer;
     private boolean tieAlert;
     private boolean winAlert;
     private ArrayList<ArrayList<ArrayList<String>>> savedGridPaneStyles;
@@ -160,6 +161,7 @@ public class desktopAppController {
         isValidXML = new SimpleBooleanProperty(false);
         isReplayMode = new SimpleBooleanProperty(false);
         isRoundOn = new SimpleBooleanProperty(false);
+        isCurrentPlayerComputer = new SimpleBooleanProperty(false);
         currentPlayerID = new SimpleIntegerProperty();
         tieAlert = false;
         winAlert = false;
@@ -553,6 +555,7 @@ public class desktopAppController {
                 playSingleMove((ColumnButton) b, buttonType);
             });
             b.disableProperty().bind(Bindings.or(isReplayMode, isRoundOn.not()));
+            b.disableProperty().bind(isCurrentPlayerComputer);
 
             GridPane.setRowIndex(b, row);
             GridPane.setColumnIndex(b, i);
@@ -661,6 +664,7 @@ public class desktopAppController {
 
     private void playComputerIfNeeded() {
         if (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
+            isCurrentPlayerComputer.set(true);
             ComputerTurnTask turn = new ComputerTurnTask(this.gameLogic, this);
             Thread computerTurn = new Thread(turn);
             TogglePlayerDisplayActive currentPlayer = players.get(
@@ -684,6 +688,7 @@ public class desktopAppController {
                 }
             });
         }
+        isCurrentPlayerComputer.set(false);
     }
 
     private void playPopoutMove(int col) {
@@ -773,7 +778,6 @@ public class desktopAppController {
         alert.setTitle("Round over");
         alert.setHeaderText("Round is over with a tie!");
         Optional<ButtonType> result = alert.showAndWait();
-        endRound();
     }
 
     private void showWinAlert() {
@@ -798,7 +802,6 @@ public class desktopAppController {
         alert.setTitle("We have a winner!");
         alert.setHeaderText("We have a winner!");
         Optional<ButtonType> result = alert.showAndWait();
-        endRound();
     }
 
     /******************* XML LOADING ******************/
