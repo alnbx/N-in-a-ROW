@@ -497,10 +497,12 @@ public class desktopAppController {
         return c;
     }
 
-    private StackPane createNewDiscContainer() {
+    private StackPane createNewDiscContainer(int row, int col) {
         StackPane sp = new StackPane();
         sp.getStyleClass().add("game-cell");
         Circle c = createNewDisc();
+        GridPane.setRowIndex(c, row);
+        GridPane.setColumnIndex(c, col);
         c.getStyleClass().addAll("emptyDisc");
         sp.getChildren().addAll(c);
 
@@ -528,7 +530,7 @@ public class desktopAppController {
     private void addBoardCells(int cols, int rows) {
         for (int i = 1; i <= rows; i++) {
             for (int j = 0; j < cols; j++) {
-                StackPane sp = createNewDiscContainer();
+                StackPane sp = createNewDiscContainer(i, j);
                 //Circle c = createNewDisc();
                 //c.getStyleClass().addAll("emptyDisc");
                 //sp.getChildren().add(c);
