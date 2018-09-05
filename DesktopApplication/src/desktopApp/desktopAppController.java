@@ -313,6 +313,7 @@ public class desktopAppController {
         this.gameLogic.setRoundFromSettings(true);
         LeftPanel_playersTable_TableView.getSelectionModel().clearAndSelect(0);
         LeftPanel_playersTable_TableView.refresh();
+        playComputerIfNeeded();
     }
 
     @FXML
@@ -322,16 +323,17 @@ public class desktopAppController {
         //catch (InterruptedException e) { }
         //System.exit(0);
 
-        VBox xmlLoading = null;
+        VBox exitWindow = null;
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource("/desktopApp/resources/ExitConfirmBox.fxml");
         fxmlLoader.setLocation(url);
-        try                 { xmlLoading = fxmlLoader.load(url.openStream()); }
+        try                 { exitWindow = fxmlLoader.load(url.openStream()); }
         catch (Exception e) { System.exit(0); }
 
         ExitConfirmController exitController = fxmlLoader.getController();
-        Scene secondScene = new Scene(xmlLoading, 200, 110);
+        Scene secondScene = new Scene(exitWindow, 200, 110);
+        secondScene.getStylesheets().add(getClass().getResource("/desktopApp/resources/mainStyle.css").toExternalForm());
         Stage ExitConfirm = new Stage();
         exitController.setStage(ExitConfirm);
 
@@ -339,8 +341,8 @@ public class desktopAppController {
         ExitConfirm.setScene(secondScene);
         ExitConfirm.initModality(Modality.WINDOW_MODAL);
         ExitConfirm.initOwner(primaryStage);
-        ExitConfirm.setX(primaryStage.getX() + 300);
-        ExitConfirm.setY(primaryStage.getY() + 200);
+        //ExitConfirm.setX(primaryStage.getX() + 300);
+        //ExitConfirm.setY(primaryStage.getY() + 200);
         ExitConfirm.showAndWait();
         ExitConfirm.close();
         TopPanel_welcome_Label.setText("Welcome Back!");
@@ -492,7 +494,6 @@ public class desktopAppController {
         Circle c = new Circle();
         c.setRadius(20);
         c.setFill(Color.TRANSPARENT);
-        //c.setStroke(Color.BLACK);
 
         return c;
     }
@@ -826,17 +827,18 @@ public class desktopAppController {
             fxmlLoader.setLocation(url);
             VBox xmlLoading = fxmlLoader.load(url.openStream());
 
-            Scene secondScene = new Scene(xmlLoading, 800, 350);
+            Scene secondScene = new Scene(xmlLoading, 450, 200);
+            secondScene.getStylesheets().add(getClass().getResource("/desktopApp/resources/mainStyle.css").toExternalForm());
             Stage xmlLoadingWindow = new Stage();
             xmlLoadingWindow.setTitle("XML Loading");
             xmlLoadingWindow.setScene(secondScene);
             xmlLoadingWindow.initModality(Modality.WINDOW_MODAL);
             xmlLoadingWindow.initOwner(primaryStage);
-            xmlLoadingWindow.setX(primaryStage.getX());
-            xmlLoadingWindow.setY(primaryStage.getY() + 200);
+            //xmlLoadingWindow.setX(primaryStage.getX());
+            //xmlLoadingWindow.setY(primaryStage.getY() + 200);
 
             xmlLoadingController controller = fxmlLoader.getController();
-            controller.updateFileName(settingsFile.getAbsolutePath());
+            controller.updateFileName(settingsFile.getName());
 
             Thread loadXMLThread = new Thread(XMLLoader);
             controller.getProgressHbox_Progress_progressBar().progressProperty().bind(XMLLoader.progressProperty());
@@ -857,7 +859,7 @@ public class desktopAppController {
                         this.xmlLoadedSuccessfully = true;
                         this.isValidXML.set(true);
                         this.TopPanel_GameFileLabel_Label.setText(settingsFile.getName());
-                        this.TopPanel_welcome_Label.setText("NinA is Ready to Play!");
+                        this.TopPanel_welcome_Label.setText("Ready to Play!");
                         this.TopPanel_GameVariantLabel_Label.setText(getGameVariantAsText(gameLogic.getGameVariant()));
                     }
                     catch (Exception e) { loadXmlFailed(); }

@@ -111,7 +111,7 @@
                                                 <Font name="System Bold" size="13.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="TopPanel_GameFileLabel_Label" prefWidth="520.0" styleClass="themed-text" />
+                                          <Label fx:id="TopPanel_GameFileLabel_Label" prefHeight="15.0" prefWidth="199.0" styleClass="themed-text" />
                                        </children>
                                        <opaqueInsets>
                                           <Insets />

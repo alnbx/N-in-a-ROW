@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<VBox fx:id="wrapping_vbox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="122.0" prefWidth="437.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.xmlLoadingController">
+<VBox fx:id="wrapping_vbox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="122.0" prefWidth="437.0" styleClass="xmlLoading" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="desktopApp.xmlLoadingController">
    <children>
-      <HBox fx:id="Loading_hbox" alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="600.0" spacing="10.0">
+      <HBox fx:id="Loading_hbox" alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="600.0" spacing="10.0" style="-fx-background-color: transparent;">
          <children>
-            <Label fx:id="LoadingHbox_loadingFile_Label" text="Loading File: " />
-            <Label fx:id="LoadingHbox_fileName_Label1" />
+            <Label fx:id="LoadingHbox_loadingFile_Label" style="-fx-background-color: transparent;" text="Loading File: ">
+               <styleClass>
+                  <String fx:value="xmlLoading" />
+                  <String fx:value="Label" />
+               </styleClass>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
+            <Label fx:id="LoadingHbox_fileName_Label1" style="-fx-background-color: transparent;">
+               <styleClass>
+                  <String fx:value="xmlLoading" />
+                  <String fx:value="Label" />
+               </styleClass></Label>
          </children>
          <opaqueInsets>
             <Insets />
@@ -24,23 +36,42 @@
             <Insets top="10.0" />
          </padding>
       </HBox>
-      <HBox fx:id="statusHbox" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+      <HBox fx:id="statusHbox" prefHeight="100.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: transparent;">
          <children>
-            <Label fx:id="statusHbox_status_label" text="Status:">
+            <Label fx:id="statusHbox_status_label" style="-fx-background-color: transparent;" text="Status:">
                <HBox.margin>
                   <Insets left="37.0" />
                </HBox.margin>
+               <styleClass>
+                  <String fx:value="xmlLoading" />
+                  <String fx:value="Label" />
+               </styleClass>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
             </Label>
-            <Label fx:id="statusHbox_statusLabel_label" />
+            <Label fx:id="statusHbox_statusLabel_label" style="-fx-background-color: transparent;">
+               <styleClass>
+                  <String fx:value="xmlLoading" />
+                  <String fx:value="Label" />
+               </styleClass></Label>
          </children>
          <padding>
             <Insets top="10.0" />
          </padding>
       </HBox>
-      <HBox fx:id="ProgressHbox" alignment="CENTER" prefHeight="252.0" prefWidth="437.0">
+      <HBox fx:id="ProgressHbox" alignment="CENTER" prefHeight="252.0" prefWidth="437.0" style="-fx-background-color: transparent;" styleClass="xmlLoading">
          <children>
-            <Label fx:id="ProgressHbox_Progress_label" text="Progress: " />
-            <ProgressBar fx:id="ProgressHbox_Progress_progressBar" prefHeight="18.0" prefWidth="312.0" progress="0.0" />
+            <Label fx:id="ProgressHbox_Progress_label" style="-fx-background-color: transparent;" text="Progress: ">
+               <styleClass>
+                  <String fx:value="xmlLoading" />
+                  <String fx:value="Label" />
+               </styleClass>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ProgressBar fx:id="ProgressHbox_Progress_progressBar" prefHeight="18.0" prefWidth="312.0" progress="0.0" style="-fx-background-color: transparent;" />
          </children>
       </HBox>
    </children>

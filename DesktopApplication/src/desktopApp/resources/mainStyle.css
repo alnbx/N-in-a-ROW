@@ -263,3 +263,31 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: contain;
 }
+
+.xmlLoading {
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-background-color: white;
+}
+
+.xmlLoading.Label {
+    -fx-text-fill: black;
+}
+
+.xmlLoading {
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-background-color: white;
+}
+
+.exitWindowNoButton {
+    -fx-background-image: url("./Buttons/no.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+}
+
+.exitWindowYesButton {
+    -fx-background-image: url("./Buttons/yes.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+}
