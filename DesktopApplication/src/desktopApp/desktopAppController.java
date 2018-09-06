@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -51,7 +52,7 @@ public class desktopAppController {
     private int moveIndexForReplay;
     private HashMap<String, Button> myButtons = new HashMap<>();
     private boolean computerFirst;
-    private Alert computerAlert;
+    private Stage computerAlert;
 
     @FXML
     private ResourceBundle resources;
@@ -234,14 +235,34 @@ public class desktopAppController {
         LeftPanel_playersTable_TableView.setRowFactory(p -> new ToggleTableRow<>());
     }
 
-    private Alert showComputerIsPlayingAlert()
+    private Stage showComputerIsPlayingAlert()
     {
-        String message = "Computer is making a move!";
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
-        alert.setTitle("Interrupting to Computer's turn");
-        alert.setHeaderText("Please let the computer finish\nand then try again.");
+        Stage computerWindow = new Stage();
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            URL url = getClass().getResource("/desktopApp/resources/computer.fxml");
+            fxmlLoader.setLocation(url);
+            AnchorPane computerPlaying = fxmlLoader.load(url.openStream());
 
-        return alert;
+            Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+            Scene secondScene = new Scene(computerPlaying,500,500);
+            computerWindow.setX(primaryScreenBounds.getMinX());
+            computerWindow.setY(primaryScreenBounds.getMinY());
+            computerWindow.setWidth(primaryScreenBounds.getWidth());
+            computerWindow.setHeight(primaryScreenBounds.getHeight());
+            //secondScene.getStylesheets().add(getClass().getResource("/desktopApp/resources/mainStyle.css").toExternalForm());
+            computerWindow.initStyle(StageStyle.UNDECORATED);
+            computerWindow.initStyle(StageStyle.TRANSPARENT);
+            secondScene.setFill(null);
+            computerWindow.setScene(secondScene);
+            computerWindow.initModality(Modality.APPLICATION_MODAL);
+            computerWindow.initOwner(primaryStage);
+            //xmlLoadingWindow.setX(primaryStage.getX());
+            //xmlLoadingWindow.setY(primaryStage.getY() + 200);
+        }
+        catch (Exception ignored) { }
+
+        return computerWindow;
     }
 
     private StackPane getDiscContainerInRowCol(int row, int col)
