@@ -250,7 +250,7 @@ public class desktopAppController {
             computerWindow.setY(primaryScreenBounds.getMinY());
             computerWindow.setWidth(primaryScreenBounds.getWidth());
             computerWindow.setHeight(primaryScreenBounds.getHeight());
-            //secondScene.getStylesheets().add(getClass().getResource("/desktopApp/resources/mainStyle.css").toExternalForm());
+            //set window modal for all screen
             computerWindow.initStyle(StageStyle.UNDECORATED);
             computerWindow.initStyle(StageStyle.TRANSPARENT);
             secondScene.setFill(null);
