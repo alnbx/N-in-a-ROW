@@ -96,27 +96,35 @@
 }
 .main-container.theme-ocean .s-button.xml {
     -fx-background-image: url("./Ocean/loadXML.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .s-button.play-round {
     -fx-background-image: url("./Ocean/playRound.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .s-button.end-round {
     -fx-background-image: url("./Ocean/endRound.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .s-button.resign {
     -fx-background-image: url("./Ocean/playerResign.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .s-button.theme {
     -fx-background-image: url("./Ocean/themes.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .s-button.exit {
     -fx-background-image: url("./Ocean/exitGame.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .s-button.back {
     -fx-background-image: url("./Ocean/left.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .s-button.next {
     -fx-background-image: url("./Ocean/right.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .game-cell {
     -fx-background-image: url("./Ocean/purpleRounding.png");
@@ -132,12 +140,12 @@
 .main-container.theme-ocean .colButton.pop {
     -fx-background-image: url("./Ocean/pop.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
 .main-container.theme-ocean .colButton.insert {
     -fx-background-image: url("./Ocean/insert.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula {
     -fx-background-image: url("./Dracula/Background.png");
@@ -156,27 +164,35 @@
 }
 .main-container.theme-dracula .s-button.xml {
     -fx-background-image: url("./Dracula/loadXML.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .s-button.play-round {
     -fx-background-image: url("./Dracula/playRound.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .s-button.end-round {
     -fx-background-image: url("./Dracula/endRound.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .s-button.resign {
     -fx-background-image: url("./Dracula/playerRessign.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .s-button.theme {
     -fx-background-image: url("./Dracula/themes.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .s-button.exit {
     -fx-background-image: url("./Dracula/exitGame.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .s-button.back {
     -fx-background-image: url("./Dracula/left.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .s-button.next {
     -fx-background-image: url("./Dracula/right.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .game-cell {
     -fx-background-image: url("./Dracula/silverRounding.png");
@@ -193,12 +209,12 @@
 .main-container.theme-dracula .colButton.pop {
     -fx-background-image: url("./Dracula/pop.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
 .main-container.theme-dracula .colButton.insert {
     -fx-background-image: url("./Dracula/insert.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
 
 
@@ -219,27 +235,35 @@
 }
 .main-container.theme-light .s-button.xml {
     -fx-background-image: url("./Clouds/loadXML.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .s-button.play-round {
     -fx-background-image: url("./Clouds/playRound.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .s-button.end-round {
     -fx-background-image: url("./Clouds/endRound.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .s-button.resign {
     -fx-background-image: url("./Clouds/playerResign.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .s-button.theme {
     -fx-background-image: url("./Clouds/thems.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .s-button.exit {
     -fx-background-image: url("./Clouds/exitGame.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .s-button.back {
     -fx-background-image: url("./Clouds/left.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .s-button.next {
     -fx-background-image: url("./Clouds/right.png");
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .game-cell {
     -fx-background-image: url("./Clouds/navyRounding.png");
@@ -256,12 +280,12 @@
 .main-container.theme-light .colButton.pop {
     -fx-background-image: url("./Clouds/pop.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
 .main-container.theme-light .colButton.insert {
     -fx-background-image: url("./Clouds/insert.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
 
 .xmlLoading {
@@ -283,11 +307,11 @@
 .exitWindowNoButton {
     -fx-background-image: url("./Buttons/no.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
 
 .exitWindowYesButton {
     -fx-background-image: url("./Buttons/yes.png");
     -fx-background-repeat: no-repeat;
-    -fx-background-size: contain;
+    -fx-background-size: stretch;
 }
