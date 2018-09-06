@@ -49,6 +49,7 @@ public class desktopAppController {
     private ArrayList<ArrayList<ArrayList<String>>> savedGridPaneStyles;
     private int moveIndexForReplay;
     private HashMap<String, Button> myButtons = new HashMap<>();
+    private boolean computerFirst;
 
     @FXML
     private ResourceBundle resources;
@@ -156,15 +157,16 @@ public class desktopAppController {
     void initialize() { TopPanel_RoundsPlayedLabel_Label.setText("0"); }
 
     public desktopAppController() {
-        gameFactory = new GameFactory();
-        xmlLoadedSuccessfully = false;
-        isValidXML = new SimpleBooleanProperty(false);
-        isReplayMode = new SimpleBooleanProperty(false);
-        isRoundOn = new SimpleBooleanProperty(false);
-        isCurrentPlayerComputer = new SimpleBooleanProperty(false);
-        currentPlayerID = new SimpleIntegerProperty();
-        tieAlert = false;
-        winAlert = false;
+        this.gameFactory = new GameFactory();
+        this.xmlLoadedSuccessfully = false;
+        this.isValidXML = new SimpleBooleanProperty(false);
+        this.isReplayMode = new SimpleBooleanProperty(false);
+        this.isRoundOn = new SimpleBooleanProperty(false);
+        this.isCurrentPlayerComputer = new SimpleBooleanProperty(false);
+        this.currentPlayerID = new SimpleIntegerProperty();
+        this.tieAlert = false;
+        this.winAlert = false;
+        this.computerFirst = false;
     }
 
     public void setApplication() {
@@ -313,6 +315,7 @@ public class desktopAppController {
         this.gameLogic.setRoundFromSettings(true);
         LeftPanel_playersTable_TableView.getSelectionModel().clearAndSelect(0);
         LeftPanel_playersTable_TableView.refresh();
+        if (this.gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER) { this.computerFirst = true; }
         playComputerIfNeeded();
     }
 
@@ -681,8 +684,13 @@ public class desktopAppController {
                 //gameLogic.play(0, gameLogic.isPopout());
                 //Move move = gameLogic.getLastMove();
                 // Patch...
-
-                Move move = gameLogic.getLastMove();
+                Move move = null;
+                if (this.computerFirst) {
+                    move = new Move(currentPlayerID.get(), 1, this.gameLogic.timeFromBegining() ,MoveType.INSERT);
+                    this.computerFirst = false;
+                } else {
+                    move = gameLogic.getLastMove();
+                }
                 Button b = getButtonByMove(move);
                 if (b != null) {
                     b.fire();
