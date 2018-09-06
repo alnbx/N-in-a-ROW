@@ -51,6 +51,7 @@ public class desktopAppController {
     private int moveIndexForReplay;
     private HashMap<String, Button> myButtons = new HashMap<>();
     private boolean computerFirst;
+    private Alert computerAlert;
 
     @FXML
     private ResourceBundle resources;
@@ -168,6 +169,7 @@ public class desktopAppController {
         this.tieAlert = false;
         this.winAlert = false;
         this.computerFirst = false;
+        this.computerAlert = showComputerIsPlayingAlert();
     }
 
     public void setApplication() {
@@ -232,13 +234,14 @@ public class desktopAppController {
         LeftPanel_playersTable_TableView.setRowFactory(p -> new ToggleTableRow<>());
     }
 
-    private void showComputerIsPlayingAlert()
+    private Alert showComputerIsPlayingAlert()
     {
         String message = "Computer is making a move!";
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setTitle("Interrupting to Computer's turn");
         alert.setHeaderText("Please let the computer finish\nand then try again.");
-        Optional<ButtonType> result = alert.showAndWait();
+
+        return alert;
     }
 
     private StackPane getDiscContainerInRowCol(int row, int col)
@@ -617,36 +620,13 @@ public class desktopAppController {
             currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
             addMoveToTable(move);
             LeftPanel_playersTable_TableView.refresh();
-
-            if (!checkWinner()) { checkTie(); }
-        }
-        else {
+            this.computerAlert.close();
+            if (!checkWinner()) {
+                checkTie();
+            }
+        } else {
             showInvalidMoveAlert();
         }
-
-        selectNextPlayer();
-        playComputerIfNeeded();
-    }
-
-    private void playSingleComputerMove() {
-        TogglePlayerDisplayActive currentPlayer = players.get(
-                playerIdToPlayerIndex.get(
-                        gameLogic.getIdOfCurrentPlayer()));
-
-        if (currentPlayer.getType() == PlayerTypes.HUMAN) { System.out.println("wtf"); return; }
-        gameLogic.play(0, false);
-        Move move = gameLogic.getLastMove();
-        if (move.getMoveType() == MoveType.INSERT)
-            playInsertMove(move.getCol(), currentPlayer.getPlayerId());
-        else
-            playPopoutMove(move.getCol());
-
-        currentPlayer.setNumMoves(currentPlayer.getNumMoves() + 1);
-        addMoveToTable(move);
-        LeftPanel_playersTable_TableView.refresh();
-
-        if (!checkWinner()) { checkTie(); }
-
 
         selectNextPlayer();
         playComputerIfNeeded();
@@ -671,6 +651,7 @@ public class desktopAppController {
 
     private void playComputerIfNeeded() {
         if (gameLogic.getTypeOfCurrentPlayer() == PlayerTypes.COMPUTER && isRoundOn.get() == true) {
+            this.computerAlert.show();
             isCurrentPlayerComputer.set(true);
             ComputerTurnTask turn = new ComputerTurnTask(this.gameLogic, this);
             Thread computerTurn = new Thread(turn);
