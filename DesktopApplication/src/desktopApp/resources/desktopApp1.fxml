@@ -50,7 +50,7 @@
                                           <String fx:value="xml" />
                                        </styleClass>
                                     </Button>
-                                    <Button fx:id="TopPanel_playRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playRound_onButtonAction" text="Play Round">
+                                    <Button fx:id="TopPanel_playRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playRound_onButtonAction" text="Play Round" textFill="TRANSPARENT">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>
@@ -59,7 +59,7 @@
                                           <String fx:value="play-round" />
                                        </styleClass>
                                     </Button>
-                                    <Button fx:id="TopPanel_endRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#endRound_onButtonAction" text="End Round">
+                                    <Button fx:id="TopPanel_endRound_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#endRound_onButtonAction" text="End Round" textFill="TRANSPARENT">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>
@@ -68,7 +68,7 @@
                                           <String fx:value="end-round" />
                                        </styleClass>
                                     </Button>
-                                    <Button fx:id="TopPanel_resignPlayer_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playerResign_onButtonAction" text="Player Resign">
+                                    <Button fx:id="TopPanel_resignPlayer_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#playerResign_onButtonAction" text="Player Resign" textFill="TRANSPARENT">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>
@@ -91,7 +91,7 @@
                                           <String fx:value="theme" />
                                        </styleClass>
                                     </MenuButton>
-                                    <Button fx:id="TopPanel_exitGame_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exitGame_onButtonAction" text="Exit Game">
+                                    <Button fx:id="TopPanel_exitGame_Button" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exitGame_onButtonAction" text="Exit Game" textFill="TRANSPARENT">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin>

@@ -10,6 +10,7 @@ import common.GameVariant;
 import common.Lock;
 import common.MoveType;
 import common.PlayerTypes;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
