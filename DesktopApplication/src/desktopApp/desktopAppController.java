@@ -825,7 +825,17 @@ public class desktopAppController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Loading File Failed");
         alert.setHeaderText("Loading File Failed");
-        alert.setContentText("Loading XML file failed. \n Please try again");
+        alert.setContentText("Loading XML file failed.\nPlease try again");
+        this.xmlLoadedSuccessfully = false;
+        alert.showAndWait();
+    }
+
+    private void loadXmlFailed(Exception e)
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Loading File Failed");
+        alert.setHeaderText("Loading File Failed");
+        alert.setContentText("Loading XML file failed: " + e.getMessage() + "\nPlease try again");
         this.xmlLoadedSuccessfully = false;
         alert.showAndWait();
     }
@@ -873,14 +883,14 @@ public class desktopAppController {
                         this.TopPanel_welcome_Label.setText("Ready to Play!");
                         this.TopPanel_GameVariantLabel_Label.setText(getGameVariantAsText(gameLogic.getGameVariant()));
                     }
-                    catch (Exception e) { loadXmlFailed(); }
+                    catch (Exception e) { loadXmlFailed(e); }
                 }
                 else {
                     loadXmlFailed();
                 }
             });
         }
-        catch (Exception e) { loadXmlFailed(); }
+        catch (Exception e) { loadXmlFailed(e); }
 
         return this.xmlLoadedSuccessfully;
     }

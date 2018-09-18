@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameSettings implements Serializable {
-    final int maxNumOfPlayers = 6;
+    final int maxNumOfPlayers = 5;
     final int minNumOfPlayers = 2;
     private int target;
     private int boardNumRows;
@@ -124,8 +124,14 @@ public class GameSettings implements Serializable {
                             List<Node> gameNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "Game");
                             parseGameNode(gameNodes);
 
-                            List<Node> playersNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "Players");
-                            parsePlayersParentNode(playersNodes);
+                            if (gameType == GameType.MultiPlayer) {
+                                List<Node> playersNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "Players");
+                                parsePlayersParentNode(playersNodes);
+                            }
+                            else if (gameType == GameType.DynamicMultiPlayer) {
+                                List<Node> dynamicPlayersNodes = getNodesWithNameAndType(mainElements, Node.ELEMENT_NODE, "DynamicPlayers");
+                                parseDynamicPlayersNode(dynamicPlayersNodes);
+                            }
                         }
                         catch (SettingsFileException e) {
                             throw e;
@@ -143,6 +149,41 @@ public class GameSettings implements Serializable {
         }
     }
 
+    private void parseDynamicPlayersNode(List<Node> dynamicPlayersNodes) throws SettingsFileException {
+        if (dynamicPlayersNodes.size() != 0) {
+            Node dynamicPlayersChildren = dynamicPlayersNodes.get(0);
+            NamedNodeMap dynamicPlayersAttrs = dynamicPlayersChildren.getAttributes();
+            if (dynamicPlayersAttrs.getLength() != 0) {
+
+                Node gameTitleNode = dynamicPlayersAttrs.getNamedItem("game-title");
+                if (gameTitleNode != null) {
+                    gameTitle = gameTitleNode.getTextContent();
+                }
+                else {
+                    throw new SettingsFileException("xml: DynamicPlayers element has no game-title attribute");
+                }
+
+                Node totalPlayersNode = dynamicPlayersAttrs.getNamedItem("total-players");
+                if (totalPlayersNode != null) {
+                    try {
+                        numOfPlayers = Integer.parseInt(totalPlayersNode.getTextContent());
+                    } catch (NumberFormatException e) {
+                        throw new SettingsFileException("xml: the value of total-players attribute is not an int");
+                    }
+                }
+                else {
+                    throw new SettingsFileException("xml: DynamicPlayers element has no game-title attribute");
+                }
+            }
+            else {
+                throw new SettingsFileException("xml: DynamicPlayers element has no attributes");
+            }
+        }
+        else {
+            throw new SettingsFileException("xml: there's no DynamicPlayers tag while the game is defined DynamicMultiPlayer");
+        }
+    }
+
     private void parsePlayersParentNode(List<Node> playersParent) throws SettingsFileException {
         if (playersParent.size() != 0) {
             NodeList PlayersChildren = playersParent.get(0).getChildNodes();
@@ -151,7 +192,7 @@ public class GameSettings implements Serializable {
             parsePlayersNodeList(playersNodes);
         }
         else {
-            if (this.gameType == GameType.DYNAMIC_MULTIPLAYER || this.gameType == GameType.MULTIPLAYER) {
+            if (this.gameType == GameType.DynamicMultiPlayer || this.gameType == GameType.MultiPlayer) {
                 throw new SettingsFileException("xml: there's no Players list while the game is defined multiplayer");
             }
             else {

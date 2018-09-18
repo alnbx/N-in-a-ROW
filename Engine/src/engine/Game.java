@@ -58,8 +58,10 @@ public class Game implements GameLogic, Serializable {
                 player.restart();
         }
 
-        this.currentPlayer = players.get(0);
-        this.activePlayers = this.players.size();
+        if (gameSettings.getGameType() != GameType.DynamicMultiPlayer) {
+            this.currentPlayer = players.get(0);
+            this.activePlayers = this.players.size();
+        }
     }
 
     protected boolean playHumanPlayer(int col, boolean popout)
