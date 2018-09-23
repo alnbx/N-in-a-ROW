@@ -2,26 +2,22 @@ package NinaRow.servlets;
 
 import NinaRow.utils.ServletUtils;
 import com.google.gson.Gson;
-import com.sun.javafx.UnmodifiableArrayList;
-import common.GameVariant;
-import common.PlayerTypes;
-import engine.GameLogic;
+import webEngine.games.GameListManager;
+import webEngine.games.GameStatus;
 import webEngine.games.SingleGameEntry;
-import webEngine.users.SingleUserEntry;
-import webEngine.users.UserManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import common.GameVariant;
+import engine.GameLogic;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UsersListServlet extends HttpServlet {
+public class GamesListServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -29,11 +25,42 @@ public class UsersListServlet extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            List<SingleUserEntry> usersList = userManager.getUsers();
-            String json = gson.toJson(usersList);
+            GameListManager gamesManager = ServletUtils.getGamesManager(getServletContext());
+            List<SingleGameEntry> gamesList = gamesManager.getGames();
+            List<SingleGameResponse> gamesListResponse = new ArrayList<>();
+
+            for (SingleGameEntry seg : gamesList) {
+                gamesListResponse.add(new SingleGameResponse(seg));
+            }
+
+            String json = gson.toJson(gamesListResponse);
             out.println(json);
             out.flush();
+        }
+    }
+
+    public class SingleGameResponse {
+        private String gameName;
+        private GameStatus gameStatus;
+        private String userName;
+        private int boardRows;
+        private int boardCols;
+        private int target;
+        private GameVariant gameVariant;
+        private int numRequiredPlayers;
+        private int numRegisteredPlayers;
+
+        public SingleGameResponse(SingleGameEntry gameEntry) {
+            this.gameName = gameEntry.getGameName();
+            this.gameStatus = gameEntry.getGameStatus();
+            this.userName = gameEntry.getUserName();
+            this.numRegisteredPlayers = gameEntry.getNumRegisteredPlayers();
+            GameLogic gameLogic = gameEntry.getGameLogic();
+            this.boardRows = gameLogic.getRows();
+            this.boardCols = gameLogic.getCols();
+            this.target = gameLogic.getSequenceLength();
+            this.gameVariant = gameLogic.getGameVariant();
+            this.numRequiredPlayers = gameLogic.getNumberOfRequiredPlayers();
         }
     }
 
@@ -75,4 +102,5 @@ public class UsersListServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 }

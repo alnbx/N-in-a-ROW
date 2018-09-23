@@ -4,13 +4,10 @@ import java.io.File;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import common.GameVariant;
-import common.Lock;
 import common.MoveType;
 import common.PlayerTypes;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -30,6 +27,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.*;
 import javafx.util.Callback;
+import java.util.concurrent.atomic.AtomicBoolean;
+import common.Lock;
+import javafx.application.Platform;
 
 
 public class desktopAppController {
@@ -211,7 +211,7 @@ public class desktopAppController {
                                 if (item != null) {
                                     setText("");
                                     int row = getTableRow().getIndex();
-                                    String styleClass = row >= gameLogic.getNumberOfPlayersToInitialized() ?
+                                    String styleClass = row >= gameLogic.getNumberOfRequiredPlayers() ?
                                             "" : "player" + row;
                                     setId(styleClass);
                                     getStyleClass().add(styleClass);

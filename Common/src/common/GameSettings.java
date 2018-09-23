@@ -25,7 +25,6 @@ public class GameSettings implements Serializable {
     private int numOfPlayers;
     private String gameTitle;
 
-
     public GameSettings(String settingsFilePath) throws Exception {
         this.boardNumRows = 6;
         this.boardNumCols = 7;
@@ -37,6 +36,8 @@ public class GameSettings implements Serializable {
             throw e;
         }
     }
+
+    public  String getGameTitle() {return gameTitle; }
 
     public int getNumRows() {
         return boardNumRows;

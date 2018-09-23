@@ -304,7 +304,7 @@ public class UI {
     }
 
     private void choosePlayersType() {
-        int playersAmount = gameLogic.getNumberOfPlayersToInitialized();
+        int playersAmount = gameLogic.getNumberOfRequiredPlayers();
         int robotsCounter = 0;
         String userChoice;
         int initializedPlayers = 0;

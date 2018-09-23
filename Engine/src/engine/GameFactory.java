@@ -6,10 +6,9 @@ public class GameFactory {
     private String gameSettingsFullPath;
     private GameSettings gameSettings;
 
-
-
     public void loadSettingsFile(String filePath) throws Exception
     {
+        gameSettingsFullPath = filePath;
         try {
             gameSettings = new GameSettings(filePath);
         } catch (Exception e) {
@@ -38,6 +37,20 @@ public class GameFactory {
             }
         }
         catch (Exception e) {
+            throw e;
+        }
+
+        return game;
+    }
+
+    // play new game from a fresh game settings file
+    public GameLogic getNewGame(String filePath) throws Exception {
+        GameLogic game = null;
+        gameSettingsFullPath = filePath;
+        try {
+            gameSettings = new GameSettings(filePath);
+            game = getNewGame();
+        } catch (Exception e) {
             throw e;
         }
 

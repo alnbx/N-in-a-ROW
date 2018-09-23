@@ -29,7 +29,7 @@ public interface GameLogic {
     boolean getIsBoardFull();
     void setRoundFromSettings(boolean restartPlayers);
     int getSequenceLength();
-    int getNumberOfPlayersToInitialized();
+    int getNumberOfRequiredPlayers();
     boolean isPopout();
     List<Player> getPlayers();
     Move getLastMove();
@@ -38,4 +38,5 @@ public interface GameLogic {
     GameVariant getGameVariant();
     int getNumberOfRoundsPlayed();
     void increaseRoundPlayed();
+    String getGameTitle();
 }

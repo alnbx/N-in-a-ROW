@@ -34,6 +34,10 @@ public class Game implements GameLogic, Serializable {
         this.roundsPlayed = 0;
     }
 
+    public String getGameTitle() {
+        return gameSettings.getGameTitle();
+    }
+
     public void setRoundFromSettings(boolean restartPlayers) {
         this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
         this.hasWinner = false;
@@ -209,7 +213,7 @@ public class Game implements GameLogic, Serializable {
         return players.size();
     }
 
-    public int getNumberOfPlayersToInitialized() {
+    public int getNumberOfRequiredPlayers() {
         return gameSettings.getNumOfPlayers();
     }
 

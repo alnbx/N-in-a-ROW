@@ -1,8 +1,8 @@
 package webEngine.users;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import common.PlayerTypes;
+
+import java.util.*;
 
 /*
 Adding and retrieving users is synchronized and for that manner - these actions are thread safe
@@ -11,25 +11,36 @@ of the user of this class to handle the synchronization of isUserExists with oth
  */
 public class UserManager {
 
-    private final Set<String> usersSet;
+    private final HashMap<String, SingleUserEntry> usersMap;
 
     public UserManager() {
-        usersSet = new HashSet<>();
+        usersMap = new HashMap<>();
     }
 
-    public synchronized void addUser(String username) {
-        usersSet.add(username);
+    public synchronized void addUser(String username, PlayerTypes playerType) {
+        usersMap.put(username, new SingleUserEntry(username, playerType));
     }
 
     public synchronized void removeUser(String username) {
-        usersSet.remove(username);
+        usersMap.remove(username);
     }
 
-    public synchronized Set<String> getUsers() {
-        return Collections.unmodifiableSet(usersSet);
+    public synchronized Set<String> getUsersNames() {
+        Set<String> usersNames = new HashSet<>();
+
+        for (SingleUserEntry sue : usersMap.values()) {
+            usersNames.add(sue.getName());
+        }
+
+        return Collections.unmodifiableSet(usersNames);
+    }
+
+    public synchronized List<SingleUserEntry> getUsers() {
+        List<SingleUserEntry> users = new ArrayList<>(usersMap.values());
+        return Collections.unmodifiableList(users);
     }
 
     public boolean isUserExists(String username) {
-        return usersSet.contains(username);
+        return usersMap.containsKey(username);
     }
 }
