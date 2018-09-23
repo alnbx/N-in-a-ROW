@@ -38,15 +38,22 @@ public class LoginServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+
+     /* response options:
+        option 1: sendRedirect
+        option 2: Json
+     */
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json");                    //////  option 2  //////
+        response.setContentType("text/html;charset=UTF-8");             //////  option 1  //////
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         // create the response
-        LoginResponse loginResponse = new LoginResponse();
-        String redirectURL = GAMES_LIST_URL;
+        LoginResponse loginResponse = new LoginResponse();              //////  option 2  //////
+        String redirectURL = GAMES_LIST_URL;                            //////  option 1  //////
         String usernameFromParameter = request.getParameter(USERNAME);
         String playerTypeFromParameter = request.getParameter(USER_TYPE);
 
@@ -54,24 +61,24 @@ public class LoginServlet extends HttpServlet {
             //user is not logged in yet
             if (usernameFromParameter == null) {
                 //no username in session and no username in parameter
-                loginResponse.setMsg(USER_NAME_NOT_APPLICABLE_ERROR);
-                loginResponse.setSuccess(false);
+                loginResponse.setMsg(USER_NAME_NOT_APPLICABLE_ERROR);   //////  option 2  //////
+                loginResponse.setSuccess(false);                        //////  option 2  //////
 
                 //redirect back to the index page
-                redirectURL = SIGN_UP_URL;
+                redirectURL = SIGN_UP_URL;                              //////  option 1  //////
             } else {
                 //normalize the username value
                 usernameFromParameter = usernameFromParameter.trim();
-                loginResponse.setUsername(usernameFromParameter);
+                loginResponse.setUsername(usernameFromParameter);       //////  option 2  //////
                 PlayerTypes playerType = playerTypeFromParameter.equalsIgnoreCase("computer") ?
                         PlayerTypes.COMPUTER : PlayerTypes.HUMAN;
-                loginResponse.setPlayerType(playerType);
+                loginResponse.setPlayerType(playerType);                //////  option 2  //////
                 synchronized (this) {
                     if (userManager.isUserExists(usernameFromParameter)) {
                         // username already exists
-                        loginResponse.setMsg(USER_NAME_EXISTS_ERROR);
-                        loginResponse.setSuccess(false);
-                        redirectURL = LOGIN_ERROR_URL;
+                        loginResponse.setMsg(USER_NAME_EXISTS_ERROR);   //////  option 2  //////
+                        loginResponse.setSuccess(false);                //////  option 2  //////
+                        redirectURL = LOGIN_ERROR_URL;                  //////  option 1  //////
                     } else {
                         //add the new user to the users list
                         userManager.addUser(usernameFromParameter, playerType);
@@ -84,11 +91,11 @@ public class LoginServlet extends HttpServlet {
             }
         }
         else {
-            loginResponse.setUsername(usernameFromSession);
+            loginResponse.setUsername(usernameFromSession);             //////  option 2  //////
         }
 
-        sendJsonResponse(response, loginResponse);
-        response.sendRedirect(redirectURL);
+        sendJsonResponse(response, loginResponse);                      //////  option 2  //////
+        response.sendRedirect(redirectURL);                             //////  option 1  //////
     }
 
     private void sendJsonResponse(HttpServletResponse response, LoginResponse loginResponse) throws IOException {
