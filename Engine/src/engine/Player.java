@@ -14,7 +14,7 @@ public class Player implements Serializable {
     private PlayerTypes playerType;
     private boolean isActive;
 
-    Player(int id, PlayerTypes playerType, String name) {
+    public Player(int id, PlayerTypes playerType, String name) {
         this.playerType = playerType;
         this.id = id;
         this.name = name;
@@ -22,7 +22,7 @@ public class Player implements Serializable {
         this.numOfMovesMade = 0;
     }
 
-    Player(PlayerSettings player) {
+    public Player(PlayerSettings player) {
         this.playerType = player.getPlayerType();
         this.id = player.getId();
         this.name = player.getName();

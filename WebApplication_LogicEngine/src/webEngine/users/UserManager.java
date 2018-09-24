@@ -1,5 +1,6 @@
 package webEngine.users;
 
+import common.PlayerSettings;
 import common.PlayerTypes;
 
 import java.util.*;
@@ -10,15 +11,14 @@ Note that asking if a user exists (isUserExists) does not participate in the syn
 of the user of this class to handle the synchronization of isUserExists with other methods here on it's own
  */
 public class UserManager {
-
-    private final HashMap<String, SingleUserEntry> usersMap;
+    private final HashMap<String, PlayerSettings> usersMap;
 
     public UserManager() {
         usersMap = new HashMap<>();
     }
 
     public synchronized void addUser(String username, PlayerTypes playerType) {
-        usersMap.put(username, new SingleUserEntry(username, usersMap.size() + 1, playerType));
+        usersMap.put(username, new PlayerSettings(username, usersMap.size() + 1, playerType));
     }
 
     public synchronized void removeUser(String username) {
@@ -28,15 +28,15 @@ public class UserManager {
     public synchronized Set<String> getUsersNames() {
         Set<String> usersNames = new HashSet<>();
 
-        for (SingleUserEntry sue : usersMap.values()) {
-            usersNames.add(sue.getName());
+        for (PlayerSettings player : usersMap.values()) {
+            usersNames.add(player.getName());
         }
 
         return Collections.unmodifiableSet(usersNames);
     }
 
-    public synchronized List<SingleUserEntry> getUsers() {
-        List<SingleUserEntry> users = new ArrayList<>(usersMap.values());
+    public synchronized List<PlayerSettings> getUsers() {
+        List<PlayerSettings> users = new ArrayList<>(usersMap.values());
         return Collections.unmodifiableList(users);
     }
 
@@ -48,15 +48,7 @@ public class UserManager {
         return usersMap.containsKey(username);
     }
 
-    public String getRegisteredGame(String username) {
-        return usersMap.get(username).getGameRegisteredTo();
-    }
-
-    public Boolean isUserRegisteredToGame(String username) {
-        return usersMap.get(username).isUserRegisteredToGame();
-    }
-
-    public SingleUserEntry getUser(String username) {
+    public PlayerSettings getUser(String username) {
         return usersMap.get(username);
     }
 

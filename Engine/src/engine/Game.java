@@ -207,6 +207,11 @@ public class Game implements GameLogic, Serializable {
                 board.diagonalUpSequence(col, player) >= targetSequence;
     }
 
+    @Override
+    public void addPlayer(PlayerSettings playerSettings) {
+        players.add(new Player(playerSettings));
+    }
+
     public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }
 
     public int getNumberOfInitializedPlayers() {

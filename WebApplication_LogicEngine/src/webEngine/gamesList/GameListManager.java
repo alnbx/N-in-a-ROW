@@ -1,7 +1,7 @@
 package webEngine.gamesList;
 
 import common.GameSettings;
-import webEngine.users.SingleUserEntry;
+import common.PlayerSettings;
 
 import java.util.*;
 
@@ -40,7 +40,7 @@ public class GameListManager {
         return isExists;
     }
 
-    public void registerUserToGame(String gameNameFromParameter, SingleUserEntry user) {
+    public void registerUserToGame(String gameNameFromParameter, PlayerSettings user) {
         gameEntriesMap.get(gameNameFromParameter).registerPlayer(user);
 
     }
@@ -54,11 +54,11 @@ public class GameListManager {
         gameEntriesMap.get(gameName).setGameStatus(gameStatus);
     }
 
-    public List<SingleUserEntry> getRegisteredUsers(String gameName) {
+    public List<PlayerSettings> getRegisteredUsers(String gameName) {
         return gameEntriesMap.get(gameName).getRegisteredUsers();
     }
 
-    public GameSettings getGameSettings(String gameName) {
-        return gameEntriesMap.get(gameName).getGameSettings();
+    public String getGameSettingsFile(String gameName) {
+        return gameEntriesMap.get(gameName).getGameSettingsFile();
     }
 }

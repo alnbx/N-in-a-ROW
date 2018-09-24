@@ -1,7 +1,10 @@
 package webEngine.actualGames;
 
 import common.MoveType;
+import common.PlayerSettings;
 import engine.GameLogic;
+import engine.Player;
+
 import java.util.Set;
 
 public class SingleGame {
@@ -33,5 +36,9 @@ public class SingleGame {
 
     public int getCurrentPlayer() {
         return game.getIdOfCurrentPlayer();
+    }
+
+    public void addPlayer(PlayerSettings player) {
+        game.addPlayer(player);
     }
 }

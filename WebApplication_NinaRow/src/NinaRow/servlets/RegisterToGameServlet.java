@@ -4,8 +4,8 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import common.PlayerSettings;
 import webEngine.gamesList.GameListManager;
-import webEngine.users.SingleUserEntry;
 import webEngine.users.UserManager;
 import java.util.List;
 
@@ -14,11 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static NinaRow.constants.Constants.GAMENAME;
-import static NinaRow.constants.Constants.GAME_NAME_NOT_APPLICABLE_ERROR;
-import static NinaRow.constants.Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR;
-import static NinaRow.constants.Constants.USER_NAME_NOT_APPLICABLE_ERROR;
 
 public class RegisterToGameServlet extends HttpServlet {
     private final String START_NEW_GAME = "/url/of/new/game/servlet";
@@ -30,41 +25,38 @@ public class RegisterToGameServlet extends HttpServlet {
         RegisterUserResponse registerUserResponse = new RegisterUserResponse();
 
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        String gameNameFromParameter = request.getParameter(GAMENAME);
+        String gameNameFromParameter = request.getParameter(Constants.GAMENAME);
 
         if (usernameFromSession != null) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             if (gameNameFromParameter != null) {
-                GameListManager gameManager = ServletUtils.getGamesListManager(getServletContext());
+                GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
                 synchronized (this) {
-                    if (!gameManager.isPlayersListFull(gameNameFromParameter)) {
-                        SingleUserEntry sue = userManager.getUser(usernameFromSession);
-                        gameManager.registerUserToGame(gameNameFromParameter, sue);
-                        sue.registerUserToGame(gameNameFromParameter);
+                    if (!gameListManager.isPlayersListFull(gameNameFromParameter)) {
+                        PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
+                        gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
                         SessionUtils.setAttribute(request, Constants.GAMENAME, gameNameFromParameter);
                     }
                     else {
                         registerUserResponse.setSuccess(false);
-                        registerUserResponse.setMsg(GAME_PLAYERS_LIST_IS_FULL_ERROR);
+                        registerUserResponse.setMsg(Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR);
                     }
                 }
 
-                if (gameManager.isPlayersListFull(gameNameFromParameter)) {
-                    List<SingleUserEntry> players = gameManager.getRegisteredUsers(gameNameFromParameter);
-                    request.setAttribute("players", players);
-                    request.setAttribute("gameSettings", gameManager.getGameSettings(gameNameFromParameter));
+                if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
+                    request.setAttribute(Constants.GAME_SETTINGS_FILE, gameListManager.getGameSettingsFile(gameNameFromParameter));
                     getServletContext().getRequestDispatcher(START_NEW_GAME).forward(request, response);
                     registerUserResponse.isGameStarted = true;
                 }
             }
             else {
                 registerUserResponse.setSuccess(false);
-                registerUserResponse.setMsg(GAME_NAME_NOT_APPLICABLE_ERROR);
+                registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
             }
         }
         else {
             registerUserResponse.setSuccess(false);
-            registerUserResponse.setMsg(USER_NAME_NOT_APPLICABLE_ERROR);
+            registerUserResponse.setMsg(Constants.USER_NAME_NOT_APPLICABLE_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, registerUserResponse);

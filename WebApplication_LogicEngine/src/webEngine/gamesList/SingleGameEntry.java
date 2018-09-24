@@ -2,7 +2,7 @@ package webEngine.gamesList;
 
 import common.GameSettings;
 import common.GameVariant;
-import webEngine.users.SingleUserEntry;
+import common.PlayerSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class SingleGameEntry {
     final private String settingsFile;
     final private GameSettings gameSettings;
     private GameStatus gameStatus;
-    private List<SingleUserEntry> registeredPlayers;
+    private List<PlayerSettings> registeredPlayers;
 
     SingleGameEntry(String settingsFile, String userName) throws Exception {
         this.settingsFile = settingsFile;
@@ -49,7 +49,7 @@ public class SingleGameEntry {
         return gameStatus;
     }
 
-    public void registerPlayer(SingleUserEntry player) {
+    public void registerPlayer(PlayerSettings player) {
         registeredPlayers.add(player);
     }
 
@@ -73,11 +73,11 @@ public class SingleGameEntry {
         return gameSettings.getNumOfPlayers();
     }
 
-    public List<SingleUserEntry> getRegisteredUsers() {
+    public List<PlayerSettings> getRegisteredUsers() {
         return registeredPlayers;
     }
 
-    public GameSettings getGameSettings() {
-        return gameSettings;
+    public String getGameSettingsFile() {
+        return settingsFile;
     }
 }

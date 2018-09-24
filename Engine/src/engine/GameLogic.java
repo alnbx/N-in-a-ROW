@@ -40,4 +40,5 @@ public interface GameLogic {
     void increaseRoundPlayed();
     String getGameTitle();
     Boolean isTie();
+    void addPlayer(PlayerSettings player);
 }
