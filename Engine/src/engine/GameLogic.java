@@ -39,4 +39,5 @@ public interface GameLogic {
     int getNumberOfRoundsPlayed();
     void increaseRoundPlayed();
     String getGameTitle();
+    Boolean isTie();
 }

@@ -2,20 +2,13 @@ package NinaRow.servlets;
 
 import NinaRow.utils.ServletUtils;
 import com.google.gson.Gson;
-import com.sun.javafx.UnmodifiableArrayList;
-import common.GameVariant;
-import common.PlayerTypes;
-import engine.GameLogic;
-import webEngine.games.SingleGameEntry;
 import webEngine.users.SingleUserEntry;
 import webEngine.users.UserManager;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

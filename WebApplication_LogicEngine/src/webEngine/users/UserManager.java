@@ -18,7 +18,7 @@ public class UserManager {
     }
 
     public synchronized void addUser(String username, PlayerTypes playerType) {
-        usersMap.put(username, new SingleUserEntry(username, playerType));
+        usersMap.put(username, new SingleUserEntry(username, usersMap.size() + 1, playerType));
     }
 
     public synchronized void removeUser(String username) {
@@ -40,7 +40,27 @@ public class UserManager {
         return Collections.unmodifiableList(users);
     }
 
+    public synchronized int getNumUsers() {
+        return usersMap.size();
+    }
+
     public boolean isUserExists(String username) {
         return usersMap.containsKey(username);
+    }
+
+    public String getRegisteredGame(String username) {
+        return usersMap.get(username).getGameRegisteredTo();
+    }
+
+    public Boolean isUserRegisteredToGame(String username) {
+        return usersMap.get(username).isUserRegisteredToGame();
+    }
+
+    public SingleUserEntry getUser(String username) {
+        return usersMap.get(username);
+    }
+
+    public int getPlayerID(String userNameParameter) {
+        return usersMap.get(userNameParameter).getId();
     }
 }

@@ -1,19 +1,16 @@
 package NinaRow.servlets;
 
 import NinaRow.constants.Constants;
+import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import com.google.gson.Gson;
-import common.PlayerTypes;
-import webEngine.games.GameListManager;
-import webEngine.users.UserManager;
+import webEngine.gamesList.GameListManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import static NinaRow.constants.Constants.*;
 
@@ -25,8 +22,8 @@ public class UploadGameServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         String settingsFileFromParameter = request.getParameter(SETTINGS_FILE);
-        String usernameFromSession = SessionUtils.getUsername(request);
-        GameListManager gameListManager = ServletUtils.getGamesManager(getServletContext());
+        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
+        GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
 
         // create the response
         UploadGameResponse uploadGameResponse = new UploadGameResponse();
@@ -56,32 +53,12 @@ public class UploadGameServlet extends HttpServlet {
             }
         }
 
-        sendJsonResponse(response, uploadGameResponse);
+        ServletUtils.sendJsonResponse(response, uploadGameResponse);
         getServletContext().getRequestDispatcher(GAMES_LIST_URL).forward(request, response);;
     }
 
-    private void sendJsonResponse(HttpServletResponse response, UploadGameServlet.UploadGameResponse uploadGameResponse) throws IOException {
-        Gson gson = new Gson();
-        String jsonResponse = gson.toJson(uploadGameResponse);
-
-        try (PrintWriter out = response.getWriter()) {
-            out.print(jsonResponse);
-            out.flush();
-        }
-    }
-
-    class UploadGameResponse {
-        private Boolean success = true;
-        private String msg = "";
+    class UploadGameResponse extends ServeltResponse {
         private String gameName = "";
-
-        public void setSuccess(Boolean success) {
-            this.success = success;
-        }
-
-        public void setMsg(String msg) {
-            this.msg = msg;
-        }
 
         public void setGameName(String gameName) {
             this.gameName = gameName;

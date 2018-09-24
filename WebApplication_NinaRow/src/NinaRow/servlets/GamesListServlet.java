@@ -2,11 +2,10 @@ package NinaRow.servlets;
 
 import NinaRow.utils.ServletUtils;
 import com.google.gson.Gson;
-import webEngine.games.GameListManager;
-import webEngine.games.GameStatus;
-import webEngine.games.SingleGameEntry;
+import webEngine.gamesList.GameListManager;
+import webEngine.gamesList.GameStatus;
+import webEngine.gamesList.SingleGameEntry;
 import common.GameVariant;
-import engine.GameLogic;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +24,7 @@ public class GamesListServlet extends HttpServlet {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
-            GameListManager gamesManager = ServletUtils.getGamesManager(getServletContext());
+            GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
             List<SingleGameEntry> gamesList = gamesManager.getGames();
             List<SingleGameResponse> gamesListResponse = new ArrayList<>();
 
@@ -55,12 +54,11 @@ public class GamesListServlet extends HttpServlet {
             this.gameStatus = gameEntry.getGameStatus();
             this.userName = gameEntry.getUserName();
             this.numRegisteredPlayers = gameEntry.getNumRegisteredPlayers();
-            GameLogic gameLogic = gameEntry.getGameLogic();
-            this.boardRows = gameLogic.getRows();
-            this.boardCols = gameLogic.getCols();
-            this.target = gameLogic.getSequenceLength();
-            this.gameVariant = gameLogic.getGameVariant();
-            this.numRequiredPlayers = gameLogic.getNumberOfRequiredPlayers();
+            this.boardRows = gameEntry.getRows();
+            this.boardCols = gameEntry.getCols();
+            this.target = gameEntry.getSequenceLength();
+            this.gameVariant = gameEntry.getGameVariant();
+            this.numRequiredPlayers = gameEntry.getNumberOfRequiredPlayers();
         }
     }
 

@@ -1,6 +1,7 @@
 package NinaRow.servlets;
 
 import NinaRow.constants.Constants;
+import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.SessionUtils;
 import NinaRow.utils.ServletUtils;
 import com.google.gson.Gson;
@@ -20,15 +21,6 @@ import static NinaRow.constants.Constants.USER_NAME_EXISTS_ERROR;
 import static NinaRow.constants.Constants.USER_NAME_NOT_APPLICABLE_ERROR;
 
 public class LoginServlet extends HttpServlet {
-
-    // urls that starts with forward slash '/' are considered absolute
-    // urls that doesn't start with forward slash '/' are considered relative to the place where this servlet request comes from
-    // you can use absolute paths, but then you need to build them from scratch, starting from the context path
-    // ( can be fetched from request.getContextPath() ) and then the 'absolute' path from it.
-    // Each method with it's pros and cons...
-    private final String GAMES_LIST_URL = "../gameslist/gameslist.html";
-    private final String SIGN_UP_URL = "../signup/singup.html";
-    private final String LOGIN_ERROR_URL = "/pages/loginerror/login_attempt_after_error.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,21 +31,14 @@ public class LoginServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
 
-     /* response options:
-        option 1: sendRedirect
-        option 2: Json
-     */
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");                    //////  option 2  //////
-        response.setContentType("text/html;charset=UTF-8");             //////  option 1  //////
-        String usernameFromSession = SessionUtils.getUsername(request);
+        response.setContentType("application/json");
+        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         // create the response
-        LoginResponse loginResponse = new LoginResponse();              //////  option 2  //////
-        String redirectURL = GAMES_LIST_URL;                            //////  option 1  //////
+        LoginResponse loginResponse = new LoginResponse();
         String usernameFromParameter = request.getParameter(USERNAME);
         String playerTypeFromParameter = request.getParameter(USER_TYPE);
 
@@ -61,24 +46,22 @@ public class LoginServlet extends HttpServlet {
             //user is not logged in yet
             if (usernameFromParameter == null) {
                 //no username in session and no username in parameter
-                loginResponse.setMsg(USER_NAME_NOT_APPLICABLE_ERROR);   //////  option 2  //////
-                loginResponse.setSuccess(false);                        //////  option 2  //////
+                loginResponse.setMsg(USER_NAME_NOT_APPLICABLE_ERROR);
+                loginResponse.setSuccess(false);
 
                 //redirect back to the index page
-                redirectURL = SIGN_UP_URL;                              //////  option 1  //////
             } else {
                 //normalize the username value
                 usernameFromParameter = usernameFromParameter.trim();
-                loginResponse.setUsername(usernameFromParameter);       //////  option 2  //////
+                loginResponse.setUsername(usernameFromParameter);
                 PlayerTypes playerType = playerTypeFromParameter.equalsIgnoreCase("computer") ?
                         PlayerTypes.COMPUTER : PlayerTypes.HUMAN;
-                loginResponse.setPlayerType(playerType);                //////  option 2  //////
+                loginResponse.setPlayerType(playerType);
                 synchronized (this) {
                     if (userManager.isUserExists(usernameFromParameter)) {
                         // username already exists
-                        loginResponse.setMsg(USER_NAME_EXISTS_ERROR);   //////  option 2  //////
-                        loginResponse.setSuccess(false);                //////  option 2  //////
-                        redirectURL = LOGIN_ERROR_URL;                  //////  option 1  //////
+                        loginResponse.setMsg(USER_NAME_EXISTS_ERROR);
+                        loginResponse.setSuccess(false);
                     } else {
                         //add the new user to the users list
                         userManager.addUser(usernameFromParameter, playerType);
@@ -91,27 +74,13 @@ public class LoginServlet extends HttpServlet {
             }
         }
         else {
-            loginResponse.setUsername(usernameFromSession);             //////  option 2  //////
+            loginResponse.setUsername(usernameFromSession);
         }
 
-        sendJsonResponse(response, loginResponse);                      //////  option 2  //////
-        response.sendRedirect(redirectURL);                             //////  option 1  //////
+        ServletUtils.sendJsonResponse(response, loginResponse);
     }
 
-    private void sendJsonResponse(HttpServletResponse response, LoginResponse loginResponse) throws IOException {
-        Gson gson = new Gson();
-        String jsonResponse = gson.toJson(loginResponse);
-
-        try (PrintWriter out = response.getWriter()) {
-            out.print(jsonResponse);
-            out.flush();
-        }
-    }
-
-    class LoginResponse {
-
-        private Boolean success = true;
-        private String msg = "";
+    class LoginResponse extends ServeltResponse {
         private String username = "";
         private PlayerTypes playerType = PlayerTypes.HUMAN;
 
@@ -119,13 +88,6 @@ public class LoginServlet extends HttpServlet {
             this.playerType = playerType;
         }
 
-        public void setSuccess(Boolean success) {
-            this.success = success;
-        }
-
-        public void setMsg(String msg) {
-            this.msg = msg;
-        }
 
         public void setUsername(String username) {
             this.username = username;

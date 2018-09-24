@@ -1,4 +1,4 @@
-package webEngine.games;
+package webEngine.gamesList;
 
 public enum GameStatus {
     PLAYING,

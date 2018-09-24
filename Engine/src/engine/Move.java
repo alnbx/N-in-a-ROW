@@ -10,7 +10,7 @@ public class Move implements Serializable {
     static int movesCount;
     private int moveIndex;
     private int playerId;
-    private int col;
+    private int col;  // cols are counted from left to right, starting from 1
     private String timeStamp;
     private MoveType moveType;
 

@@ -362,4 +362,7 @@ public class Game implements GameLogic, Serializable {
 
     public int getNumberOfRoundsPlayed() { return this.roundsPlayed; }
     public void increaseRoundPlayed()    { this.roundsPlayed++; }
+    public Boolean isTie() {
+        return gameSettings.getGameVariant() != GameVariant.POPOUT && board.isFull();
+    }
 }

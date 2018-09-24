@@ -1,5 +1,6 @@
 package NinaRow.servlets;
 
+import NinaRow.constants.Constants;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import webEngine.users.UserManager;
@@ -17,7 +18,7 @@ public class LogoutServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String usernameFromSession = SessionUtils.getUsername(request);
+        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         if (usernameFromSession != null) {

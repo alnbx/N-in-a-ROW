@@ -622,7 +622,6 @@ public class desktopAppController {
         }
     }
 
-
     /****************** MAKING MOVES ******************/
 
     private void playSingleMove(ColumnButton b, MoveType buttonType) {
