@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import common.PlayerSettings;
 import engine.GameLogic;
 import webEngine.gamesList.GameListManager;
+import webEngine.gamesList.GameStatus;
+import webEngine.gamesList.SingleGameEntry;
 import webEngine.users.UserManager;
 import java.util.List;
 
@@ -47,11 +49,13 @@ public class RegisterToGameServlet extends HttpServlet {
 
                 if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
                     Gson gson = new Gson();
-                    GameLogic gameLogic = gameListManager.getGameLogic(gameNameFromParameter);
+                    SingleGameEntry sge = gameListManager.getGameEntry(gameNameFromParameter);
+                    GameLogic gameLogic = sge.getGameLogic();
                     String gameLogicJson = gson.toJson(gameLogic);
                     request.setAttribute(Constants.GAME_LOGIC, gameLogicJson);
                     getServletContext().getRequestDispatcher(GAME_URL).forward(request, response);
-                    registerUserResponse.isGameStarted = true;
+                    sge.setGameStatus(GameStatus.PLAYING);
+                    registerUserResponse.gameStatus = GameStatus.PLAYING;
                 }
             }
             else {
@@ -69,10 +73,10 @@ public class RegisterToGameServlet extends HttpServlet {
 
     public class RegisterUserResponse extends ServeltResponse {
         String gameName;
-        Boolean isGameStarted;
+        GameStatus gameStatus;
 
         public RegisterUserResponse() {
-            isGameStarted = false;
+            gameStatus = GameStatus.PENDING_PLAYERS;
             gameName = "";
         }
     }

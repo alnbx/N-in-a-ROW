@@ -58,7 +58,7 @@ public class GameListManager {
         gameEntriesMap.get(gameName).setGameStatus(gameStatus);
     }
 
-    public GameLogic getGameLogic(String gameName) {
-        return gameEntriesMap.get(gameName).getGameLogic();
+    public SingleGameEntry getGameEntry(String gameName) {
+        return gameEntriesMap.get(gameName);
     }
 }
