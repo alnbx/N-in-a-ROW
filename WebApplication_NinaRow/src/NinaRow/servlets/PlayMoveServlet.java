@@ -4,10 +4,7 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import common.MoveType;
-import engine.Move;
-import webEngine.actualGames.GamesManager;
-import webEngine.actualGames.SingleGame;
+import engine.GameLogic;
 import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
@@ -27,7 +24,7 @@ public class PlayMoveServlet extends HttpServlet {
         PlayMoveResponse playMoveResponse = new PlayMoveResponse();
         String gameName = SessionUtils.getAttribute(request, Constants.GAMENAME);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        SingleGame game = ServletUtils.getGamesManager(getServletContext()).getGame(gameName);
+        GameLogic game = ServletUtils.getGamesListManager(getServletContext()).getGameLogic(gameName);
 
         // get player id
         String userNameParameter = SessionUtils.getAttribute(request, Constants.USERNAME);
@@ -42,11 +39,11 @@ public class PlayMoveServlet extends HttpServlet {
         String moveTypeParameter = SessionUtils.getAttribute(request, Constants.MOVE_TYPE);
 
         // get type of move
-        MoveType moveType = MoveType.INSERT;
+        Boolean isPopout = false;
         if (moveTypeParameter.equalsIgnoreCase("insert"))
-            moveType = MoveType.INSERT;
+            isPopout = false;
         else if (moveTypeParameter.equalsIgnoreCase("popout"))
-            moveType = MoveType.POPOUT;
+            isPopout = true;
         else {
             playMoveResponse.setSuccess(false);
             playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
@@ -54,7 +51,7 @@ public class PlayMoveServlet extends HttpServlet {
 
         if (playMoveResponse.getSuccess()) {
             synchronized (getServletContext()) {
-                if (game.isValidMove(colParameter, moveType)) {
+                if (game.play(colParameter, isPopout)) {
                     playMoveResponse.winners = game.getWinners();
                     playMoveResponse.isTie = game.isTie();
                 }

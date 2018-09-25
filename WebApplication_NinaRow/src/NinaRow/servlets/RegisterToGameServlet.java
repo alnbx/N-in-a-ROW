@@ -4,7 +4,9 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import com.google.gson.Gson;
 import common.PlayerSettings;
+import engine.GameLogic;
 import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
 import java.util.List;
@@ -16,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class RegisterToGameServlet extends HttpServlet {
-    private final String START_NEW_GAME = "/url/of/new/game/servlet";
+    private final String GAME_URL = "/url/of/new/game";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -44,8 +46,11 @@ public class RegisterToGameServlet extends HttpServlet {
                 }
 
                 if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                    request.setAttribute(Constants.GAME_SETTINGS_FILE, gameListManager.getGameSettingsFile(gameNameFromParameter));
-                    getServletContext().getRequestDispatcher(START_NEW_GAME).forward(request, response);
+                    Gson gson = new Gson();
+                    GameLogic gameLogic = gameListManager.getGameLogic(gameNameFromParameter);
+                    String gameLogicJson = gson.toJson(gameLogic);
+                    request.setAttribute(Constants.GAME_LOGIC, gameLogicJson);
+                    getServletContext().getRequestDispatcher(GAME_URL).forward(request, response);
                     registerUserResponse.isGameStarted = true;
                 }
             }
@@ -69,10 +74,6 @@ public class RegisterToGameServlet extends HttpServlet {
         public RegisterUserResponse() {
             isGameStarted = false;
             gameName = "";
-        }
-
-        public void setGameName(String gameName) {
-            this.gameName = gameName;
         }
     }
 

@@ -24,5 +24,5 @@ public class Constants {
     public static final String MOVE_TYPE_ERROR = "invalid move type parameter";
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
 
-    public static final String GAME_SETTINGS_FILE = "gamesettings";
+    public static final String GAME_LOGIC = "gamelogic";
 }

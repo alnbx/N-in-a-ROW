@@ -3,25 +3,29 @@ package webEngine.gamesList;
 import common.GameSettings;
 import common.GameVariant;
 import common.PlayerSettings;
+import engine.GameLogic;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SingleGameEntry {
+    final private GameLogic game;
     final private String gameName;
     final private String userName;
-    final private String settingsFile;
-    final private GameSettings gameSettings;
+    //final private String settingsFile;
+    //final private GameSettings gameSettings;
     private GameStatus gameStatus;
-    private List<PlayerSettings> registeredPlayers;
+    //private List<PlayerSettings> registeredPlayers;
 
-    SingleGameEntry(String gameSettingsXml, String userName) throws Exception {
-        this.settingsFile = gameSettingsXml;
-        this.gameSettings = new GameSettings(gameSettingsXml, false);
-        this.gameName = gameSettings.getGameTitle();
+    SingleGameEntry(GameLogic game, String userName) throws Exception {
+        //this.settingsFile = gameSettingsXml;
+        //this.gameSettings = new GameSettings(gameSettingsXml, false);
+        //this.gameName = gameSettings.getGameTitle();
+        this.game = game;
+        this.gameName = game.getGameTitle();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;
-        this.registeredPlayers = new ArrayList<>();
+        //this.registeredPlayers = new ArrayList<>();
     }
 
 
@@ -30,11 +34,11 @@ public class SingleGameEntry {
     }
 
     public int getNumRegisteredPlayers() {
-        return registeredPlayers.size();
+        return game.getNumberOfInitializedPlayers();
     }
 
     public int getNumRequiredPlayers() {
-        return gameSettings.getNumOfPlayers();
+        return game.getNumberOfRequiredPlayers();
     }
 
     public void setGameStatus(GameStatus gameStatus) {
@@ -50,34 +54,26 @@ public class SingleGameEntry {
     }
 
     public void registerPlayer(PlayerSettings player) {
-        registeredPlayers.add(player);
+        game.addPlayer(player);
     }
 
     public int getRows() {
-        return gameSettings.getNumRows();
+        return game.getRows();
     }
 
     public int getCols() {
-        return gameSettings.getNumCols();
+        return game.getCols();
     }
 
     public int getSequenceLength() {
-        return gameSettings.getTarget();
+        return game.getSequenceLength();
     }
 
     public GameVariant getGameVariant() {
-        return gameSettings.getGameVariant();
+        return game.getGameVariant();
     }
 
-    public int getNumberOfRequiredPlayers() {
-        return gameSettings.getNumOfPlayers();
-    }
-
-    public List<PlayerSettings> getRegisteredUsers() {
-        return registeredPlayers;
-    }
-
-    public String getGameSettingsFile() {
-        return settingsFile;
+    public GameLogic getGameLogic() {
+        return game;
     }
 }

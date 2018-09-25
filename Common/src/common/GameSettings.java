@@ -27,18 +27,6 @@ public class GameSettings implements Serializable {
     private int numOfPlayers;
     private String gameTitle;
 
-//    public GameSettings(String settingsFilePath) throws Exception {
-//        this.boardNumRows = 6;
-//        this.boardNumCols = 7;
-//        this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
-//        try {
-//            initGameSettingsFromFilePath(settingsFilePath);
-//        }
-//        catch (Exception e) {
-//            throw e;
-//        }
-//    }
-
     public GameSettings(String gameSettings, boolean isFilePath) throws Exception {
         this.boardNumRows = 6;
         this.boardNumCols = 7;

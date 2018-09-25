@@ -2,18 +2,22 @@ package webEngine.gamesList;
 
 import common.GameSettings;
 import common.PlayerSettings;
+import engine.GameFactory;
+import engine.GameLogic;
 
 import java.util.*;
 
 public class GameListManager {
     private final Map<String, SingleGameEntry> gameEntriesMap;
+    GameFactory gameFactory;
 
     public GameListManager() {
+        this.gameFactory = new GameFactory(false);
         gameEntriesMap = new HashMap<>();
     }
 
     public synchronized void addGame(String gameFile, String userName) throws Exception {
-        SingleGameEntry game = new SingleGameEntry(gameFile, userName);
+        SingleGameEntry game = new SingleGameEntry(gameFactory.getNewGame(gameFile), userName);
         gameEntriesMap.put(game.getGameName(), game);
     }
 
@@ -54,11 +58,7 @@ public class GameListManager {
         gameEntriesMap.get(gameName).setGameStatus(gameStatus);
     }
 
-    public List<PlayerSettings> getRegisteredUsers(String gameName) {
-        return gameEntriesMap.get(gameName).getRegisteredUsers();
-    }
-
-    public String getGameSettingsFile(String gameName) {
-        return gameEntriesMap.get(gameName).getGameSettingsFile();
+    public GameLogic getGameLogic(String gameName) {
+        return gameEntriesMap.get(gameName).getGameLogic();
     }
 }

@@ -3,7 +3,6 @@ package NinaRow.utils;
 import com.google.gson.Gson;
 import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
-import webEngine.actualGames.GamesManager;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,6 @@ public class ServletUtils {
 
     private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
     private static final String GAMES_LIST_MANAGER_ATTRIBUTE_NAME = "gamesListManager";
-    private static final String GAME_MANAGER_ATTRIBUTE_NAME = "gamesManager";
 
     /*
     Note how the synchronization is done only on the question and\or creation of the relevant managers and once they exists -
@@ -46,16 +44,6 @@ public class ServletUtils {
             }
         }
         return (GameListManager) servletContext.getAttribute(GAMES_LIST_MANAGER_ATTRIBUTE_NAME);
-    }
-
-    public static GamesManager getGamesManager(ServletContext servletContext) {
-
-        synchronized (gamesManagerLock) {
-            if (servletContext.getAttribute(GAME_MANAGER_ATTRIBUTE_NAME) == null) {
-                servletContext.setAttribute(GAME_MANAGER_ATTRIBUTE_NAME, new GamesManager());
-            }
-        }
-        return (GamesManager) servletContext.getAttribute(GAME_MANAGER_ATTRIBUTE_NAME);
     }
 
     public static int getIntParameter(HttpServletRequest request, String name) {

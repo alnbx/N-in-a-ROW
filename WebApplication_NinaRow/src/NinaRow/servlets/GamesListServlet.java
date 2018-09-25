@@ -58,7 +58,7 @@ public class GamesListServlet extends HttpServlet {
             this.boardCols = gameEntry.getCols();
             this.target = gameEntry.getSequenceLength();
             this.gameVariant = gameEntry.getGameVariant();
-            this.numRequiredPlayers = gameEntry.getNumberOfRequiredPlayers();
+            this.numRequiredPlayers = gameEntry.getNumRequiredPlayers();
         }
     }
 
