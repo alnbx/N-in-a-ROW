@@ -160,7 +160,7 @@ public class desktopAppController {
     void initialize() { TopPanel_RoundsPlayedLabel_Label.setText("0"); }
 
     public desktopAppController() {
-        this.gameFactory = new GameFactory();
+        this.gameFactory = new GameFactory(true);
         this.xmlLoadedSuccessfully = false;
         this.isValidXML = new SimpleBooleanProperty(false);
         this.isReplayMode = new SimpleBooleanProperty(false);

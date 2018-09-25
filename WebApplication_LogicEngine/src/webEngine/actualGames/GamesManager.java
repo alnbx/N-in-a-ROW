@@ -17,7 +17,7 @@ public class GamesManager {
 
     public GamesManager() {
         this.gamesMap = new HashMap<>();
-        this.gameFactory = new GameFactory();
+        this.gameFactory = new GameFactory(false);
     }
 
     public String addGame(String settingsFile){

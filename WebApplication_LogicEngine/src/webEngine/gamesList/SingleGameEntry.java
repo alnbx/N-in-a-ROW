@@ -15,9 +15,9 @@ public class SingleGameEntry {
     private GameStatus gameStatus;
     private List<PlayerSettings> registeredPlayers;
 
-    SingleGameEntry(String settingsFile, String userName) throws Exception {
-        this.settingsFile = settingsFile;
-        this.gameSettings = new GameSettings(settingsFile);
+    SingleGameEntry(String gameSettingsXml, String userName) throws Exception {
+        this.settingsFile = gameSettingsXml;
+        this.gameSettings = new GameSettings(gameSettingsXml, false);
         this.gameName = gameSettings.getGameTitle();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;

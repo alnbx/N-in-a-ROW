@@ -191,7 +191,7 @@ public class Game implements GameLogic, Serializable {
     public void loadSettingsFile(String filePath) throws Exception
     {
         try {
-            gameSettings.initGameSettings(filePath);
+            gameSettings.initGameSettingsFromFilePath(filePath);
         } catch (Exception e) {
             throw e;
         }

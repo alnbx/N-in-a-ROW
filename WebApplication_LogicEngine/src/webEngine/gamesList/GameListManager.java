@@ -26,11 +26,11 @@ public class GameListManager {
         return Collections.unmodifiableList(gamesList);
     }
 
-    public boolean isGameExists(String settingFile) throws Exception {
+    public boolean isGameExists(String gameSettingsXml) throws Exception {
         Boolean isExists = false;
 
         try {
-            GameSettings gameSettings = new GameSettings(settingFile);
+            GameSettings gameSettings = new GameSettings(gameSettingsXml, false);
             isExists = gameEntriesMap.containsKey(gameSettings.getGameTitle());
         }
         catch (Exception e) {

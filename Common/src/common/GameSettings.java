@@ -4,11 +4,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +27,30 @@ public class GameSettings implements Serializable {
     private int numOfPlayers;
     private String gameTitle;
 
-    public GameSettings(String settingsFilePath) throws Exception {
+//    public GameSettings(String settingsFilePath) throws Exception {
+//        this.boardNumRows = 6;
+//        this.boardNumCols = 7;
+//        this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
+//        try {
+//            initGameSettingsFromFilePath(settingsFilePath);
+//        }
+//        catch (Exception e) {
+//            throw e;
+//        }
+//    }
+
+    public GameSettings(String gameSettings, boolean isFilePath) throws Exception {
         this.boardNumRows = 6;
         this.boardNumCols = 7;
         this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
+
         try {
-            initGameSettings(settingsFilePath);
+            if (isFilePath) {
+                initGameSettingsFromFilePath(gameSettings);
+            }
+            else {
+                initGameSettingsFromFileContent(gameSettings);
+            }
         }
         catch (Exception e) {
             throw e;
@@ -75,7 +95,7 @@ public class GameSettings implements Serializable {
         return players;
     }
 
-    public void initGameSettings(String settingsFilePath) throws Exception {
+    public void initGameSettingsFromFilePath(String settingsFilePath) throws Exception {
         this.settingsFilePath = settingsFilePath;
         int i = settingsFilePath.lastIndexOf('.');
 
@@ -88,6 +108,14 @@ public class GameSettings implements Serializable {
         } else {
             throw new SettingsFileException("file: the given path is not of an XML file");
         }
+    }
+
+    public void initGameSettingsFromFileContent(String settingsFileXml) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource inputSource = new InputSource(new StringReader(settingsFileXml));
+        Document doc =  builder.parse(inputSource);
+        parseGameSettingFile(doc);
     }
 
     private void readGameInfoFromFile(File gameSettingsFile) throws Exception {

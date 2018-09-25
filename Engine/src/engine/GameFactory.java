@@ -5,12 +5,17 @@ import common.*;
 public class GameFactory {
     private String gameSettingsFullPath;
     private GameSettings gameSettings;
+    private final Boolean isGameSettingsFilePath;
+
+    public GameFactory(boolean isGameSettingsFilePath) {
+        this.isGameSettingsFilePath = isGameSettingsFilePath;
+    }
 
     public void loadSettingsFile(String filePath) throws Exception
     {
         gameSettingsFullPath = filePath;
         try {
-            gameSettings = new GameSettings(filePath);
+            gameSettings = new GameSettings(filePath, isGameSettingsFilePath);
         } catch (Exception e) {
             throw e;
         }
@@ -48,7 +53,7 @@ public class GameFactory {
         GameLogic game = null;
         gameSettingsFullPath = filePath;
         try {
-            gameSettings = new GameSettings(filePath);
+            gameSettings = new GameSettings(filePath, isGameSettingsFilePath);
             game = getNewGame();
         } catch (Exception e) {
             throw e;
