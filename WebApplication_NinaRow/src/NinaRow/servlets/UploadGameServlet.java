@@ -21,40 +21,45 @@ public class UploadGameServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        String settingsFileFromParameter = request.getParameter(SETTINGS_FILE);
-        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
-
         // create the response
         UploadGameResponse uploadGameResponse = new UploadGameResponse();
+        String settingsFileFromParameter = request.getParameter(SETTINGS_FILE);
+        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
+        if (usernameFromSession != null) {
+            GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
 
-        if (settingsFileFromParameter == null) {
-            // no settings file in parameter
-            uploadGameResponse.setMsg(SETTINGS_FILE_NOT_APPLICABLE_ERROR);
-            uploadGameResponse.setSuccess(false);
+            if (settingsFileFromParameter == null) {
+                // no settings file in parameter
+                uploadGameResponse.setMsg(SETTINGS_FILE_NOT_APPLICABLE_ERROR);
+                uploadGameResponse.setSuccess(false);
 
-        } else {
-            // normalize the settings file path string
-            settingsFileFromParameter = settingsFileFromParameter.trim();
-            synchronized (this) {
-                try {
-                    if (gameListManager.isGameExists(settingsFileFromParameter)) {
-                        uploadGameResponse.setMsg(SETTINGS_FILE_EXISTS_ERROR);
+            } else {
+                // normalize the settings file path string
+                settingsFileFromParameter = settingsFileFromParameter.trim();
+                synchronized (this) {
+                    try {
+                        if (gameListManager.isGameExists(settingsFileFromParameter)) {
+                            uploadGameResponse.setMsg(SETTINGS_FILE_EXISTS_ERROR);
+                            uploadGameResponse.setSuccess(false);
+                        }
+                        else {
+                            gameListManager.addGame(settingsFileFromParameter, usernameFromSession);
+                        }
+                    }
+                    catch (Exception e) {
+                        uploadGameResponse.setMsg(e.getMessage());
                         uploadGameResponse.setSuccess(false);
                     }
-                    else {
-                        gameListManager.addGame(settingsFileFromParameter, usernameFromSession);
-                    }
-                }
-                catch (Exception e) {
-                    uploadGameResponse.setMsg(e.getMessage());
-                    uploadGameResponse.setSuccess(false);
                 }
             }
-        }
 
-        ServletUtils.sendJsonResponse(response, uploadGameResponse);
-        getServletContext().getRequestDispatcher(GAMES_LIST_URL).forward(request, response);;
+            ServletUtils.sendJsonResponse(response, uploadGameResponse);
+            getServletContext().getRequestDispatcher(GAMES_LIST_URL).forward(request, response);
+        }
+        else {
+            uploadGameResponse.setSuccess(false);
+            uploadGameResponse.setMsg(Constants.USER_SESSION_ERROR);
+        }
     }
 
     class UploadGameResponse extends ServeltResponse {

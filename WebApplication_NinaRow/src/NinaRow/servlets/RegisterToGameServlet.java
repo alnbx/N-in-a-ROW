@@ -29,43 +29,49 @@ public class RegisterToGameServlet extends HttpServlet {
         RegisterUserResponse registerUserResponse = new RegisterUserResponse();
 
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        String gameNameFromParameter = request.getParameter(Constants.GAMENAME);
-
         if (usernameFromSession != null) {
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            if (gameNameFromParameter != null) {
-                GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
-                synchronized (this) {
-                    if (!gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                        PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
-                        gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
-                        SessionUtils.setAttribute(request, Constants.GAMENAME, gameNameFromParameter);
+            String gameNameFromParameter = request.getParameter(Constants.GAMENAME);
+
+            if (usernameFromSession != null) {
+                UserManager userManager = ServletUtils.getUserManager(getServletContext());
+                if (gameNameFromParameter != null) {
+                    GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
+                    synchronized (this) {
+                        if (!gameListManager.isPlayersListFull(gameNameFromParameter)) {
+                            PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
+                            gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
+                            SessionUtils.setAttribute(request, Constants.GAMENAME, gameNameFromParameter);
+                        }
+                        else {
+                            registerUserResponse.setSuccess(false);
+                            registerUserResponse.setMsg(Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR);
+                        }
                     }
-                    else {
-                        registerUserResponse.setSuccess(false);
-                        registerUserResponse.setMsg(Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR);
+
+                    if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
+                        Gson gson = new Gson();
+                        SingleGameEntry sge = gameListManager.getGameEntry(gameNameFromParameter);
+                        GameLogic gameLogic = sge.getGameLogic();
+                        String gameLogicJson = gson.toJson(gameLogic);
+                        request.setAttribute(Constants.GAME_LOGIC, gameLogicJson);
+                        getServletContext().getRequestDispatcher(GAME_URL).forward(request, response);
+                        sge.setGameStatus(GameStatus.PLAYING);
+                        registerUserResponse.gameStatus = GameStatus.PLAYING;
                     }
                 }
-
-                if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                    Gson gson = new Gson();
-                    SingleGameEntry sge = gameListManager.getGameEntry(gameNameFromParameter);
-                    GameLogic gameLogic = sge.getGameLogic();
-                    String gameLogicJson = gson.toJson(gameLogic);
-                    request.setAttribute(Constants.GAME_LOGIC, gameLogicJson);
-                    getServletContext().getRequestDispatcher(GAME_URL).forward(request, response);
-                    sge.setGameStatus(GameStatus.PLAYING);
-                    registerUserResponse.gameStatus = GameStatus.PLAYING;
+                else {
+                    registerUserResponse.setSuccess(false);
+                    registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
                 }
             }
             else {
                 registerUserResponse.setSuccess(false);
-                registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
+                registerUserResponse.setMsg(Constants.USER_NAME_NOT_APPLICABLE_ERROR);
             }
         }
         else {
             registerUserResponse.setSuccess(false);
-            registerUserResponse.setMsg(Constants.USER_NAME_NOT_APPLICABLE_ERROR);
+            registerUserResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, registerUserResponse);

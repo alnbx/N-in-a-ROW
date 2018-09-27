@@ -15,13 +15,15 @@ public class Constants {
     public static final String GAME_PLAYERS_LIST_IS_FULL_ERROR = "players list is full";
 
     public static final String GAME_SESSION_ERROR = "no game is defined for session";
-    public static final String GAME_LAST_MOVE_INDEX_ERROR = "index of last move is not applicable";
+    public static final String USER_SESSION_ERROR = "no user is defined for session";
+    public static final String MOVE_SESSION_ERROR = "no move is defined for session";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
     public static final String MOVE_COL = "movecol";
     public static final String MOVE_COL_ERROR = "invalid col parameter";
     public static final String MOVE_TYPE = "movetype";
     public static final String MOVE_TYPE_ERROR = "invalid move type parameter";
+    public static final String PLAYER_ERROR = "player in parameter is not current player";
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
 
     public static final String GAME_LOGIC = "gamelogic";

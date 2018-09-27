@@ -12,17 +12,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
-import static NinaRow.constants.Constants.INT_PARAMETER_ERROR;
-
-public class PlayMoveServlet extends HttpServlet {
+public class PlayerResignServlet  extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
-        PlayMoveResponse playMoveResponse = new PlayMoveResponse();
         String gameName = SessionUtils.getAttribute(request, Constants.GAMENAME);
+        response.setContentType("application/json");
+
+        // create the response
+        PlayerResignResponse playerResignResponse = new PlayerResignResponse();
         if (gameName != null) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
@@ -33,74 +34,43 @@ public class PlayMoveServlet extends HttpServlet {
             if (userNameParameter != null) {
                 Integer playerId = userManager.getPlayerID(userNameParameter);
                 if (playerId != null) {
+                    // only the current player can quit the game
                     if (playerId != game.getIdOfCurrentPlayer()) {
-                        playMoveResponse.setSuccess(false);
-                        playMoveResponse.setMsg(Constants.PLAYER_ERROR);
+                        playerResignResponse.setSuccess(false);
+                        playerResignResponse.setMsg(Constants.PLAYER_ERROR);
                     }
                 }
                 else {
-                    playMoveResponse.setSuccess(false);
-                    playMoveResponse.setMsg(Constants.PLAYER_ERROR);
+                    playerResignResponse.setSuccess(false);
+                    playerResignResponse.setMsg(Constants.PLAYER_ERROR);
                 }
 
-                // get col of move
-                int colParameter = ServletUtils.getIntParameter(request, Constants.MOVE_COL);
-                if (colParameter == INT_PARAMETER_ERROR) {
-                    playMoveResponse.setSuccess(false);
-                    playMoveResponse.setMsg(Constants.MOVE_COL_ERROR);
+                if (playerResignResponse.getSuccess() == true) {
+                    game.resignPlayer();
+                    // check if the player's resignation lead to a win
+                    playerResignResponse.winners = game.getWinners();
                 }
 
-                String moveTypeParameter = SessionUtils.getAttribute(request, Constants.MOVE_TYPE);
-                if (moveTypeParameter != null) {
-                    // get type of move
-                    Boolean isPopout = false;
-                    if (moveTypeParameter.equalsIgnoreCase("insert"))
-                        isPopout = false;
-                    else if (moveTypeParameter.equalsIgnoreCase("popout"))
-                        isPopout = true;
-                    else {
-                        playMoveResponse.setSuccess(false);
-                        playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
-                    }
-
-                    if (playMoveResponse.getSuccess()) {
-                        synchronized (getServletContext()) {
-                            if (game.play(colParameter, isPopout)) {
-                                playMoveResponse.winners = game.getWinners();
-                                playMoveResponse.isTie = game.isTie();
-                            }
-                            else {
-                                playMoveResponse.setSuccess(false);
-                                playMoveResponse.setMsg(Constants.INVALID_MOVE_ERROR);
-                            }
-                        }
-                    }
-                }
-                else {
-                    playMoveResponse.setSuccess(false);
-                    playMoveResponse.setMsg(Constants.MOVE_SESSION_ERROR);
-                }
+                SessionUtils.setAttribute(request, Constants.GAMENAME, "");
             }
             else {
-                playMoveResponse.setSuccess(false);
-                playMoveResponse.setMsg(Constants.USER_SESSION_ERROR);
+                playerResignResponse.setSuccess(false);
+                playerResignResponse.setMsg(Constants.USER_SESSION_ERROR);
             }
         }
         else {
-            playMoveResponse.setSuccess(false);
-            playMoveResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            playerResignResponse.setSuccess(false);
+            playerResignResponse.setMsg(Constants.GAME_SESSION_ERROR);
         }
 
-        ServletUtils.sendJsonResponse(response, playMoveResponse);
+        ServletUtils.sendJsonResponse(response, playerResignResponse);
     }
 
-    class PlayMoveResponse extends ServeltResponse {
+    class PlayerResignResponse extends ServeltResponse {
         Set<Integer> winners;
-        Boolean isTie;
 
-        public PlayMoveResponse() {
-            this.isTie = false;
-            this.winners = null;
+        public PlayerResignResponse() {
+            winners = null;
         }
     }
 

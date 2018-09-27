@@ -1,6 +1,7 @@
 package NinaRow.servlets;
 
 import NinaRow.constants.Constants;
+import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import webEngine.users.UserManager;
@@ -18,6 +19,10 @@ public class LogoutServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        response.setContentType("application/json");
+        // create the response
+        LogoutServletResponse logoutServletResponse = new LogoutServletResponse();
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
@@ -34,7 +39,16 @@ public class LogoutServlet extends HttpServlet {
              */
 
             response.sendRedirect(request.getContextPath() + "/index.html");
+        } else {
+            logoutServletResponse.setSuccess(false);
+            logoutServletResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
+
+        ServletUtils.sendJsonResponse(response, logoutServletResponse);
+    }
+
+    class LogoutServletResponse extends ServeltResponse {
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
