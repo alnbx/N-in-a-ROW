@@ -37,7 +37,7 @@ target
 build
 bin
 EX1/
-out/**
+out/*
 
 # Other
 *.log
