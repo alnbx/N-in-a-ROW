@@ -7,12 +7,70 @@
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>NinaRow.servlets.LoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GameListServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.GamesListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PlayerResignServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.PlayerResignServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PlayMoveServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.PlayMoveServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterToGameServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.RegisterToGameServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadGameServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.UploadGameServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UsersListServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.UsersListServlet</servlet-class>
+    </servlet>
 
     <!-- ================================================ -->
 
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/src/register.html</url-pattern>
+        <url-pattern>/NinaRow/login</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GameListServlet</servlet-name>
+        <url-pattern>/NinaRow/gamesList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/NinaRow/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlayerResignServlet</servlet-name>
+        <url-pattern>/NinaRow/game/playerResign</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlayMoveServlet</servlet-name>
+        <url-pattern>/NinaRow/game/playMove</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterToGameServlet</servlet-name>
+        <url-pattern>/NinaRow/registerToGame</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UploadGameServlet</servlet-name>
+        <url-pattern>/NinaRow/uploadGame</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UsersListServlet</servlet-name>
+        <url-pattern>/NinaRow/usersList</url-pattern>
+    </servlet-mapping>
+
+
 
 </web-app>
