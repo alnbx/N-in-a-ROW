@@ -1,5 +1,6 @@
 package NinaRow.servlets;
 
+import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import com.google.gson.Gson;
 import common.PlayerSettings;
@@ -18,15 +19,17 @@ public class UsersListServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //returning JSON objects, not HTML
         response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
-            Gson gson = new Gson();
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            List<PlayerSettings> usersList = userManager.getUsers();
-            String json = gson.toJson(usersList);
-            out.println(json);
-            out.flush();
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        List<PlayerSettings> usersList = userManager.getUsers();
+        ServletUtils.sendJsonResponse(response, new UsersListResponse(usersList));
+    }
+
+    class UsersListResponse extends ServeltResponse {
+        List<PlayerSettings> users;
+
+        public UsersListResponse(List<PlayerSettings> users) {
+            this.users = users;
         }
     }
 

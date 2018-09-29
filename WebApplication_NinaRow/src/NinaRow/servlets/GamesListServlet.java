@@ -1,5 +1,6 @@
 package NinaRow.servlets;
 
+import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import com.google.gson.Gson;
 import webEngine.gamesList.GameListManager;
@@ -26,15 +27,21 @@ public class GamesListServlet extends HttpServlet {
             Gson gson = new Gson();
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
             List<SingleGameEntry> gamesList = gamesManager.getGames();
-            List<SingleGameResponse> gamesListResponse = new ArrayList<>();
+            List<SingleGameResponse> games = new ArrayList<>();
 
             for (SingleGameEntry seg : gamesList) {
-                gamesListResponse.add(new SingleGameResponse(seg));
+                games.add(new SingleGameResponse(seg));
             }
 
-            String json = gson.toJson(gamesListResponse);
-            out.println(json);
-            out.flush();
+            ServletUtils.sendJsonResponse(response, new GamesListResponse((games)));
+        }
+    }
+
+    class GamesListResponse extends ServeltResponse {
+        List<SingleGameResponse> gamesList;
+
+        public GamesListResponse(List<SingleGameResponse> games) {
+            this.gamesList = games;
         }
     }
 

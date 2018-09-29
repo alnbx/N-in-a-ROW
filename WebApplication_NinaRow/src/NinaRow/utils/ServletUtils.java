@@ -57,10 +57,11 @@ public class ServletUtils {
         return INT_PARAMETER_ERROR;
     }
 
-    public static void sendJsonResponse(HttpServletResponse response, ServeltResponse reponse) throws IOException {
+    public static void sendJsonResponse(HttpServletResponse response, ServeltResponse convertToJson) throws IOException {
         Gson gson = new Gson();
-        String jsonResponse = gson.toJson(reponse);
+        String jsonResponse = gson.toJson(convertToJson);
 
+        System.out.println(jsonResponse);
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);
             out.flush();

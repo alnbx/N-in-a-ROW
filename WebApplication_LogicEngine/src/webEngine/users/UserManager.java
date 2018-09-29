@@ -52,7 +52,17 @@ public class UserManager {
         return usersMap.get(username);
     }
 
-    public int getPlayerID(String userNameParameter) {
-        return usersMap.get(userNameParameter).getId();
+    public int getPlayerID(String playerName) {
+        return usersMap.get(playerName).getId();
+    }
+
+    public PlayerTypes getPlayerType(String playerName) {
+        PlayerSettings player = usersMap.get(playerName);
+        PlayerTypes playerType = null;
+
+        if (player != null){
+            playerType = player.getPlayerType();
+        }
+        return playerType;
     }
 }

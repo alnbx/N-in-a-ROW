@@ -4,12 +4,9 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.SessionUtils;
 import NinaRow.utils.ServletUtils;
-import com.google.gson.Gson;
 import common.PlayerTypes;
 import webEngine.users.UserManager;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +31,7 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
+        String usernameFromSession = SessionUtils.getAttribute(request, USERNAME);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         // create the response
@@ -48,15 +45,16 @@ public class LoginServlet extends HttpServlet {
                 //no username in session and no username in parameter
                 loginResponse.setMsg(USER_NAME_NOT_APPLICABLE_ERROR);
                 loginResponse.setSuccess(false);
-
-                //redirect back to the index page
             } else {
                 //normalize the username value
                 usernameFromParameter = usernameFromParameter.trim();
-                loginResponse.setUsername(usernameFromParameter);
-                PlayerTypes playerType = playerTypeFromParameter.equalsIgnoreCase("computer") ?
-                        PlayerTypes.COMPUTER : PlayerTypes.HUMAN;
-                loginResponse.setPlayerType(playerType);
+                loginResponse.username = usernameFromParameter;
+                PlayerTypes playerType = PlayerTypes.HUMAN;
+                if (playerTypeFromParameter != null &&
+                        playerTypeFromParameter.trim().equalsIgnoreCase("computer")) {
+                    playerType = PlayerTypes.COMPUTER;
+                }
+                loginResponse.playerType = playerType;
                 synchronized (this) {
                     if (userManager.isUserExists(usernameFromParameter)) {
                         // username already exists
@@ -74,7 +72,8 @@ public class LoginServlet extends HttpServlet {
             }
         }
         else {
-            loginResponse.setUsername(usernameFromSession);
+            loginResponse.username = usernameFromSession;
+            loginResponse.playerType = userManager.getPlayerType(usernameFromSession);
         }
 
         ServletUtils.sendJsonResponse(response, loginResponse);
@@ -83,15 +82,6 @@ public class LoginServlet extends HttpServlet {
     class LoginResponse extends ServeltResponse {
         private String username = "";
         private PlayerTypes playerType = PlayerTypes.HUMAN;
-
-        public void setPlayerType(PlayerTypes playerType) {
-            this.playerType = playerType;
-        }
-
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
