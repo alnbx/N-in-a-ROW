@@ -13,13 +13,6 @@ public class SessionUtils {
         return sessionAttribute != null ? sessionAttribute.toString() : null;
     }
 
-    public static void setAttribute (HttpServletRequest request, String attrName, Object val) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.setAttribute(attrName, val);
-        }
-    }
-
     public static void clearSession (HttpServletRequest request) {
         request.getSession().invalidate();
     }

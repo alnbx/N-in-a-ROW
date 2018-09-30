@@ -32,6 +32,7 @@ public class Game implements GameLogic, Serializable {
     public Game(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.roundsPlayed = 0;
+        setRoundFromSettings(true);
     }
 
     public String getGameTitle() {

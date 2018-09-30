@@ -1,5 +1,5 @@
 $(function() {
-    $("#request").submit(function(event) {
+    $("#login").submit(function(event) {
         $.ajax({
             data: $(this).serialize(),
             timeout: 2000,
@@ -36,6 +36,25 @@ $(function() {
 });
 
 $(function() {
+    $("#gamesList").click(function(event) {
+        $.ajax({
+            data: $(this).serialize(),
+            timeout: 2000,
+            url: buildUrlWithContextPath("gamesList"),
+            error: function() {
+                console.error("Failed to submit");
+            },
+            success: function(data) {
+                jsonStr = JSON.stringify(data);
+                $("#response4").text(jsonStr);
+            }
+        });
+
+        return false;
+    });
+});
+
+$(function() {
     $("#uploadFile").click(function(event) {
         $.ajax({
             data: $(this).serialize(),
@@ -62,6 +81,23 @@ $(function() {
                     });
                 }
                 return false;
+            }
+        });
+        return false;
+    });
+});
+
+$(function() {
+    $("#registerToGame").submit(function(event) {
+        $.ajax({
+            data: $(this).serialize(),
+            url: buildUrlWithContextPath("registerToGame"),
+            error: function(r) {
+                console.error("Failed to submit");
+            },
+            success: function(r) {
+                jsonStr = JSON.stringify(r);
+                $("#response5").text(jsonStr);
             }
         });
         return false;

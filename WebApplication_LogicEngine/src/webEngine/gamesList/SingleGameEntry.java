@@ -38,11 +38,11 @@ public class SingleGameEntry {
     }
 
     public int getNumRegisteredPlayers() {
-        return game.getNumberOfInitializedPlayers();
+        return registeredPlayers.size();
     }
 
     public int getNumRequiredPlayers() {
-        return game.getNumberOfRequiredPlayers();
+        return gameSettings.getNumOfPlayers();
     }
 
     public void setGameStatus(GameStatus gameStatus) {
@@ -58,23 +58,23 @@ public class SingleGameEntry {
     }
 
     public void registerPlayer(PlayerSettings player) {
-        game.addPlayer(player);
+        registeredPlayers.add(player);
     }
 
     public int getRows() {
-        return game.getRows();
+        return gameSettings.getNumRows();
     }
 
     public int getCols() {
-        return game.getCols();
+        return gameSettings.getNumCols();
     }
 
     public int getSequenceLength() {
-        return game.getSequenceLength();
+        return gameSettings.getTarget();
     }
 
     public GameVariant getGameVariant() {
-        return game.getGameVariant();
+        return gameSettings.getGameVariant();
     }
 
     public GameLogic getGameLogic() {
@@ -82,7 +82,7 @@ public class SingleGameEntry {
     }
 
     public GameSettings getGameSettings() {
-        return game.getGameSettings();
+        return gameSettings;
     }
 
     public void setGameLogic(GameLogic gameLogic) {

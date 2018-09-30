@@ -23,21 +23,19 @@ public class GamesListServlet extends HttpServlet {
             throws ServletException, IOException {
         //returning JSON objects, not HTML
         response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
-            Gson gson = new Gson();
-            GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            List<SingleGameEntry> gamesList = gamesManager.getGames();
-            List<SingleGameResponse> games = new ArrayList<>();
 
-            for (SingleGameEntry seg : gamesList) {
-                games.add(new SingleGameResponse(seg));
-            }
+        GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
+        List<SingleGameEntry> gamesList = gamesManager.getGames();
+        List<SingleGameResponse> games = new ArrayList<>();
 
-            ServletUtils.sendJsonResponse(response, new GamesListResponse((games)));
+        for (SingleGameEntry seg : gamesList) {
+            games.add(new SingleGameResponse(seg));
         }
+
+        ServletUtils.sendJsonResponse(response, new GamesListResponse((games)));
     }
 
-    class GamesListResponse extends ServeltResponse {
+    public class GamesListResponse extends ServeltResponse {
         List<SingleGameResponse> gamesList;
 
         public GamesListResponse(List<SingleGameResponse> games) {

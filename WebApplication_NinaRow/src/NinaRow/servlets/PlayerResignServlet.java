@@ -51,7 +51,7 @@ public class PlayerResignServlet  extends HttpServlet {
                     playerResignResponse.winners = game.getWinners();
                 }
 
-                SessionUtils.setAttribute(request, Constants.GAMENAME, "");
+                request.getSession(false).setAttribute(Constants.GAMENAME, "");
             }
             else {
                 playerResignResponse.setSuccess(false);

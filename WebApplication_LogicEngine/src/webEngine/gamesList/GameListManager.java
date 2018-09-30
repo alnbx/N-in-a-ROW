@@ -26,7 +26,7 @@ public class GameListManager {
     }
 
     public synchronized List<SingleGameEntry> getGames() {
-        List<SingleGameEntry> gamesList = new ArrayList<SingleGameEntry>();
+        List<SingleGameEntry> gamesList = new ArrayList<>(gameEntriesMap.values());
         return Collections.unmodifiableList(gamesList);
     }
 
@@ -62,8 +62,8 @@ public class GameListManager {
     }
 
     private void setGameLogic(SingleGameEntry gameEntry) {
-        gameEntry.setGameLogic(gameFactory.
-                getNewGame(gameEntry.getGameSettings(), gameEntry.getRegisteredPlayers()));
+        gameEntry.setGameLogic(gameFactory.getNewGame(
+                gameEntry.getGameSettings(), gameEntry.getRegisteredPlayers()));
     }
 
     public void initGame(String gameName) {

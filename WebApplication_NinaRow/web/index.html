@@ -12,7 +12,7 @@
     <h1>Testing servlets APIs</h1>
     <br/>
     <h2>Login Servlet</h2>
-    <form id="request" method="GET" action="login">
+    <form id="login" method="GET" action="login">
         username:<br>
         <input id="username" type="text" name="username"><br>
         playertype:<br>
@@ -35,6 +35,22 @@
     <div class="content">
         <h4>The reponse:</h4>
         <div id="response3"></div>
+    </div>
+    <h2>GamesList Servlet</h2>
+    <button id="gamesList" type="button">Get games list</button>
+    <div class="content">
+        <h4>The reponse:</h4>
+        <div id="response4"></div>
+    </div>
+    <h2>RegisterToGame Servlet</h2>
+    <form id="registerToGame" method="GET" action="registerToGame">
+        gamename:<br>
+        <input id="gamename" type="text" name="gamename"><br>
+        <input type="submit" value="GO"/>
+    </form>
+    <div class="content">
+        <h4>The reponse:</h4>
+        <div id="response5"></div>
     </div>
 </div>
 </body>

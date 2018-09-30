@@ -30,37 +30,31 @@ public class RegisterToGameServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         if (usernameFromSession != null) {
             String gameNameFromParameter = request.getParameter(Constants.GAMENAME);
-
-            if (usernameFromSession != null) {
-                UserManager userManager = ServletUtils.getUserManager(getServletContext());
-                if (gameNameFromParameter != null) {
-                    GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
-                    synchronized (this) {
-                        if (!gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                            PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
-                            gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
-                            SessionUtils.setAttribute(request, Constants.GAMENAME, gameNameFromParameter);
-                        }
-                        else {
-                            registerUserResponse.setSuccess(false);
-                            registerUserResponse.setMsg(Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR);
-                        }
+            registerUserResponse.gameName = gameNameFromParameter;
+            UserManager userManager = ServletUtils.getUserManager(getServletContext());
+            if (gameNameFromParameter != null) {
+                GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
+                synchronized (this) {
+                    if (!gameListManager.isPlayersListFull(gameNameFromParameter)) {
+                        PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
+                        gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
+                        request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
                     }
-
-                    // if this player fills the num of players requirement - init the game
-                    if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                        gameListManager.initGame(gameNameFromParameter);
-                        registerUserResponse.gameStatus = GameStatus.PLAYING;
+                    else {
+                        registerUserResponse.setSuccess(false);
+                        registerUserResponse.setMsg(Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR);
                     }
                 }
-                else {
-                    registerUserResponse.setSuccess(false);
-                    registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
+
+                // if this player makes the num of registered players match the requirement - init the game
+                if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
+                    gameListManager.initGame(gameNameFromParameter);
+                    registerUserResponse.gameStatus = GameStatus.PLAYING;
                 }
             }
             else {
                 registerUserResponse.setSuccess(false);
-                registerUserResponse.setMsg(Constants.USER_NAME_NOT_APPLICABLE_ERROR);
+                registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
             }
         }
         else {
