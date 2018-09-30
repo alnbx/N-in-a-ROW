@@ -18,7 +18,7 @@ public class GameListManager {
 
     public synchronized void addGame(String gameFile, String userName) throws Exception {
         SingleGameEntry game = new SingleGameEntry(gameFactory.getNewGame(gameFile), userName);
-        gameEntriesMap.put(game.getGameName(), game);
+        gameEntriesMap.put(gameFile, game);
     }
 
     public synchronized void removeGame(String gameName) {
@@ -60,5 +60,13 @@ public class GameListManager {
 
     public SingleGameEntry getGameEntry(String gameName) {
         return gameEntriesMap.get(gameName);
+    }
+
+    public GameSettings getGameSettings(String gameFile) {
+        return gameEntriesMap.get(gameFile).getGameSettings();
+    }
+
+    public String getGameName(String gameFile) {
+        return gameEntriesMap.get(gameFile).getGameName();
     }
 }

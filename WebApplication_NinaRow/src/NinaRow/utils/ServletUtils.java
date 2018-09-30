@@ -61,7 +61,6 @@ public class ServletUtils {
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(convertToJson);
 
-        System.out.println(jsonResponse);
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);
             out.flush();

@@ -12,20 +12,14 @@ public class SingleGameEntry {
     final private GameLogic game;
     final private String gameName;
     final private String userName;
-    //final private String settingsFile;
-    //final private GameSettings gameSettings;
     private GameStatus gameStatus;
     //private List<PlayerSettings> registeredPlayers;
 
     SingleGameEntry(GameLogic game, String userName) throws Exception {
-        //this.settingsFile = gameSettingsXml;
-        //this.gameSettings = new GameSettings(gameSettingsXml, false);
-        //this.gameName = gameSettings.getGameTitle();
         this.game = game;
         this.gameName = game.getGameTitle();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;
-        //this.registeredPlayers = new ArrayList<>();
     }
 
 
@@ -75,5 +69,9 @@ public class SingleGameEntry {
 
     public GameLogic getGameLogic() {
         return game;
+    }
+
+    public GameSettings getGameSettings() {
+        return game.getGameSettings();
     }
 }

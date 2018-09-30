@@ -4,6 +4,7 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import common.GameSettings;
 import webEngine.gamesList.GameListManager;
 
 import javax.servlet.ServletException;
@@ -44,6 +45,8 @@ public class UploadGameServlet extends HttpServlet {
                         }
                         else {
                             gameListManager.addGame(settingsFileFromParameter, usernameFromSession);
+                            uploadGameResponse.gameName = gameListManager.getGameName(settingsFileFromParameter);
+                            uploadGameResponse.gameSettings = gameListManager.getGameSettings(settingsFileFromParameter);
                         }
                     }
                     catch (Exception e) {
@@ -52,22 +55,19 @@ public class UploadGameServlet extends HttpServlet {
                     }
                 }
             }
-
-            ServletUtils.sendJsonResponse(response, uploadGameResponse);
-            getServletContext().getRequestDispatcher(GAMES_LIST_URL).forward(request, response);
+            //getServletContext().getRequestDispatcher(GAMES_LIST_URL).forward(request, response);
         }
         else {
             uploadGameResponse.setSuccess(false);
             uploadGameResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
+
+        ServletUtils.sendJsonResponse(response, uploadGameResponse);
     }
 
     class UploadGameResponse extends ServeltResponse {
         private String gameName = "";
-
-        public void setGameName(String gameName) {
-            this.gameName = gameName;
-        }
+        private GameSettings gameSettings = null;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

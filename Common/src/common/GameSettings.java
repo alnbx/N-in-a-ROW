@@ -536,12 +536,12 @@ public class GameSettings implements Serializable {
         return res;
     }
 
-    public String toString() {
-        String str = "target is " + target + "\n"
-                + "rows num is " + boardNumRows +"\n"
-                + "cols num is " + boardNumCols +"\n"
-                + "game variant is " + gameVariant + "\n"
-                + "game type is " + gameType;
-        return str;
-    }
+//    public String toString() {
+//        String str = "target is " + target + "\n"
+//                + "rows num is " + boardNumRows +"\n"
+//                + "cols num is " + boardNumCols +"\n"
+//                + "game variant is " + gameVariant + "\n"
+//                + "game type is " + gameType;
+//        return str;
+//    }
 }

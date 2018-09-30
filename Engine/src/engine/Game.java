@@ -208,6 +208,11 @@ public class Game implements GameLogic, Serializable {
     }
 
     @Override
+    public GameSettings getGameSettings(){
+        return gameSettings;
+    }
+
+    @Override
     public void addPlayer(PlayerSettings playerSettings) {
         players.add(new Player(playerSettings));
     }
