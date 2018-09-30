@@ -1,6 +1,7 @@
 package engine;
 
 import common.*;
+import java.util.List;
 
 public class GameFactory {
     private String gameSettingsFullPath;
@@ -14,65 +15,39 @@ public class GameFactory {
     public void loadSettingsFile(String filePath) throws Exception
     {
         gameSettingsFullPath = filePath;
-        try {
-            gameSettings = new GameSettings(filePath, isGameSettingsFilePath);
-        } catch (Exception e) {
-            throw e;
-        }
+        gameSettings = new GameSettings(filePath, isGameSettingsFilePath);
     }
 
     // play new game from a fresh game settings file
-    public GameLogic getNewGame() throws Exception {
-        GameLogic game = null;
-
-        try {
-            //loadSettingsFile(settingsFilePath);
-            switch (gameSettings.getGameVariant()) {
-                case POPOUT:
-                    game = new PopoutGame(gameSettings);
-                    break;
-                case REGULAR:
-                    game = new BasicGame(gameSettings);
-                    break;
-                case CIRCULAR:
-                    game = new CircularGame(gameSettings);
-                    break;
-                default:
-                    break;
-            }
-        }
-        catch (Exception e) {
-            throw e;
-        }
-
-        return game;
-    }
-
-    // play new game from a fresh game settings file
-    public GameLogic getNewGame(String filePath) throws Exception {
-        GameLogic game = null;
-        gameSettingsFullPath = filePath;
-        try {
-            gameSettings = new GameSettings(filePath, isGameSettingsFilePath);
-            game = getNewGame();
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return game;
-    }
-
-    // replaying game from game settings previously loaded
-    /*
     public GameLogic getNewGame() {
+        return getGameLogicFromSettings(this.gameSettings);
+    }
+
+    public GameLogic getGameLogicFromSettings(GameSettings gameSettings) {
         GameLogic game = null;
 
-        try {
-            game = getNewGame(gameSettingsFullPath);
+        switch (gameSettings.getGameVariant()) {
+            case POPOUT:
+                game = new PopoutGame(gameSettings);
+                break;
+            case REGULAR:
+                game = new BasicGame(gameSettings);
+                break;
+            case CIRCULAR:
+                game = new CircularGame(gameSettings);
+                break;
+            default:
+                break;
         }
-        catch (Exception e) { }
+        return game;
+    }
+
+    public GameLogic getNewGame(GameSettings gameSettings, List<PlayerSettings> playersSettings) {
+        GameLogic game = getGameLogicFromSettings(gameSettings);
+        for (PlayerSettings ps: playersSettings) {
+            game.addPlayer(ps);
+        }
 
         return game;
     }
-    */
 }

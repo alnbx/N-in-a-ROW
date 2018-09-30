@@ -40,7 +40,7 @@ public class UploadGameServlet extends HttpServlet {
                 synchronized (this) {
                     try {
                         if (gameListManager.isGameExists(settingsFileFromParameter)) {
-                            uploadGameResponse.setMsg(SETTINGS_FILE_EXISTS_ERROR);
+                            uploadGameResponse.setMsg(GAME_EXISTS_ERROR);
                             uploadGameResponse.setSuccess(false);
                         }
                         else {

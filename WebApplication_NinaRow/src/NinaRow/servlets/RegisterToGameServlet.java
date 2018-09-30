@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class RegisterToGameServlet extends HttpServlet {
-    private final String GAME_URL = "/url/of/new/game";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -48,14 +47,9 @@ public class RegisterToGameServlet extends HttpServlet {
                         }
                     }
 
+                    // if this player fills the num of players requirement - init the game
                     if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                        Gson gson = new Gson();
-                        SingleGameEntry sge = gameListManager.getGameEntry(gameNameFromParameter);
-                        GameLogic gameLogic = sge.getGameLogic();
-                        String gameLogicJson = gson.toJson(gameLogic);
-                        request.setAttribute(Constants.GAME_LOGIC, gameLogicJson);
-                        getServletContext().getRequestDispatcher(GAME_URL).forward(request, response);
-                        sge.setGameStatus(GameStatus.PLAYING);
+                        gameListManager.initGame(gameNameFromParameter);
                         registerUserResponse.gameStatus = GameStatus.PLAYING;
                     }
                 }

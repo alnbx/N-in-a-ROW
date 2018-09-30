@@ -9,19 +9,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SingleGameEntry {
-    final private GameLogic game;
-    final private String gameName;
     final private String userName;
+    final private GameSettings gameSettings;
+    private GameLogic game;
+    private String gameName;
     private GameStatus gameStatus;
-    //private List<PlayerSettings> registeredPlayers;
+    private List<PlayerSettings> registeredPlayers;
 
-    SingleGameEntry(GameLogic game, String userName) throws Exception {
-        this.game = game;
-        this.gameName = game.getGameTitle();
+    SingleGameEntry(GameSettings gameSettings, String userName) {
+        this.game = null;
+        this.gameName = gameSettings.getGameTitle();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;
+        this.gameSettings = gameSettings;
+        this.registeredPlayers = new ArrayList<>();
     }
 
+    public boolean isPlayerListFull() {
+        return gameSettings.getNumOfPlayers() == registeredPlayers.size();
+    }
+
+    public List<PlayerSettings> getRegisteredPlayers() {
+        return registeredPlayers;
+    }
 
     public String getUserName() {
         return userName;
@@ -73,5 +83,9 @@ public class SingleGameEntry {
 
     public GameSettings getGameSettings() {
         return game.getGameSettings();
+    }
+
+    public void setGameLogic(GameLogic gameLogic) {
+        this.game = gameLogic;
     }
 }

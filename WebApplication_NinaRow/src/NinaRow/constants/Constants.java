@@ -7,7 +7,7 @@ public class Constants {
     public static final String USER_NAME_NOT_APPLICABLE_ERROR = "no username in session and no username in parameter";
 
     public static final String SETTINGS_FILE = "settingsfile";
-    public static final String SETTINGS_FILE_EXISTS_ERROR = "game already exists";
+    public static final String GAME_EXISTS_ERROR = "game already exists";
     public static final String SETTINGS_FILE_NOT_APPLICABLE_ERROR = "no settings file in parameter";
 
     public static final String GAMENAME = "gamename";
@@ -25,6 +25,4 @@ public class Constants {
     public static final String MOVE_TYPE_ERROR = "invalid move type parameter";
     public static final String PLAYER_ERROR = "player in parameter is not current player";
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
-
-    public static final String GAME_LOGIC = "gamelogic";
 }

@@ -16,9 +16,11 @@ public class GameListManager {
         gameEntriesMap = new HashMap<>();
     }
 
-    public synchronized void addGame(String gameFile, String userName) throws Exception {
-        SingleGameEntry game = new SingleGameEntry(gameFactory.getNewGame(gameFile), userName);
-        gameEntriesMap.put(gameFile, game);
+    public synchronized void addGame(String gameSettingsXMLFileContent, String userName) throws Exception {
+        GameSettings gameSettings = new GameSettings(gameSettingsXMLFileContent, false);
+
+        SingleGameEntry game = new SingleGameEntry(gameSettings, userName);
+        gameEntriesMap.put(game.getGameName(), game);
     }
 
     public synchronized void removeGame(String gameName) {
@@ -31,27 +33,18 @@ public class GameListManager {
     }
 
     public boolean isGameExists(String gameSettingsXml) throws Exception {
-        Boolean isExists = false;
-
-        try {
-            GameSettings gameSettings = new GameSettings(gameSettingsXml, false);
-            isExists = gameEntriesMap.containsKey(gameSettings.getGameTitle());
-        }
-        catch (Exception e) {
-            throw e;
-        }
-
-        return isExists;
+        GameSettings gameSettings = new GameSettings(gameSettingsXml, false);
+        return gameEntriesMap.containsKey(gameSettings.getGameTitle());
     }
 
-    public void registerUserToGame(String gameNameFromParameter, PlayerSettings user) {
-        gameEntriesMap.get(gameNameFromParameter).registerPlayer(user);
+    public void registerUserToGame(String gameName, PlayerSettings user) {
+        gameEntriesMap.get(gameName).registerPlayer(user);
 
     }
 
     public boolean isPlayersListFull(String gameName) {
         SingleGameEntry sge = gameEntriesMap.get(gameName);
-        return sge.getNumRegisteredPlayers() == sge.getNumRequiredPlayers();
+        return sge.isPlayerListFull();
     }
 
     public void setGameStatus(String gameName, GameStatus gameStatus) {
@@ -68,5 +61,18 @@ public class GameListManager {
 
     public String getGameName(String gameFile) {
         return gameEntriesMap.get(gameFile).getGameName();
+    }
+    
+    private void setGameLogic(SingleGameEntry gameEntry) {
+        gameEntry.setGameLogic(gameFactory.
+                getNewGame(gameEntry.getGameSettings(), gameEntry.getRegisteredPlayers()));
+    }
+
+    public void initGame(String gameName) {
+        SingleGameEntry gameEntry = gameEntriesMap.get(gameName);
+        if (gameEntry != null) {
+            setGameLogic(gameEntry);
+            gameEntry.setGameStatus(GameStatus.PLAYING);
+        }
     }
 }
