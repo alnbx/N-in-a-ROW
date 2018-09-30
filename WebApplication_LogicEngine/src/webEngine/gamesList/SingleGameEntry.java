@@ -14,7 +14,6 @@ public class SingleGameEntry {
     private GameLogic game;
     private String gameName;
     private GameStatus gameStatus;
-    private List<PlayerSettings> registeredPlayers;
 
     SingleGameEntry(GameSettings gameSettings, String userName) {
         this.game = null;
@@ -22,15 +21,10 @@ public class SingleGameEntry {
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;
         this.gameSettings = gameSettings;
-        this.registeredPlayers = new ArrayList<>();
     }
 
     public boolean isPlayerListFull() {
-        return gameSettings.getNumOfPlayers() == registeredPlayers.size();
-    }
-
-    public List<PlayerSettings> getRegisteredPlayers() {
-        return registeredPlayers;
+        return gameSettings.isPlayerListFull();
     }
 
     public String getUserName() {
@@ -38,7 +32,7 @@ public class SingleGameEntry {
     }
 
     public int getNumRegisteredPlayers() {
-        return registeredPlayers.size();
+        return gameSettings.getNumRegisteredPlayers();
     }
 
     public int getNumRequiredPlayers() {
@@ -58,7 +52,7 @@ public class SingleGameEntry {
     }
 
     public void registerPlayer(PlayerSettings player) {
-        registeredPlayers.add(player);
+        gameSettings.addPlayer(player);
     }
 
     public int getRows() {

@@ -62,8 +62,7 @@ public class GameListManager {
     }
 
     private void setGameLogic(SingleGameEntry gameEntry) {
-        gameEntry.setGameLogic(gameFactory.getNewGame(
-                gameEntry.getGameSettings(), gameEntry.getRegisteredPlayers()));
+        gameEntry.setGameLogic(gameFactory.getNewGame(gameEntry.getGameSettings()));
     }
 
     public void initGame(String gameName) {

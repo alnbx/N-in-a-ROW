@@ -45,6 +45,10 @@ public class GameSettings implements Serializable {
         }
     }
 
+    public boolean isPlayerListFull() {
+        return players.size() == numOfPlayers;
+    }
+
     public  String getGameTitle() {return gameTitle; }
 
     public int getNumRows() {
@@ -539,5 +543,13 @@ public class GameSettings implements Serializable {
         }
 
         return res;
+    }
+
+    public int getNumRegisteredPlayers() {
+        return players.size();
+    }
+
+    public void addPlayer(PlayerSettings player) {
+        players.add(player);
     }
 }

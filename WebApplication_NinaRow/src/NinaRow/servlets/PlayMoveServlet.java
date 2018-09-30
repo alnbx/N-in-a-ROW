@@ -4,6 +4,7 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import common.MoveType;
 import engine.GameLogic;
 import webEngine.users.UserManager;
 
@@ -29,18 +30,15 @@ public class PlayMoveServlet extends HttpServlet {
                     getGameEntry(gameName).getGameLogic();
 
             // get player id
-            String userNameParameter = SessionUtils.getAttribute(request, Constants.USERNAME);
-            if (userNameParameter != null) {
-                Integer playerId = userManager.getPlayerID(userNameParameter);
-                if (playerId != null) {
-                    if (playerId != game.getIdOfCurrentPlayer()) {
-                        playMoveResponse.setSuccess(false);
-                        playMoveResponse.setMsg(Constants.PLAYER_ERROR);
-                    }
-                }
-                else {
+            String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
+            if (userNameFromSession != null) {
+                Integer playerId = userManager.getPlayerID(userNameFromSession);
+                if (playerId == null || playerId != game.getIdOfCurrentPlayer()) {
                     playMoveResponse.setSuccess(false);
                     playMoveResponse.setMsg(Constants.PLAYER_ERROR);
+                }
+                else {
+                    playMoveResponse.playerId = playerId;
                 }
 
                 // get col of move
@@ -49,15 +47,19 @@ public class PlayMoveServlet extends HttpServlet {
                     playMoveResponse.setSuccess(false);
                     playMoveResponse.setMsg(Constants.MOVE_COL_ERROR);
                 }
+                else {
+                    playMoveResponse.col = colParameter;
+                }
 
-                String moveTypeParameter = SessionUtils.getAttribute(request, Constants.MOVE_TYPE);
+                String moveTypeParameter = request.getParameter(Constants.MOVE_TYPE);
                 if (moveTypeParameter != null) {
                     // get type of move
-                    Boolean isPopout = false;
-                    if (moveTypeParameter.equalsIgnoreCase("insert"))
-                        isPopout = false;
-                    else if (moveTypeParameter.equalsIgnoreCase("popout"))
-                        isPopout = true;
+                    if (moveTypeParameter.equalsIgnoreCase("insert")) {
+                        playMoveResponse.moveType = MoveType.INSERT;
+                    }
+                    else if (moveTypeParameter.equalsIgnoreCase("popout")) {
+                        playMoveResponse.moveType = MoveType.POPOUT;
+                    }
                     else {
                         playMoveResponse.setSuccess(false);
                         playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
@@ -65,7 +67,7 @@ public class PlayMoveServlet extends HttpServlet {
 
                     if (playMoveResponse.getSuccess()) {
                         synchronized (getServletContext()) {
-                            if (game.play(colParameter, isPopout)) {
+                            if (game.play(colParameter, playMoveResponse.moveType.equals(MoveType.POPOUT))) {
                                 playMoveResponse.winners = game.getWinners();
                                 playMoveResponse.isTie = game.isTie();
                             }
@@ -78,7 +80,7 @@ public class PlayMoveServlet extends HttpServlet {
                 }
                 else {
                     playMoveResponse.setSuccess(false);
-                    playMoveResponse.setMsg(Constants.MOVE_SESSION_ERROR);
+                    playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
                 }
             }
             else {
@@ -97,10 +99,16 @@ public class PlayMoveServlet extends HttpServlet {
     class PlayMoveResponse extends ServeltResponse {
         Set<Integer> winners;
         Boolean isTie;
+        MoveType moveType;
+        int playerId;
+        int col;
 
         public PlayMoveResponse() {
             this.isTie = false;
             this.winners = null;
+            this.moveType = null;
+            this.playerId = -1;
+            this.col = -1;
         }
     }
 

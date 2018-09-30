@@ -42,11 +42,9 @@ public class GameFactory {
         return game;
     }
 
-    public GameLogic getNewGame(GameSettings gameSettings, List<PlayerSettings> playersSettings) {
+    public GameLogic getNewGame(GameSettings gameSettings) {
         GameLogic game = getGameLogicFromSettings(gameSettings);
-        for (PlayerSettings ps: playersSettings) {
-            game.addPlayer(ps);
-        }
+        game.setRoundFromSettings(true);
 
         return game;
     }

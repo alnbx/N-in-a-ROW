@@ -103,3 +103,20 @@ $(function() {
         return false;
     });
 });
+
+$(function() {
+    $("#playMove").submit(function(event) {
+        $.ajax({
+            data: $(this).serialize(),
+            url: buildUrlWithContextPath("game/playMove"),
+            error: function(r) {
+                console.error("Failed to submit");
+            },
+            success: function(r) {
+                jsonStr = JSON.stringify(r);
+                $("#response6").text(jsonStr);
+            }
+        });
+        return false;
+    });
+});

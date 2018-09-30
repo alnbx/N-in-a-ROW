@@ -16,7 +16,6 @@ public class Constants {
 
     public static final String GAME_SESSION_ERROR = "no game is defined for session";
     public static final String USER_SESSION_ERROR = "no user is defined for session";
-    public static final String MOVE_SESSION_ERROR = "no move is defined for session";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
     public static final String MOVE_COL = "movecol";

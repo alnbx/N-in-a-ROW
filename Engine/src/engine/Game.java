@@ -32,7 +32,6 @@ public class Game implements GameLogic, Serializable {
     public Game(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.roundsPlayed = 0;
-        setRoundFromSettings(true);
     }
 
     public String getGameTitle() {
@@ -63,10 +62,8 @@ public class Game implements GameLogic, Serializable {
                 player.restart();
         }
 
-        if (gameSettings.getGameType() != GameType.DynamicMultiPlayer) {
-            this.currentPlayer = players.get(0);
-            this.activePlayers = this.players.size();
-        }
+        this.currentPlayer = players.get(0);
+        this.activePlayers = this.players.size();
     }
 
     protected boolean playHumanPlayer(int col, boolean popout)
