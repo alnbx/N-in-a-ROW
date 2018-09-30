@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameSettings implements Serializable {
-    final int maxNumOfPlayers = 5;
+    final int maxNumOfPlayers = 6;
     final int minNumOfPlayers = 2;
     private int target;
     private int boardNumRows;
@@ -162,7 +162,6 @@ public class GameSettings implements Serializable {
                     throw new SettingsFileException("xml: root element in xml file is not GameDescriptor");
                 }
             }
-
         }
     }
 
@@ -183,7 +182,13 @@ public class GameSettings implements Serializable {
                 Node totalPlayersNode = dynamicPlayersAttrs.getNamedItem("total-players");
                 if (totalPlayersNode != null) {
                     try {
-                        numOfPlayers = Integer.parseInt(totalPlayersNode.getTextContent());
+                        int numPlayersInSettingsFile = Integer.parseInt(totalPlayersNode.getTextContent());
+                        if (numPlayersInSettingsFile < minNumOfPlayers || numPlayersInSettingsFile > maxNumOfPlayers) {
+                            throw new SettingsFileException("xml: the value of total-players attribute is not in allowed range: " + numPlayersInSettingsFile);
+                        }
+                        else {
+                            numOfPlayers = numPlayersInSettingsFile;
+                        }
                     } catch (NumberFormatException e) {
                         throw new SettingsFileException("xml: the value of total-players attribute is not an int");
                     }
@@ -535,13 +540,4 @@ public class GameSettings implements Serializable {
 
         return res;
     }
-
-//    public String toString() {
-//        String str = "target is " + target + "\n"
-//                + "rows num is " + boardNumRows +"\n"
-//                + "cols num is " + boardNumCols +"\n"
-//                + "game variant is " + gameVariant + "\n"
-//                + "game type is " + gameType;
-//        return str;
-//    }
 }
