@@ -24,4 +24,6 @@ public class Constants {
     public static final String MOVE_TYPE_ERROR = "invalid move type parameter";
     public static final String PLAYER_ERROR = "player in parameter is not current player";
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
+    public static final String LAST_MOVE = "lastmove";
+    public static final String LAST_MOVE_ERROR = "invalid last move parameter";
 }
