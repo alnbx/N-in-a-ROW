@@ -16,9 +16,7 @@ public class GameListManager {
         gameEntriesMap = new HashMap<>();
     }
 
-    public synchronized void addGame(String gameSettingsXMLFileContent, String userName) throws Exception {
-        GameSettings gameSettings = new GameSettings(gameSettingsXMLFileContent, false);
-
+    public synchronized void addGame(GameSettings gameSettings, String userName) throws Exception {
         SingleGameEntry game = new SingleGameEntry(gameSettings, userName);
         gameEntriesMap.put(game.getGameName(), game);
     }
@@ -62,7 +60,7 @@ public class GameListManager {
     public String getGameName(String gameFile) {
         return gameEntriesMap.get(gameFile).getGameName();
     }
-    
+
     private void setGameLogic(SingleGameEntry gameEntry) {
         gameEntry.setGameLogic(gameFactory.
                 getNewGame(gameEntry.getGameSettings(), gameEntry.getRegisteredPlayers()));

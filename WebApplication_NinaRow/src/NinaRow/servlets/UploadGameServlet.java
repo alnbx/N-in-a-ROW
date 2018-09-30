@@ -44,9 +44,10 @@ public class UploadGameServlet extends HttpServlet {
                             uploadGameResponse.setSuccess(false);
                         }
                         else {
-                            gameListManager.addGame(settingsFileFromParameter, usernameFromSession);
-                            uploadGameResponse.gameName = gameListManager.getGameName(settingsFileFromParameter);
-                            uploadGameResponse.gameSettings = gameListManager.getGameSettings(settingsFileFromParameter);
+                            GameSettings gameSettings = new GameSettings(settingsFileFromParameter, false);
+                            gameListManager.addGame(gameSettings, usernameFromSession);
+                            uploadGameResponse.gameName = gameListManager.getGameName(gameSettings.getGameTitle());
+                            uploadGameResponse.gameSettings = gameSettings;
                         }
                     }
                     catch (Exception e) {
