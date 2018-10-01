@@ -2,7 +2,6 @@ package NinaRow.servlets;
 
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
-import com.google.gson.Gson;
 import webEngine.gamesList.GameListManager;
 import webEngine.gamesList.GameStatus;
 import webEngine.gamesList.SingleGameEntry;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,34 +34,36 @@ public class GamesListServlet extends HttpServlet {
     }
 
     public class GamesListResponse extends ServeltResponse {
-        List<SingleGameResponse> gamesList;
+        final List<SingleGameResponse> games;
+        final int totalgames;
 
         public GamesListResponse(List<SingleGameResponse> games) {
-            this.gamesList = games;
+            this.totalgames = games.size();
+            this.games = games;
         }
     }
 
     public class SingleGameResponse {
-        private String gameName;
-        private GameStatus gameStatus;
+        private String name;
+        private GameStatus status;
         private String userName;
         private int boardRows;
         private int boardCols;
         private int target;
         private GameVariant gameVariant;
-        private int numRequiredPlayers;
-        private int numRegisteredPlayers;
+        private int totalPlayers;
+        private int registeredPlayers;
 
         public SingleGameResponse(SingleGameEntry gameEntry) {
-            this.gameName = gameEntry.getGameName();
-            this.gameStatus = gameEntry.getGameStatus();
+            this.name = gameEntry.getGameName();
+            this.status = gameEntry.getGameStatus();
             this.userName = gameEntry.getUserName();
-            this.numRegisteredPlayers = gameEntry.getNumRegisteredPlayers();
+            this.registeredPlayers = gameEntry.getNumRegisteredPlayers();
             this.boardRows = gameEntry.getRows();
             this.boardCols = gameEntry.getCols();
             this.target = gameEntry.getSequenceLength();
             this.gameVariant = gameEntry.getGameVariant();
-            this.numRequiredPlayers = gameEntry.getNumRequiredPlayers();
+            this.totalPlayers = gameEntry.getNumRequiredPlayers();
         }
     }
 
