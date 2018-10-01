@@ -35,7 +35,7 @@ public class PlayMoveServlet extends HttpServlet {
             if (userNameFromSession != null) {
                 Integer playerId = userManager.getPlayerID(userNameFromSession);
                 if (playerId == null || playerId != gameLogic.getIdOfCurrentPlayer()) {
-                    playMoveResponse.setSuccess(false);
+                    playMoveResponse.setResult(false);
                     playMoveResponse.setMsg(Constants.PLAYER_ERROR);
                 }
                 else {
@@ -45,7 +45,7 @@ public class PlayMoveServlet extends HttpServlet {
                 // get col of move
                 int colParameter = ServletUtils.getIntParameter(request, Constants.MOVE_COL);
                 if (colParameter == INT_PARAMETER_ERROR) {
-                    playMoveResponse.setSuccess(false);
+                    playMoveResponse.setResult(false);
                     playMoveResponse.setMsg(Constants.MOVE_COL_ERROR);
                 }
                 else {
@@ -62,11 +62,11 @@ public class PlayMoveServlet extends HttpServlet {
                         playMoveResponse.moveType = MoveType.POPOUT;
                     }
                     else {
-                        playMoveResponse.setSuccess(false);
+                        playMoveResponse.setResult(false);
                         playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
                     }
 
-                    if (playMoveResponse.getSuccess()) {
+                    if (playMoveResponse.getResult()) {
                         synchronized (getServletContext()) {
                             if (gameLogic.play(colParameter, playMoveResponse.moveType.equals(MoveType.POPOUT))) {
                                 playMoveResponse.winners = gameLogic.getWinners();
@@ -76,24 +76,24 @@ public class PlayMoveServlet extends HttpServlet {
                                 }
                             }
                             else {
-                                playMoveResponse.setSuccess(false);
+                                playMoveResponse.setResult(false);
                                 playMoveResponse.setMsg(Constants.INVALID_MOVE_ERROR);
                             }
                         }
                     }
                 }
                 else {
-                    playMoveResponse.setSuccess(false);
+                    playMoveResponse.setResult(false);
                     playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
                 }
             }
             else {
-                playMoveResponse.setSuccess(false);
+                playMoveResponse.setResult(false);
                 playMoveResponse.setMsg(Constants.USER_SESSION_ERROR);
             }
         }
         else {
-            playMoveResponse.setSuccess(false);
+            playMoveResponse.setResult(false);
             playMoveResponse.setMsg(Constants.GAME_SESSION_ERROR);
         }
 

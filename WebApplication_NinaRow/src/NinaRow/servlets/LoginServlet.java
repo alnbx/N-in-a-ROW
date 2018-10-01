@@ -42,13 +42,13 @@ public class LoginServlet extends HttpServlet {
         if (usernameFromSession == null) {
             //user is not logged in yet
             if (usernameFromParameter == null) {
-                //no username in session and no username in parameter
+                //no user in session and no user in parameter
                 loginResponse.setMsg(USER_NAME_NOT_APPLICABLE_ERROR);
-                loginResponse.setSuccess(false);
+                loginResponse.setResult(false);
             } else {
-                //normalize the username value
+                //normalize the user value
                 usernameFromParameter = usernameFromParameter.trim();
-                loginResponse.username = usernameFromParameter;
+                loginResponse.user = usernameFromParameter;
                 PlayerTypes playerType = PlayerTypes.HUMAN;
                 if (playerTypeFromParameter != null &&
                         playerTypeFromParameter.trim().equalsIgnoreCase("computer")) {
@@ -57,13 +57,13 @@ public class LoginServlet extends HttpServlet {
                 loginResponse.playerType = playerType;
                 synchronized (this) {
                     if (userManager.isUserExists(usernameFromParameter)) {
-                        // username already exists
+                        // user already exists
                         loginResponse.setMsg(USER_NAME_EXISTS_ERROR);
-                        loginResponse.setSuccess(false);
+                        loginResponse.setResult(false);
                     } else {
                         //add the new user to the users list
                         userManager.addUser(usernameFromParameter, playerType);
-                        //set the username in a session so it will be available on each request
+                        //set the user in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one
                         request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
@@ -72,7 +72,7 @@ public class LoginServlet extends HttpServlet {
             }
         }
         else {
-            loginResponse.username = usernameFromSession;
+            loginResponse.user = usernameFromSession;
             loginResponse.playerType = userManager.getPlayerType(usernameFromSession);
         }
 
@@ -80,7 +80,7 @@ public class LoginServlet extends HttpServlet {
     }
 
     class LoginResponse extends ServeltResponse {
-        private String username = "";
+        private String user = "";
         private PlayerTypes playerType = PlayerTypes.HUMAN;
     }
 

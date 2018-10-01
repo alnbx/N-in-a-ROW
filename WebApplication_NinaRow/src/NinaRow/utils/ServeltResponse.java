@@ -1,24 +1,24 @@
 package NinaRow.utils;
 
 public abstract class ServeltResponse {
-    private Boolean success;
+    private Boolean result;
     private String msg;
 
     public ServeltResponse() {
-        this.success = true;
+        this.result = true;
         this.msg = "";
     }
 
-    public void setSuccess(Boolean success) {
-        this.success = success;
+    public void setResult(Boolean result) {
+        this.result = result;
     }
 
     public void setMsg(String msg) {
         this.msg = msg;
     }
 
-    public Boolean getSuccess() {
-        return success;
+    public Boolean getResult() {
+        return result;
     }
 
     public String getMsg() {

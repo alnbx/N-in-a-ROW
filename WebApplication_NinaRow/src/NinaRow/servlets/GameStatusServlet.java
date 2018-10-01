@@ -4,7 +4,6 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import engine.Board;
 import engine.GameLogic;
 import engine.Player;
 import webEngine.gamesList.GameListManager;
@@ -36,7 +35,7 @@ public class GameStatusServlet extends HttpServlet {
             }
         }
         else {
-            gameStatusResponse.setSuccess(false);
+            gameStatusResponse.setResult(false);
             gameStatusResponse.setMsg(Constants.GAME_SESSION_ERROR);
         }
 

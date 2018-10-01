@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 public class PlayerResignServlet extends HttpServlet {
@@ -36,16 +35,16 @@ public class PlayerResignServlet extends HttpServlet {
                 if (playerId != null) {
                     // only the current player can quit the game
                     if (playerId != game.getIdOfCurrentPlayer()) {
-                        playerResignResponse.setSuccess(false);
+                        playerResignResponse.setResult(false);
                         playerResignResponse.setMsg(Constants.PLAYER_ERROR);
                     }
                 }
                 else {
-                    playerResignResponse.setSuccess(false);
+                    playerResignResponse.setResult(false);
                     playerResignResponse.setMsg(Constants.PLAYER_ERROR);
                 }
 
-                if (playerResignResponse.getSuccess() == true) {
+                if (playerResignResponse.getResult() == true) {
                     game.resignPlayer();
                     // check if the player's resignation lead to a win
                     playerResignResponse.winners = game.getWinners();
@@ -54,12 +53,12 @@ public class PlayerResignServlet extends HttpServlet {
                 request.getSession(false).setAttribute(Constants.GAMENAME, "");
             }
             else {
-                playerResignResponse.setSuccess(false);
+                playerResignResponse.setResult(false);
                 playerResignResponse.setMsg(Constants.USER_SESSION_ERROR);
             }
         }
         else {
-            playerResignResponse.setSuccess(false);
+            playerResignResponse.setResult(false);
             playerResignResponse.setMsg(Constants.GAME_SESSION_ERROR);
         }
 

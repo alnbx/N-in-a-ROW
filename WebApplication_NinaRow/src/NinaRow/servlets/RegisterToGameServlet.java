@@ -4,14 +4,10 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import com.google.gson.Gson;
 import common.PlayerSettings;
-import engine.GameLogic;
 import webEngine.gamesList.GameListManager;
 import webEngine.gamesList.GameStatus;
-import webEngine.gamesList.SingleGameEntry;
 import webEngine.users.UserManager;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -43,12 +39,12 @@ public class RegisterToGameServlet extends HttpServlet {
                             request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
                         }
                         else {
-                            registerUserResponse.setSuccess(false);
+                            registerUserResponse.setResult(false);
                             registerUserResponse.setMsg(Constants.REGISTER_TO_ACTIVE_GAME_ERROR);
                         }
                     }
                     else {
-                        registerUserResponse.setSuccess(false);
+                        registerUserResponse.setResult(false);
                         registerUserResponse.setMsg(Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR);
                     }
                 }
@@ -60,12 +56,12 @@ public class RegisterToGameServlet extends HttpServlet {
                 }
             }
             else {
-                registerUserResponse.setSuccess(false);
+                registerUserResponse.setResult(false);
                 registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
             }
         }
         else {
-            registerUserResponse.setSuccess(false);
+            registerUserResponse.setResult(false);
             registerUserResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 

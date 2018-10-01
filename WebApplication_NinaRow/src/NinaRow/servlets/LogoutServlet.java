@@ -40,7 +40,7 @@ public class LogoutServlet extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/index.html");
         } else {
-            logoutServletResponse.setSuccess(false);
+            logoutServletResponse.setResult(false);
             logoutServletResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 

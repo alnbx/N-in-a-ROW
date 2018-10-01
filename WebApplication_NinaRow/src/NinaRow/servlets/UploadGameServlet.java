@@ -32,7 +32,7 @@ public class UploadGameServlet extends HttpServlet {
             if (settingsFileFromParameter == null) {
                 // no settings file in parameter
                 uploadGameResponse.setMsg(SETTINGS_FILE_NOT_APPLICABLE_ERROR);
-                uploadGameResponse.setSuccess(false);
+                uploadGameResponse.setResult(false);
 
             } else {
                 // normalize the settings file path string
@@ -41,7 +41,7 @@ public class UploadGameServlet extends HttpServlet {
                     try {
                         if (gameListManager.isGameExists(settingsFileFromParameter)) {
                             uploadGameResponse.setMsg(GAME_EXISTS_ERROR);
-                            uploadGameResponse.setSuccess(false);
+                            uploadGameResponse.setResult(false);
                         }
                         else {
                             GameSettings gameSettings = new GameSettings(settingsFileFromParameter, false);
@@ -52,14 +52,14 @@ public class UploadGameServlet extends HttpServlet {
                     }
                     catch (Exception e) {
                         uploadGameResponse.setMsg(e.getMessage());
-                        uploadGameResponse.setSuccess(false);
+                        uploadGameResponse.setResult(false);
                     }
                 }
             }
             //getServletContext().getRequestDispatcher(GAMES_LIST_URL).forward(request, response);
         }
         else {
-            uploadGameResponse.setSuccess(false);
+            uploadGameResponse.setResult(false);
             uploadGameResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 

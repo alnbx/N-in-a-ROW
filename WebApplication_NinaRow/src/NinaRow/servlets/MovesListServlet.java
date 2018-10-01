@@ -23,7 +23,7 @@ public class MovesListServlet extends HttpServlet {
         if (gameName != null) {
             int clientNumMoves = ServletUtils.getIntParameter(request, Constants.LAST_MOVE);
             if (clientNumMoves == Constants.INT_PARAMETER_ERROR) {
-                movesListResponse.setSuccess(false);
+                movesListResponse.setResult(false);
                 movesListResponse.setMsg(Constants.MOVE_COL_ERROR);
             }
             else {
@@ -41,7 +41,7 @@ public class MovesListServlet extends HttpServlet {
             }
         }
         else {
-            movesListResponse.setSuccess(false);
+            movesListResponse.setResult(false);
             movesListResponse.setMsg(Constants.GAME_SESSION_ERROR);
         }
 
