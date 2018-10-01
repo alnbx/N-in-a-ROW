@@ -7,6 +7,7 @@ import NinaRow.utils.SessionUtils;
 import engine.GameLogic;
 import engine.Player;
 import webEngine.gamesList.GameListManager;
+import engine.Move;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,46 +16,43 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class BoardDataServlet extends HttpServlet {
+public class GameDataServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         String gameNameFromSession = SessionUtils.getAttribute(request, Constants.GAMENAME);
-        BoardDataResponse boardDataResponse = new BoardDataResponse();
+        GameDataResponse gameDataResponse = new GameDataResponse();
+        gameDataResponse.gameName = gameNameFromSession;
 
         if (gameNameFromSession != null) {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            //GameLogic gameLogic = null;
+
             synchronized (getServletContext()) {
                 GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
-                boardDataResponse.boardRowSize = gameLogic.getRows();
-                boardDataResponse.boardRowSize = gameLogic.getCols();
-                boardDataResponse.boardData = gameLogic.getBoardAsIntArr();
-                int currentPlayerId = gameLogic.getIdOfCurrentPlayer();
+                gameDataResponse.moves = gameLogic.getMovesHistory();
+                gameDataResponse.players = gameLogic.getPlayers();
             }
         }
         else {
-            boardDataResponse.setResult(false);
-            boardDataResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            gameDataResponse.setResult(false);
+            gameDataResponse.setMsg(Constants.GAME_SESSION_ERROR);
         }
 
-        ServletUtils.sendJsonResponse(response, boardDataResponse);
+        ServletUtils.sendJsonResponse(response, gameDataResponse);
     }
 
+    class GameDataResponse extends ServeltResponse {
+        List<Player> players;
+        List<Move> moves;
+        String gameName;
+        Boolean isPlayer;
 
-    class BoardDataResponse extends ServeltResponse {
-        int boardRowSize;
-        int boardColSize;
-        // matrix of game board:
-        // int is 0 = no disc in position
-        // int is not 0 = disc of player id is in position
-        int[][] boardData;
-
-        public BoardDataResponse() {
-            this.boardRowSize = 0;
-            this.boardColSize = 0;
-            this.boardData = null;
+        public GameDataResponse() {
+            this.players = null;
+            this.moves = null;
+            this.gameName = "";
+            this.isPlayer = false;
         }
     }
 
