@@ -4,10 +4,12 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import common.PlayerSettings;
 import engine.GameLogic;
 import engine.Player;
 import webEngine.gamesList.GameListManager;
 import engine.Move;
+import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,17 +23,20 @@ public class GameDataServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
+        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         String gameNameFromSession = SessionUtils.getAttribute(request, Constants.GAMENAME);
         GameDataResponse gameDataResponse = new GameDataResponse();
-        gameDataResponse.gameName = gameNameFromSession;
 
         if (gameNameFromSession != null) {
+            gameDataResponse.gameName = gameNameFromSession;
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
 
             synchronized (getServletContext()) {
                 GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
+                gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameNameFromSession, usernameFromSession);
                 gameDataResponse.moves = gameLogic.getMovesHistory();
                 gameDataResponse.players = gameLogic.getPlayers();
+                gameDataResponse.viewers = gamesManager.getGameViewrs(gameNameFromSession);
             }
         }
         else {
@@ -44,12 +49,14 @@ public class GameDataServlet extends HttpServlet {
 
     class GameDataResponse extends ServeltResponse {
         List<Player> players;
+        List<PlayerSettings> viewers;
         List<Move> moves;
         String gameName;
         Boolean isPlayer;
 
         public GameDataResponse() {
             this.players = null;
+            this.viewers = null;
             this.moves = null;
             this.gameName = "";
             this.isPlayer = false;

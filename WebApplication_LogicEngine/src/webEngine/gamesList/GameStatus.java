@@ -2,6 +2,5 @@ package webEngine.gamesList;
 
 public enum GameStatus {
     PLAYING,
-    PENDING_PLAYERS,
-    ENDED
+    PENDING_PLAYERS
 }

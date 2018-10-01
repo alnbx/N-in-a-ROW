@@ -24,8 +24,8 @@
         <servlet-class>NinaRow.servlets.PlayMoveServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>RegisterToGameServlet</servlet-name>
-        <servlet-class>NinaRow.servlets.RegisterToGameServlet</servlet-class>
+        <servlet-name>RegisterPlayerToGameServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.RegisterPlayerToGameServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UploadGameServlet</servlet-name>
@@ -46,6 +46,10 @@
     <servlet>
         <servlet-name>GameDataServlet</servlet-name>
         <servlet-class>NinaRow.servlets.GameDataServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewerResignServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.ViewerResignServlet</servlet-class>
     </servlet>
 
     <!-- ================================================ -->
@@ -71,8 +75,8 @@
         <url-pattern>/game/playMove</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RegisterToGameServlet</servlet-name>
-        <url-pattern>/registerToGame</url-pattern>
+        <servlet-name>RegisterPlayerToGameServlet</servlet-name>
+        <url-pattern>/registerPlayerToGame</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UploadGameServlet</servlet-name>
@@ -93,6 +97,10 @@
     <servlet-mapping>
         <servlet-name>GameDataServlet</servlet-name>
         <url-pattern>/game/gameData</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewerResignServlet</servlet-name>
+        <url-pattern>/game/viewerResign</url-pattern>
     </servlet-mapping>
 
 </web-app>

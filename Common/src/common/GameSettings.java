@@ -560,4 +560,13 @@ public class GameSettings implements Serializable {
     public void removePlayer(int playerId) {
         players.removeIf(player -> player.getId() == playerId);
     }
+
+    public Boolean isUserPlayerInGame(String username) {
+        for (PlayerSettings player : players) {
+            if (player.getName().equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

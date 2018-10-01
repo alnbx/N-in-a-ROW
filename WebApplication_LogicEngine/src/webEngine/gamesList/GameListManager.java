@@ -4,6 +4,7 @@ import common.GameSettings;
 import common.PlayerSettings;
 import engine.GameFactory;
 import engine.GameLogic;
+import engine.Player;
 
 import java.util.*;
 
@@ -35,9 +36,8 @@ public class GameListManager {
         return gameEntriesMap.containsKey(gameSettings.getGameTitle());
     }
 
-    public void registerUserToGame(String gameName, PlayerSettings user) {
+    public void registerPlayerToGame(String gameName, PlayerSettings user) {
         gameEntriesMap.get(gameName).registerPlayer(user);
-
     }
 
     public boolean isPlayersListFull(String gameName) {
@@ -71,5 +71,21 @@ public class GameListManager {
 
     public void enableGameForRegistration(String gameName) {
         gameEntriesMap.get(gameName).enableGameForRegistration();
+    }
+
+    public Boolean isUserPlayerInGame(String gameName, String username) {
+        return gameEntriesMap.get(gameName).isUserPlayerInGame(username);
+    }
+
+    public List<PlayerSettings> getGameViewrs(String gameName) {
+        return gameEntriesMap.get(gameName).getGameViewers();
+    }
+
+    public void registerViewerToGame(String gameName, PlayerSettings user) {
+        gameEntriesMap.get(gameName).registerViewer(user);
+    }
+
+    public void viewerResigne(String gameName, String userName) {
+        gameEntriesMap.get(gameName).viewerResign(userName);
     }
 }

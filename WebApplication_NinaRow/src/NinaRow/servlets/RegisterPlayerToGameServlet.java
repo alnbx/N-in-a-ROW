@@ -15,64 +15,57 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class RegisterToGameServlet extends HttpServlet {
+public class RegisterPlayerToGameServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         // create the response
-        RegisterUserResponse registerUserResponse = new RegisterUserResponse();
+        RegisterPlayerResponse registerPlayerResponse = new RegisterPlayerResponse();
 
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         if (usernameFromSession != null) {
             String gameNameFromParameter = request.getParameter(Constants.GAMENAME);
-            registerUserResponse.gameName = gameNameFromParameter;
+            registerPlayerResponse.gameName = gameNameFromParameter;
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             if (gameNameFromParameter != null) {
                 GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
                 synchronized (this) {
-                    if (!gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                        if (!gameListManager.isGameActive(gameNameFromParameter))
-                        {
-                            PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
-                            gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
-                            request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
-                        }
-                        else {
-                            registerUserResponse.setResult(false);
-                            registerUserResponse.setMsg(Constants.REGISTER_TO_ACTIVE_GAME_ERROR);
-                        }
+                    if (!gameListManager.isGameActive(gameNameFromParameter)) {
+                        PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
+                        gameListManager.registerPlayerToGame(gameNameFromParameter, playerSettings);
+                        request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
                     }
                     else {
-                        registerUserResponse.setResult(false);
-                        registerUserResponse.setMsg(Constants.GAME_PLAYERS_LIST_IS_FULL_ERROR);
+                        registerPlayerResponse.setResult(false);
+                        registerPlayerResponse.setMsg(Constants.REGISTER_TO_ACTIVE_GAME_ERROR);
                     }
-                }
 
-                // if this player makes the num of registered players match the requirement - init the game
-                if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                    gameListManager.initGame(gameNameFromParameter);
-                    registerUserResponse.gameStatus = GameStatus.PLAYING;
+                    // if this player makes the num of registered players match the requirement - init the game
+                    if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
+                        gameListManager.initGame(gameNameFromParameter);
+                        registerPlayerResponse.gameStatus = GameStatus.PLAYING;
+                    }
                 }
             }
             else {
-                registerUserResponse.setResult(false);
-                registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
+                registerPlayerResponse.setResult(false);
+                registerPlayerResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
             }
         }
         else {
-            registerUserResponse.setResult(false);
-            registerUserResponse.setMsg(Constants.USER_SESSION_ERROR);
+            registerPlayerResponse.setResult(false);
+            registerPlayerResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 
-        ServletUtils.sendJsonResponse(response, registerUserResponse);
+        ServletUtils.sendJsonResponse(response, registerPlayerResponse);
     }
 
-    public class RegisterUserResponse extends ServeltResponse {
+    public class RegisterPlayerResponse extends ServeltResponse {
         String gameName;
         GameStatus gameStatus;
 
-        public RegisterUserResponse() {
+        public RegisterPlayerResponse() {
             gameStatus = GameStatus.PENDING_PLAYERS;
             gameName = "";
         }

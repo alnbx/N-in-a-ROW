@@ -4,6 +4,7 @@ import common.GameSettings;
 import common.GameVariant;
 import common.PlayerSettings;
 import engine.GameLogic;
+import engine.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class SingleGameEntry {
     private GameLogic game;
     private String gameName;
     private GameStatus gameStatus;
+    private List<PlayerSettings> viewers;
 
     SingleGameEntry(GameSettings gameSettings, String userName) {
         this.game = null;
@@ -22,6 +24,7 @@ public class SingleGameEntry {
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;
         this.gameSettings = gameSettings;
+        this.viewers = new ArrayList<>();
     }
 
     public boolean isPlayerListFull() {
@@ -88,5 +91,21 @@ public class SingleGameEntry {
         this.game = null;
         this.gameSettings.clearPlayers();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
+    }
+
+    public Boolean isUserPlayerInGame(String username) {
+        return this.gameSettings.isUserPlayerInGame(username);
+    }
+
+    public List<PlayerSettings> getGameViewers() {
+        return viewers;
+    }
+
+    public void registerViewer(PlayerSettings user) {
+        viewers.add(user);
+    }
+
+    public void viewerResign(String userName) {
+        viewers.removeIf(player -> player.getName().equalsIgnoreCase(userName));
     }
 }

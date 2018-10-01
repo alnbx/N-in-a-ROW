@@ -4,7 +4,8 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import engine.GameLogic;
+import common.PlayerSettings;
+import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
@@ -12,63 +13,46 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Set;
 
-public class PlayerResignServlet extends HttpServlet {
+public class RegisterViewerToGameServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String gameName = SessionUtils.getAttribute(request, Constants.GAMENAME);
         response.setContentType("application/json");
-
         // create the response
-        PlayerResignResponse playerResignResponse = new PlayerResignResponse();
-        if (gameName != null) {
+        RegisterViewerResponse registerUserResponse = new RegisterViewerResponse();
+
+        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
+        if (usernameFromSession != null) {
+            String gameNameFromParameter = request.getParameter(Constants.GAMENAME);
+            registerUserResponse.gameName = gameNameFromParameter;
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
-                    getGameEntry(gameName).getGameLogic();
-
-            // get player id
-            String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-            if (userNameFromSession != null) {
-                Integer playerId = userManager.getPlayerID(userNameFromSession);
-                if (playerId != null) {
-                    // only the current player can quit the game
-                    if (playerId != game.getIdOfCurrentPlayer()) {
-                        playerResignResponse.setResult(false);
-                        playerResignResponse.setMsg(Constants.PLAYER_ERROR);
-                    }
-                }
-                else {
-                    playerResignResponse.setResult(false);
-                    playerResignResponse.setMsg(Constants.PLAYER_ERROR);
-                }
-
-                if (playerResignResponse.getResult() == true) {
-                    game.resignPlayer();
-                    // check if the player's resignation lead to a win
-                    playerResignResponse.winners = game.getWinners();
-                    request.getSession(false).setAttribute(Constants.GAMENAME, "");
+            if (gameNameFromParameter != null) {
+                GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
+                synchronized (this) {
+                    PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
+                    gameListManager.registerViewerToGame(gameNameFromParameter, playerSettings);
+                    request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
                 }
             }
             else {
-                playerResignResponse.setResult(false);
-                playerResignResponse.setMsg(Constants.USER_SESSION_ERROR);
+                registerUserResponse.setResult(false);
+                registerUserResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
             }
         }
         else {
-            playerResignResponse.setResult(false);
-            playerResignResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            registerUserResponse.setResult(false);
+            registerUserResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 
-        ServletUtils.sendJsonResponse(response, playerResignResponse);
+        ServletUtils.sendJsonResponse(response, registerUserResponse);
     }
 
-    class PlayerResignResponse extends ServeltResponse {
-        Set<Integer> winners;
+    public class RegisterViewerResponse extends ServeltResponse {
+        String gameName;
 
-        public PlayerResignResponse() {
-            winners = null;
+        public RegisterViewerResponse() {
+            gameName = "";
         }
     }
 

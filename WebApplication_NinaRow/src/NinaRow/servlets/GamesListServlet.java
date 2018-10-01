@@ -21,7 +21,6 @@ public class GamesListServlet extends HttpServlet {
             throws ServletException, IOException {
         //returning JSON objects, not HTML
         response.setContentType("application/json");
-
         GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
         List<SingleGameEntry> gamesList = gamesManager.getGames();
         List<SingleGameResponse> games = new ArrayList<>();
