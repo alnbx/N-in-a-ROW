@@ -59,7 +59,7 @@ $(function() {
         $.ajax({
             data: $(this).serialize(),
             timeout: 2000,
-            url: buildUrlWithContextPath("game/gameStatus"),
+            url: buildUrlWithContextPath("game/boardData"),
             error: function(xhr, status, error) {
                 var err = eval("(" + xhr.responseText + ")");
                 alert("error" + error + "\n" + "status: " + status + "\n" + "reponse msg: " + err);

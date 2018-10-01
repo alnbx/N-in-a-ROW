@@ -41,8 +41,8 @@
     </servlet>
 
     <servlet>
-        <servlet-name>GameStatusServlet</servlet-name>
-        <servlet-class>NinaRow.servlets.GameStatusServlet</servlet-class>
+        <servlet-name>BoardDataServlet</servlet-name>
+        <servlet-class>NinaRow.servlets.BoardDataServlet</servlet-class>
     </servlet>
 
     <!-- ================================================ -->
@@ -84,8 +84,8 @@
         <url-pattern>/game/movesList</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>GameStatusServlet</servlet-name>
-        <url-pattern>/game/gameStatus</url-pattern>
+        <servlet-name>BoardDataServlet</servlet-name>
+        <url-pattern>/game/boardData</url-pattern>
     </servlet-mapping>
 
 </web-app>

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class GameStatusServlet extends HttpServlet {
+public class BoardDataServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -29,7 +29,9 @@ public class GameStatusServlet extends HttpServlet {
             synchronized (getServletContext()) {
                 GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
                 gameStatusResponse.players = gameLogic.getPlayers();
-                gameStatusResponse.board = gameLogic.getBoardAsIntArr();
+                gameStatusResponse.boardRowSize = gameLogic.getRows();
+                gameStatusResponse.boardRowSize = gameLogic.getCols();
+                gameStatusResponse.boardData = gameLogic.getBoardAsIntArr();
                 int currentPlayerId = gameLogic.getIdOfCurrentPlayer();
                 gameStatusResponse.currentPlayer = getCurrentPlayer(gameStatusResponse, currentPlayerId);
             }
@@ -56,15 +58,19 @@ public class GameStatusServlet extends HttpServlet {
 
     class GameStatusResponse extends ServeltResponse {
         List<Player> players;
+        int boardRowSize;
+        int boardColSize;
         // matrix of game board:
         // int is 0 = no disc in position
         // int is not 0 = disc of player id is in position
-        int[][] board;
+        int[][] boardData;
         Player currentPlayer;
 
         public GameStatusResponse() {
             this.players = null;
-            this.board = null;
+            this.boardRowSize = 0;
+            this.boardColSize = 0;
+            this.boardData = null;
             this.currentPlayer = null;
         }
     }
