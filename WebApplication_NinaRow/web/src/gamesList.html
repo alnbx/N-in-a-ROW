@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>NinaRow | Games List</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="./bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="./bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="./dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="./dist/css/skins/_all-skins.min.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  
+  <script>
+	function checkLogin()
+	{
+		$(function() {
+			$.getJSON("game.login.api")
+			  .then(function(data) {
+			  var user = data.user;
+				//console.log(data);
+				
+				if (data.result != "true") {
+					setTimeout("location.href = 'login.html';",100); 
+				} 
+				else 
+				{
+					// update view
+					$('#name').text(user);
+					$('#nameBox').text(user);
+				}
+			  })
+			  .fail(function(jqxhr, textStatus, errorThrown) {
+				 console.log(errorThrown)
+				 setTimeout("location.href = 'login.html';",100);  
+			  })
+		});
+	}
+	checkLogin;
+	setInterval( checkLogin, 5000 );
+  </script>
+  
+  
+  
+  <script>
+	function addGameRow(itm)
+	{
+		var boardSize = (itm.boardCols * itm.boardRows);
+		//var percent = Math.floor((itm.boardComplete / boardSize ) * 100);
+		
+	
+		var markup = "<tr>";
+		markup += "<td>" + itm.id + "</td>";
+        markup += "<td>" + itm.name + "</td>";
+		//markup += "<td><div class=\"progress progress-xs progress-striped active\"><div class=\"progress-bar progress-bar-success\" style=\"width: " + percent + "%\"></div> </div> </td>"
+		markup += "<td><span class=\"badge bg-green\"> " + itm.registeredPlayers +"/ " + itm.totalPlayers + "</span></td>";
+		
+		
+		if (itm.status == "playing") {
+		
+			markup += "<td><span class=\"label label-success\">On going</span></td>";
+			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" href=\"gameBoard.html#"+ itm.id +"\"><i class=\"fa fa-tv\"></i> View</a></td>";
+			
+		} else if (itm.status == "ended") {
+		
+			markup += "<td><span class=\"label label-danger\">Ended</span></td>";
+			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" href=\"gameBoard.html#"+ itm.id +"\"><i class=\"fa fa-tv\"></i> View</a></td>";
+		
+		} else {
+		
+			markup += "<td><span class=\"label label-warning\">Panding players</span></td>";
+			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" href=\"gameBoard.html#"+ itm.id +"\"><i class=\"fa fa-play\"></i> Play</a></td>";
+		
+		}
+				
+        $("#gameTable tbody").append(markup);
+	}
+	
+  
+  
+	function getGameData()
+	{
+		$(function() {
+			$.getJSON("games.data.api")
+			  .then(function(data) {
+			  var user = data.user;
+				//console.log(data);
+				
+				if (data.result != "true") {
+					$('#gameTable').text("Unable to load games data");
+				} 
+				else
+				{
+					$('#gameTable tbody').empty();				//Clear current table data
+				
+				
+					// Go over the game data array
+					$.each(data.games, function(i, item) {
+						addGameRow(item);						// add the game to the table
+						console.log("addGameRow: "+ item.name)
+					});
+				}
+			  })
+			  .fail(function(jqxhr, textStatus, errorThrown) {
+				 console.log(errorThrown)
+				 $('#gameTable').html("<div class=\"alert alert-danger alert-dismissible\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">×</button><h4><i class=\"icon fa fa-ban\"></i> Error!</h4>Unable to load the games data, make sure the server is running</div>");
+			  })
+		});
+	}
+	getGameData;
+	setInterval( getGameData, 2000 );
+  </script>
+  
+  
+</head>
+<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+<body class="hold-transition skin-blue layout-top-nav" onload="javascript:checkLogin">
+<div class="wrapper">
+
+  <header class="main-header">
+    <nav class="navbar navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand"><b>Nina</b>Raw</a>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+            <i class="fa fa-bars"></i>
+          </button>
+        </div>
+
+        <!-- /.navbar-collapse -->
+        <!-- Navbar Right Menu -->
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+            <!-- Messages: style can be found in dropdown.less-->
+            <li class="dropdown messages-menu">
+              <!-- Menu toggle button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o"></i>
+                <span class="label label-success">41</span>
+              </a>
+
+            <!-- User Account Menu -->
+            <li class="dropdown user user-menu">
+              <!-- Menu Toggle Button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <!-- The user image in the navbar-->
+                <img src="./dist/img/user2.jpg" class="user-image" alt="User Image">
+                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                <span id="name" class="hidden-xs"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- The user image in the menu -->
+                <li class="user-header">
+                  <img src="./dist/img/user2.jpg" class="img-circle" alt="User Image">
+                  <p id="nameBox"></p>
+                </li>
+				
+                <!-- Menu Body -->
+                <li class="user-footer">
+                  <div class="pull-right">
+                    <a id="logoutBTN" href="#" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-custom-menu -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav>
+  </header>
+  <!-- Full Width Column -->
+  <div class="content-wrapper">
+    <div class="container">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <h1>
+          Games List
+          <small>Select your game or Upload your own</small>
+        </h1>
+        <ol class="breadcrumb">
+          <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+          <li><a href="#">Layout</a></li>
+          <li class="active">Top Navigation</li>
+        </ol>
+      </section>
+
+      <!-- Main content -->
+      <section class="content">
+	  
+        <div class="box box-default">
+		
+          <div class="box-header with-border">
+            <h3 class="box-title">Upload a new game</h3>
+          </div>
+          <div class="box-body">
+		  
+			<div class="form-group">
+				<label for="exampleInputFile">File input</label>
+				<input type="file" id="exampleInputFile">
+				<p class="help-block">Upload your game here</p>
+            </div>
+			
+			<div class="box-footer">
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</div>
+
+          </div>
+          <!-- /.box-body -->
+		  
+        </div>
+		<!-- /.box -->
+		<BR>
+		
+		
+		
+		<div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Current Games</h3>
+            </div>
+			
+            <!-- /.box-header -->
+            <div id="gameTable"	class="box-body no-padding">
+              <table class="table table-striped">
+				<thead>
+					<tr>
+					  <th align="center">ID</th>
+					  <th align="center">Game</th>
+					  <!-- <th>Progress</th> -->
+					  <th align="center">Registered Players</th> 
+					  <th align="center">Game Status</th>
+					  <th align="center">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+		
+		
+		
+
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.container -->
+	
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="pull-right hidden-xs">
+        <b>Version</b> 2.4.0
+      </div>
+      <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+      reserved.
+    </div>
+    <!-- /.container -->
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 3 -->
+<script src="./bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="./bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="./bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="./dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="./dist/js/demo.js"></script>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#logoutBTN").click(function () {
+			var dataArr = { username: "" };
+			var data = JSON.stringify(dataArr)
+			
+			$.getJSON("logout.api")
+			  .then(function(data) {
+			  var result = data.result;
+				//console.log(data);
+				
+				if (data.result != "true") {
+					// Delete Cookies
+					var cookies = document.cookie.split(";");
+					for (var i = 0; i < cookies.length; i++) {
+						var cookie = cookies[i];
+						var eqPos = cookie.indexOf("=");
+						var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+						document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+					}
+				} 
+				setTimeout("location.href = 'login.html';",500);
+				
+			  })
+			  .fail(function(jqxhr, textStatus, errorThrown) {
+				 console.log(errorThrown)
+				 setTimeout("location.href = 'login.html';",500);  
+			})
+
+		
+		});//end click function
+	});//end ready function
+</script>
+
+</body>
+</html>

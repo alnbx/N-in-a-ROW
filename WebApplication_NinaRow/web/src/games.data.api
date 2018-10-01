@@ -1,0 +1,10 @@
+{  
+	"result":"true",
+	"totalgames": 5,
+	"games":[
+        {"id": 111, "name": "Game X",  "status":"playing", "boardCols" : 4, "boardRows": 4, "registeredPlayers": 6, "totalPlayers": 6},
+        {"id": 2, "name": "Game 2",  "status":"panding_players", "boardCols" : 4, "boardRows": 4, "registeredPlayers": 1, "totalPlayers": 4},
+        {"id": 3, "name": "Game 3",  "status":"ended", "boardCols" : 4, "boardRows": 4, "registeredPlayers": 4, "totalPlayers": 4},
+        {"id": 4, "name": "Game new",  "status":"ended", "boardCols" : 4, "boardRows": 4, "registeredPlayers": 2, "totalPlayers": 2}
+	]
+}

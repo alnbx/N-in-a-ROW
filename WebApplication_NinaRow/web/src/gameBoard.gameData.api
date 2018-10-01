@@ -1,0 +1,7 @@
+{  
+	"result":true,
+	"boardRowSize":4,
+	"boardColSize":6,
+	"currentPlayerMove":true,
+	"boardData":[ 0,0,0,0,0,0 ,0,0,0,0,0,0, 0,1,2,0,0,0, 0,1,2,1,0,0 ]
+}

@@ -1,0 +1,19 @@
+{  
+	"result":true,
+	"isPlayer":true,
+	"gameName":"Game-Name-1",
+	"players":[
+		{"id": 1, "name": "David",  "color":1, "current":false},
+		{"id": 2, "name": "Yoram",  "color":2, "current":false},
+		{"id": 3, "name": "Alon",  "color":3, "current":true}
+	],
+	
+	"moves":[
+		{"playerName": "David",  "move":"Colm-2", "moveType":"Insert"},
+		{"playerName": "Yoram",  "move":"Colm-1", "moveType":"Insert"},
+		{"playerName": "Alon",  "move":"Colm-2", "moveType":"Popup"},
+		{"playerName": "David",  "move":"Colm-4", "moveType":"Popup"},
+		{"playerName": "Yoram",  "move":"Colm-2", "moveType":"Insert"},
+		{"playerName": "Alon",  "move":"Colm-2", "moveType":"Insert"}
+	]
+}
