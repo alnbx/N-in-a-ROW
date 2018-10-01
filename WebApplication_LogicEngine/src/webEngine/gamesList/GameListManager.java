@@ -53,23 +53,23 @@ public class GameListManager {
         return gameEntriesMap.get(gameName);
     }
 
-    public GameSettings getGameSettings(String gameFile) {
-        return gameEntriesMap.get(gameFile).getGameSettings();
-    }
-
     public String getGameName(String gameFile) {
         return gameEntriesMap.get(gameFile).getGameName();
-    }
-
-    private void setGameLogic(SingleGameEntry gameEntry) {
-        gameEntry.setGameLogic(gameFactory.getNewGame(gameEntry.getGameSettings()));
     }
 
     public void initGame(String gameName) {
         SingleGameEntry gameEntry = gameEntriesMap.get(gameName);
         if (gameEntry != null) {
-            setGameLogic(gameEntry);
+            gameEntry.setGameLogic(gameFactory.getNewGame(gameEntry.getGameSettings()));
             gameEntry.setGameStatus(GameStatus.PLAYING);
         }
+    }
+
+    public boolean isGameActive(String gameName) {
+        return gameEntriesMap.get(gameName).getGameStatus() == GameStatus.PLAYING;
+    }
+
+    public void enableGameForRegistration(String gameName) {
+        gameEntriesMap.get(gameName).enableGameForRegistration();
     }
 }

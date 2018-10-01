@@ -10,6 +10,7 @@ import java.util.List;
 
 public class SingleGameEntry {
     final private String userName;
+    // players register to the game by being added to the gameSettings
     final private GameSettings gameSettings;
     private GameLogic game;
     private String gameName;
@@ -81,5 +82,11 @@ public class SingleGameEntry {
 
     public void setGameLogic(GameLogic gameLogic) {
         this.game = gameLogic;
+    }
+
+    public void enableGameForRegistration() {
+        this.game = null;
+        this.gameSettings.clearPlayers();
+        this.gameStatus = GameStatus.PENDING_PLAYERS;
     }
 }

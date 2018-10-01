@@ -36,9 +36,16 @@ public class RegisterToGameServlet extends HttpServlet {
                 GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
                 synchronized (this) {
                     if (!gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                        PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
-                        gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
-                        request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
+                        if (!gameListManager.isGameActive(gameNameFromParameter))
+                        {
+                            PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
+                            gameListManager.registerUserToGame(gameNameFromParameter, playerSettings);
+                            request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
+                        }
+                        else {
+                            registerUserResponse.setSuccess(false);
+                            registerUserResponse.setMsg(Constants.REGISTER_TO_ACTIVE_GAME_ERROR);
+                        }
                     }
                     else {
                         registerUserResponse.setSuccess(false);

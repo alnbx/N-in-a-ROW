@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PlayerResignServlet  extends HttpServlet {
+public class PlayerResignServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

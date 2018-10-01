@@ -552,4 +552,12 @@ public class GameSettings implements Serializable {
     public void addPlayer(PlayerSettings player) {
         players.add(player);
     }
+
+    public void clearPlayers() {
+        players.clear();
+    }
+
+    public void removePlayer(int playerId) {
+        players.removeIf(player -> player.getId() == playerId);
+    }
 }

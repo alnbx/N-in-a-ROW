@@ -26,7 +26,6 @@ public class Game implements GameLogic, Serializable {
     public Game()
     {
         this.startingTime = null;
-        //this.gameSettings = new GameSettings();
     }
 
     public Game(GameSettings gameSettings) {
@@ -46,10 +45,10 @@ public class Game implements GameLogic, Serializable {
         this.playedMoves = new ArrayList<Move>();
         this.lastMovePlayed = null;
         this.startingTime = null;
-        restartPlayers(restartPlayers);
+        setPlayersFromSettings(restartPlayers);
     }
 
-    protected void restartPlayers(boolean isNewPlayers) {
+    protected void setPlayersFromSettings(boolean isNewPlayers) {
         if (isNewPlayers) {
             this.players = new ArrayList<Player>();
                 List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
@@ -64,6 +63,11 @@ public class Game implements GameLogic, Serializable {
 
         this.currentPlayer = players.get(0);
         this.activePlayers = this.players.size();
+    }
+
+    @Override
+    public Board getGameBoard() {
+        return this.board;
     }
 
     protected boolean playHumanPlayer(int col, boolean popout)
@@ -205,16 +209,6 @@ public class Game implements GameLogic, Serializable {
                 board.diagonalUpSequence(col, player) >= targetSequence;
     }
 
-    @Override
-    public GameSettings getGameSettings(){
-        return gameSettings;
-    }
-
-    @Override
-    public void addPlayer(PlayerSettings playerSettings) {
-        players.add(new Player(playerSettings));
-    }
-
     public char[][] boardReadyToPrint() { return board.getBoardAsCharArray(); }
 
     public int getNumberOfInitializedPlayers() {
@@ -307,6 +301,9 @@ public class Game implements GameLogic, Serializable {
     {
         currentPlayer.deactivatePlayer();
         this.board.removeAllDiscsofPlayer(currentPlayer.getId());
+        // relevant for DynamicMultiPlayer: unregistering a player from a game =
+        // removing the player from the players' settings
+        this.gameSettings.removePlayer(currentPlayer.getId());
         setNextPlayer();
         this.activePlayers--;
 

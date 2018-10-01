@@ -6,6 +6,7 @@ import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import common.MoveType;
 import engine.GameLogic;
+import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
@@ -23,17 +24,17 @@ public class PlayMoveServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         PlayMoveResponse playMoveResponse = new PlayMoveResponse();
-        String gameName = SessionUtils.getAttribute(request, Constants.GAMENAME);
-        if (gameName != null) {
+        String gameNameFromSession = SessionUtils.getAttribute(request, Constants.GAMENAME);
+        if (gameNameFromSession != null) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
-                    getGameEntry(gameName).getGameLogic();
+            GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
+            GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
 
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
             if (userNameFromSession != null) {
                 Integer playerId = userManager.getPlayerID(userNameFromSession);
-                if (playerId == null || playerId != game.getIdOfCurrentPlayer()) {
+                if (playerId == null || playerId != gameLogic.getIdOfCurrentPlayer()) {
                     playMoveResponse.setSuccess(false);
                     playMoveResponse.setMsg(Constants.PLAYER_ERROR);
                 }
@@ -67,9 +68,12 @@ public class PlayMoveServlet extends HttpServlet {
 
                     if (playMoveResponse.getSuccess()) {
                         synchronized (getServletContext()) {
-                            if (game.play(colParameter, playMoveResponse.moveType.equals(MoveType.POPOUT))) {
-                                playMoveResponse.winners = game.getWinners();
-                                playMoveResponse.isTie = game.isTie();
+                            if (gameLogic.play(colParameter, playMoveResponse.moveType.equals(MoveType.POPOUT))) {
+                                playMoveResponse.winners = gameLogic.getWinners();
+                                playMoveResponse.isTie = gameLogic.isTie();
+                                if (playMoveResponse.isTie || playMoveResponse.winners.size() > 0) {
+                                    gamesManager.enableGameForRegistration(gameNameFromSession);
+                                }
                             }
                             else {
                                 playMoveResponse.setSuccess(false);

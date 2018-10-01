@@ -39,8 +39,6 @@ public interface GameLogic {
     GameVariant getGameVariant();
     int getNumberOfRoundsPlayed();
     void increaseRoundPlayed();
-    String getGameTitle();
     Boolean isTie();
-    void addPlayer(PlayerSettings player);
-    GameSettings getGameSettings();
+    Board getGameBoard();
 }
