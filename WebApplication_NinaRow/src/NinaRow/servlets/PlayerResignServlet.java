@@ -29,9 +29,9 @@ public class PlayerResignServlet extends HttpServlet {
                     getGameEntry(gameName).getGameLogic();
 
             // get player id
-            String userNameParameter = SessionUtils.getAttribute(request, Constants.USERNAME);
-            if (userNameParameter != null) {
-                Integer playerId = userManager.getPlayerID(userNameParameter);
+            String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
+            if (userNameFromSession != null) {
+                Integer playerId = userManager.getPlayerID(userNameFromSession);
                 if (playerId != null) {
                     // only the current player can quit the game
                     if (playerId != game.getIdOfCurrentPlayer()) {

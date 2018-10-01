@@ -38,9 +38,6 @@ public class PlayMoveServlet extends HttpServlet {
                     playMoveResponse.setResult(false);
                     playMoveResponse.setMsg(Constants.PLAYER_ERROR);
                 }
-                else {
-                    playMoveResponse.playerId = playerId;
-                }
 
                 // get col of move
                 int colParameter = ServletUtils.getIntParameter(request, Constants.MOVE_COL);
@@ -48,18 +45,16 @@ public class PlayMoveServlet extends HttpServlet {
                     playMoveResponse.setResult(false);
                     playMoveResponse.setMsg(Constants.MOVE_COL_ERROR);
                 }
-                else {
-                    playMoveResponse.col = colParameter;
-                }
 
                 String moveTypeParameter = request.getParameter(Constants.MOVE_TYPE);
+                MoveType moveType = null;
                 if (moveTypeParameter != null) {
                     // get type of move
                     if (moveTypeParameter.equalsIgnoreCase("insert")) {
-                        playMoveResponse.moveType = MoveType.INSERT;
+                        moveType = MoveType.INSERT;
                     }
                     else if (moveTypeParameter.equalsIgnoreCase("popout")) {
-                        playMoveResponse.moveType = MoveType.POPOUT;
+                        moveType = MoveType.POPOUT;
                     }
                     else {
                         playMoveResponse.setResult(false);
@@ -68,7 +63,7 @@ public class PlayMoveServlet extends HttpServlet {
 
                     if (playMoveResponse.getResult()) {
                         synchronized (getServletContext()) {
-                            if (gameLogic.play(colParameter, playMoveResponse.moveType.equals(MoveType.POPOUT))) {
+                            if (gameLogic.play(colParameter, moveType.equals(MoveType.POPOUT))) {
                                 playMoveResponse.winners = gameLogic.getWinners();
                                 playMoveResponse.isTie = gameLogic.isTie();
                                 if (playMoveResponse.isTie || playMoveResponse.winners.size() > 0) {
@@ -103,16 +98,10 @@ public class PlayMoveServlet extends HttpServlet {
     class PlayMoveResponse extends ServeltResponse {
         Set<Integer> winners;
         Boolean isTie;
-        MoveType moveType;
-        int playerId;
-        int col;
 
         public PlayMoveResponse() {
             this.isTie = false;
             this.winners = null;
-            this.moveType = null;
-            this.playerId = -1;
-            this.col = -1;
         }
     }
 

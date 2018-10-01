@@ -5,7 +5,9 @@ import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import common.GameSettings;
+import common.GameVariant;
 import webEngine.gamesList.GameListManager;
+import webEngine.gamesList.GameStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,6 +29,7 @@ public class UploadGameServlet extends HttpServlet {
         String settingsFileFromParameter = request.getParameter(SETTINGS_FILE);
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         if (usernameFromSession != null) {
+            uploadGameResponse.userName = usernameFromSession;
             GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
 
             if (settingsFileFromParameter == null) {
@@ -46,8 +49,12 @@ public class UploadGameServlet extends HttpServlet {
                         else {
                             GameSettings gameSettings = new GameSettings(settingsFileFromParameter, false);
                             gameListManager.addGame(gameSettings, usernameFromSession);
-                            uploadGameResponse.gameName = gameListManager.getGameName(gameSettings.getGameTitle());
-                            uploadGameResponse.gameSettings = gameSettings;
+                            uploadGameResponse.gameName = gameSettings.getGameTitle();
+                            uploadGameResponse.boardRows = gameSettings.getBoardNumRows();
+                            uploadGameResponse.boardCols = gameSettings.getNumCols();
+                            uploadGameResponse.target = gameSettings.getTarget();
+                            uploadGameResponse.gameVariant = gameSettings.getGameVariant();
+                            uploadGameResponse.totalPlayers = gameSettings.getNumOfPlayers();
                         }
                     }
                     catch (Exception e) {
@@ -56,7 +63,6 @@ public class UploadGameServlet extends HttpServlet {
                     }
                 }
             }
-            //getServletContext().getRequestDispatcher(GAMES_LIST_URL).forward(request, response);
         }
         else {
             uploadGameResponse.setResult(false);
@@ -68,7 +74,22 @@ public class UploadGameServlet extends HttpServlet {
 
     class UploadGameResponse extends ServeltResponse {
         private String gameName = "";
-        private GameSettings gameSettings = null;
+        private String userName;
+        private int boardRows;
+        private int boardCols;
+        private int target;
+        private GameVariant gameVariant;
+        private int totalPlayers;
+
+        public UploadGameResponse() {
+            this.gameName = "";
+            this.userName = "";
+            this.boardCols = 0;
+            this.boardRows = 0;
+            this.target = 0;
+            this.gameVariant = null;
+            this.totalPlayers = 0;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

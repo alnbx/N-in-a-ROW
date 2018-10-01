@@ -24,7 +24,7 @@ public class MovesListServlet extends HttpServlet {
             int clientNumMoves = ServletUtils.getIntParameter(request, Constants.LAST_MOVE);
             if (clientNumMoves == Constants.INT_PARAMETER_ERROR) {
                 movesListResponse.setResult(false);
-                movesListResponse.setMsg(Constants.MOVE_COL_ERROR);
+                movesListResponse.setMsg(Constants.LAST_MOVE_ERROR);
             }
             else {
                 GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
