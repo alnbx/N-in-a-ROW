@@ -46,6 +46,18 @@ public class Board implements Serializable {
         for (int i = 0; i < this.cols; i++) { board[i].restartCol(); }
     }
 
+    public int[][] getBoardAsIntArray() {
+        int[][] res = new int[this.rows][this.cols];
+        for (int row  = 0; row < this.rows; row++)
+        {
+            for (int col = 0; col < this.cols; col++) {
+                res[row][col] = getPlayerInDisc(col, row);
+            }
+        }
+
+        return res;
+    }
+
     private void connectBoard()
     {
         for (int i = 0; i < this.cols; i++)

@@ -40,5 +40,5 @@ public interface GameLogic {
     int getNumberOfRoundsPlayed();
     void increaseRoundPlayed();
     Boolean isTie();
-    Board getGameBoard();
+    int[][] getBoardAsIntArr();
 }

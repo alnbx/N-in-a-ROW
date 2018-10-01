@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GameStatusServlet extends HttpServlet {
 
@@ -27,11 +26,14 @@ public class GameStatusServlet extends HttpServlet {
 
         if (gameNameFromSession != null) {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
-            gameStatusResponse.players = gameLogic.getPlayers();
-            gameStatusResponse.board = gameLogic.getGameBoard();
-            int currentPlayerId = gameLogic.getIdOfCurrentPlayer();
-            gameStatusResponse.currentPlayer = getCurrentPlayer(gameStatusResponse, currentPlayerId);
+            //GameLogic gameLogic = null;
+            synchronized (getServletContext()) {
+                GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
+                gameStatusResponse.players = gameLogic.getPlayers();
+                gameStatusResponse.board = gameLogic.getBoardAsIntArr();
+                int currentPlayerId = gameLogic.getIdOfCurrentPlayer();
+                gameStatusResponse.currentPlayer = getCurrentPlayer(gameStatusResponse, currentPlayerId);
+            }
         }
         else {
             gameStatusResponse.setSuccess(false);
@@ -55,7 +57,10 @@ public class GameStatusServlet extends HttpServlet {
 
     class GameStatusResponse extends ServeltResponse {
         List<Player> players;
-        Board board;
+        // matrix of game board:
+        // int is 0 = no disc in position
+        // int is not 0 = disc of player id is in position
+        int[][] board;
         Player currentPlayer;
 
         public GameStatusResponse() {

@@ -9,6 +9,7 @@ public class Col implements Serializable {
 
     private int colNumber;
     private int freeSpace;
+    // disc in index 0 = top disc in col
     private Disc[] discs;
     private int lastRowInserted;
 

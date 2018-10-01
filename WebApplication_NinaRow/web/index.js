@@ -55,6 +55,26 @@ $(function() {
 });
 
 $(function() {
+    $("#gameStatus").click(function(event) {
+        $.ajax({
+            data: $(this).serialize(),
+            timeout: 2000,
+            url: buildUrlWithContextPath("game/gameStatus"),
+            error: function(xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert("error" + error + "\n" + "status: " + status + "\n" + "reponse msg: " + err);
+            },
+            success: function(data) {
+                jsonStr = JSON.stringify(data);
+                $("#response7").text(jsonStr);
+            }
+        });
+
+        return false;
+    });
+});
+
+$(function() {
     $("#uploadFile").click(function(event) {
         $.ajax({
             data: $(this).serialize(),

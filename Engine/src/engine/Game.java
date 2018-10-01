@@ -51,11 +51,11 @@ public class Game implements GameLogic, Serializable {
     protected void setPlayersFromSettings(boolean isNewPlayers) {
         if (isNewPlayers) {
             this.players = new ArrayList<Player>();
-                List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
-                for (PlayerSettings ps : playersSettings) {
-                    players.add(new Player(ps));
-                }
+            List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
+            for (PlayerSettings ps : playersSettings) {
+                players.add(new Player(ps));
             }
+        }
         else {
             for (Player player : players)
                 player.restart();
@@ -63,11 +63,6 @@ public class Game implements GameLogic, Serializable {
 
         this.currentPlayer = players.get(0);
         this.activePlayers = this.players.size();
-    }
-
-    @Override
-    public Board getGameBoard() {
-        return this.board;
     }
 
     protected boolean playHumanPlayer(int col, boolean popout)
@@ -221,6 +216,11 @@ public class Game implements GameLogic, Serializable {
 
     public int getSequenceLength() {
         return gameSettings.getTarget();
+    }
+
+    @Override
+    public int[][] getBoardAsIntArr() {
+        return board.getBoardAsIntArray();
     }
 
     public boolean getHasWinner() { return this.hasWinner; }
