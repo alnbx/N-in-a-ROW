@@ -19,7 +19,7 @@ public class MovesListServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         MovesListResponse movesListResponse = new MovesListResponse();
-        String gameName = SessionUtils.getAttribute(request, Constants.GAMENAME);
+        String gameName = request.getParameter(Constants.GAMENAME);
         if (gameName != null) {
             int clientNumMoves = ServletUtils.getIntParameter(request, Constants.LAST_MOVE);
             if (clientNumMoves == Constants.INT_PARAMETER_ERROR) {

@@ -4,7 +4,7 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import common.PlayerSettings;
+import common.UserSettings;
 import webEngine.gamesList.GameListManager;
 import webEngine.gamesList.GameStatus;
 import webEngine.users.UserManager;
@@ -32,9 +32,9 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
                 GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
                 synchronized (this) {
                     if (!gameListManager.isGameActive(gameNameFromParameter)) {
-                        PlayerSettings playerSettings = userManager.getUser(usernameFromSession);
+                        UserSettings playerSettings = userManager.getUser(usernameFromSession);
                         gameListManager.registerPlayerToGame(gameNameFromParameter, playerSettings);
-                        request.getSession(false).setAttribute(Constants.GAMENAME, gameNameFromParameter);
+                        userManager.setGameToUser(usernameFromSession, gameNameFromParameter);
                     }
                     else {
                         registerPlayerResponse.setResult(false);

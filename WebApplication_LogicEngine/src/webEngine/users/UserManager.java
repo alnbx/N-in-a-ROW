@@ -1,6 +1,6 @@
 package webEngine.users;
 
-import common.PlayerSettings;
+import common.UserSettings;
 import common.PlayerTypes;
 
 import java.util.*;
@@ -11,14 +11,14 @@ Note that asking if a user exists (isUserExists) does not participate in the syn
 of the user of this class to handle the synchronization of isUserExists with other methods here on it's own
  */
 public class UserManager {
-    private final HashMap<String, PlayerSettings> usersMap;
+    private final HashMap<String, UserSettings> usersMap;
 
     public UserManager() {
         usersMap = new HashMap<>();
     }
 
     public synchronized void addUser(String username, PlayerTypes playerType) {
-        usersMap.put(username, new PlayerSettings(username, usersMap.size() + 1, playerType));
+        usersMap.put(username, new UserSettings(username, usersMap.size() + 1, playerType));
     }
 
     public synchronized void removeUser(String username) {
@@ -28,15 +28,15 @@ public class UserManager {
     public synchronized Set<String> getUsersNames() {
         Set<String> usersNames = new HashSet<>();
 
-        for (PlayerSettings player : usersMap.values()) {
+        for (UserSettings player : usersMap.values()) {
             usersNames.add(player.getName());
         }
 
         return Collections.unmodifiableSet(usersNames);
     }
 
-    public synchronized List<PlayerSettings> getUsers() {
-        List<PlayerSettings> users = new ArrayList<>(usersMap.values());
+    public synchronized List<UserSettings> getUsers() {
+        List<UserSettings> users = new ArrayList<>(usersMap.values());
         return Collections.unmodifiableList(users);
     }
 
@@ -48,7 +48,7 @@ public class UserManager {
         return usersMap.containsKey(username);
     }
 
-    public PlayerSettings getUser(String username) {
+    public UserSettings getUser(String username) {
         return usersMap.get(username);
     }
 
@@ -57,12 +57,20 @@ public class UserManager {
     }
 
     public PlayerTypes getPlayerType(String playerName) {
-        PlayerSettings player = usersMap.get(playerName);
+        UserSettings player = usersMap.get(playerName);
         PlayerTypes playerType = null;
 
         if (player != null){
             playerType = player.getPlayerType();
         }
         return playerType;
+    }
+
+    public void clearGame(String userName) {
+        usersMap.get(userName).clearGame();
+    }
+
+    public void setGameToUser(String username, String gameName) {
+        usersMap.get(username).setGame(gameName);
     }
 }

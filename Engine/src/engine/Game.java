@@ -51,8 +51,8 @@ public class Game implements GameLogic, Serializable {
     protected void setPlayersFromSettings(boolean isNewPlayers) {
         if (isNewPlayers) {
             this.players = new ArrayList<Player>();
-            List<PlayerSettings> playersSettings = gameSettings.getPlayersSettings();
-            for (PlayerSettings ps : playersSettings) {
+            List<UserSettings> playersSettings = gameSettings.getPlayersSettings();
+            for (UserSettings ps : playersSettings) {
                 players.add(new Player(ps));
             }
         }

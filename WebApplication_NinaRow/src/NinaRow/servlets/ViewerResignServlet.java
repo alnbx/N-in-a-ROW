@@ -4,7 +4,6 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import engine.GameLogic;
 import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
 
@@ -13,13 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Set;
 
 public class ViewerResignServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String gameName = SessionUtils.getAttribute(request, Constants.GAMENAME);
+        String gameName = request.getParameter(Constants.GAMENAME);
         response.setContentType("application/json");
 
         // create the response
@@ -34,7 +32,7 @@ public class ViewerResignServlet extends HttpServlet {
                 if (playerId != null) {
                     GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
                     gamesManager.viewerResigne(gameName, userNameFromSession);
-                    request.getSession(false).setAttribute(Constants.GAMENAME, "");
+                    userManager.setGameToUser(userNameFromSession, gameName);
                 }
                 else {
                     viewerResignResponse.setResult(false);

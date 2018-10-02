@@ -4,12 +4,11 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import common.PlayerSettings;
+import common.UserSettings;
 import engine.GameLogic;
 import engine.Player;
 import webEngine.gamesList.GameListManager;
 import engine.Move;
-import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,19 +23,19 @@ public class GameDataServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        String gameNameFromSession = SessionUtils.getAttribute(request, Constants.GAMENAME);
+        String gameNameParameter = request.getParameter(Constants.GAMENAME);
         GameDataResponse gameDataResponse = new GameDataResponse();
 
-        if (gameNameFromSession != null) {
-            gameDataResponse.gameName = gameNameFromSession;
+        if (gameNameParameter != null) {
+            gameDataResponse.gameName = gameNameParameter;
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
 
             synchronized (getServletContext()) {
-                GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
-                gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameNameFromSession, usernameFromSession);
+                GameLogic gameLogic = gamesManager.getGameEntry(gameNameParameter).getGameLogic();
+                gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameNameParameter, usernameFromSession);
                 gameDataResponse.moves = gameLogic.getMovesHistory();
                 gameDataResponse.players = gameLogic.getPlayers();
-                gameDataResponse.viewers = gamesManager.getGameViewrs(gameNameFromSession);
+                gameDataResponse.viewers = gamesManager.getGameViewrs(gameNameParameter);
             }
         }
         else {
@@ -49,7 +48,7 @@ public class GameDataServlet extends HttpServlet {
 
     class GameDataResponse extends ServeltResponse {
         List<Player> players;
-        List<PlayerSettings> viewers;
+        List<UserSettings> viewers;
         List<Move> moves;
         String gameName;
         Boolean isPlayer;

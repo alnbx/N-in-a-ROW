@@ -23,14 +23,14 @@ public class GameSettings implements Serializable {
     private GameVariant gameVariant;
     private GameType gameType;
     private String settingsFilePath;
-    private List<PlayerSettings> players;
+    private List<UserSettings> players;
     private int numOfPlayers;
     private String gameTitle;
 
     public GameSettings(String gameSettings, boolean isFilePath) throws Exception {
         this.boardNumRows = 6;
         this.boardNumCols = 7;
-        this.players = new ArrayList<PlayerSettings>(maxNumOfPlayers);
+        this.players = new ArrayList<UserSettings>(maxNumOfPlayers);
 
         try {
             if (isFilePath) {
@@ -83,7 +83,7 @@ public class GameSettings implements Serializable {
         return numOfPlayers;
     }
 
-    public List<PlayerSettings> getPlayersSettings() {
+    public List<UserSettings> getPlayersSettings() {
         return players;
     }
 
@@ -250,7 +250,7 @@ public class GameSettings implements Serializable {
                 try {
                     int playerId = Integer.parseInt(idAttr.getNodeValue());
 
-                    for (PlayerSettings p : players) {
+                    for (UserSettings p : players) {
                         if (p.getId() == playerId) {
                             throw new SettingsFileException("xml: Players list has more than one player with the id: " + playerId);
                         }
@@ -311,7 +311,7 @@ public class GameSettings implements Serializable {
             throw new SettingsFileException("xml: player " + playerId + "has no elemetns");
         }
 
-        players.add(new PlayerSettings(actualPlayerName, playerId, actualPlayerType));
+        players.add(new UserSettings(actualPlayerName, playerId, actualPlayerType));
     }
 
     private PlayerTypes parsePlayerType(Node playerType, int playerID) throws SettingsFileException{
@@ -549,7 +549,7 @@ public class GameSettings implements Serializable {
         return players.size();
     }
 
-    public void addPlayer(PlayerSettings player) {
+    public void addPlayer(UserSettings player) {
         players.add(player);
     }
 
@@ -562,7 +562,7 @@ public class GameSettings implements Serializable {
     }
 
     public Boolean isUserPlayerInGame(String username) {
-        for (PlayerSettings player : players) {
+        for (UserSettings player : players) {
             if (player.getName().equalsIgnoreCase(username)) {
                 return true;
             }

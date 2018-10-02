@@ -1,8 +1,7 @@
 package engine;
 
 import common.PlayerTypes;
-import common.PlayerSettings;
-import javafx.beans.property.SimpleIntegerProperty;
+import common.UserSettings;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -22,7 +21,7 @@ public class Player implements Serializable {
         this.numOfMovesMade = 0;
     }
 
-    public Player(PlayerSettings player) {
+    public Player(UserSettings player) {
         this.playerType = player.getPlayerType();
         this.id = player.getId();
         this.name = player.getName();

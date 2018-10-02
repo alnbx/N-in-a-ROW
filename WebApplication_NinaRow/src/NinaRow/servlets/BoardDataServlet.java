@@ -20,14 +20,14 @@ public class BoardDataServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        String gameNameFromSession = SessionUtils.getAttribute(request, Constants.GAMENAME);
+        String gameNameParameter = request.getParameter(Constants.GAMENAME);
         BoardDataResponse boardDataResponse = new BoardDataResponse();
 
-        if (gameNameFromSession != null) {
+        if (gameNameParameter != null) {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
             //GameLogic gameLogic = null;
             synchronized (getServletContext()) {
-                GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
+                GameLogic gameLogic = gamesManager.getGameEntry(gameNameParameter).getGameLogic();
                 boardDataResponse.boardRowSize = gameLogic.getRows();
                 boardDataResponse.boardRowSize = gameLogic.getCols();
                 boardDataResponse.boardData = gameLogic.getBoardAsIntArr();

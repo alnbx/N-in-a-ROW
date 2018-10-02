@@ -2,14 +2,12 @@ package NinaRow.servlets;
 
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
-import com.google.gson.Gson;
-import common.PlayerSettings;
+import common.UserSettings;
 import webEngine.users.UserManager;
 
 import java.util.List;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,14 +19,14 @@ public class UsersListServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        List<PlayerSettings> usersList = userManager.getUsers();
+        List<UserSettings> usersList = userManager.getUsers();
         ServletUtils.sendJsonResponse(response, new UsersListResponse(usersList));
     }
 
     class UsersListResponse extends ServeltResponse {
-        List<PlayerSettings> users;
+        List<UserSettings> users;
 
-        public UsersListResponse(List<PlayerSettings> users) {
+        public UsersListResponse(List<UserSettings> users) {
             this.users = users;
         }
     }

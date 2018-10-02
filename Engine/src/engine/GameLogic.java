@@ -1,9 +1,7 @@
 package engine;
 
 import common.GameVariant;
-import common.PlayerSettings;
 import common.PlayerTypes;
-import common.GameSettings;
 
 import java.util.List;
 import java.util.Set;

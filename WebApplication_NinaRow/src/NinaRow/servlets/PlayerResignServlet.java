@@ -18,7 +18,7 @@ public class PlayerResignServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String gameName = SessionUtils.getAttribute(request, Constants.GAMENAME);
+        String gameName = request.getParameter(Constants.GAMENAME);
         response.setContentType("application/json");
 
         // create the response
@@ -48,7 +48,7 @@ public class PlayerResignServlet extends HttpServlet {
                     game.resignPlayer();
                     // check if the player's resignation lead to a win
                     playerResignResponse.winners = game.getWinners();
-                    request.getSession(false).setAttribute(Constants.GAMENAME, "");
+                    userManager.clearGame(userNameFromSession);
                 }
             }
             else {

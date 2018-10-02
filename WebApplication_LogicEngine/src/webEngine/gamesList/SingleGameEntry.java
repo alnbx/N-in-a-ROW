@@ -2,9 +2,8 @@ package webEngine.gamesList;
 
 import common.GameSettings;
 import common.GameVariant;
-import common.PlayerSettings;
+import common.UserSettings;
 import engine.GameLogic;
-import engine.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class SingleGameEntry {
     private GameLogic game;
     private String gameName;
     private GameStatus gameStatus;
-    private List<PlayerSettings> viewers;
+    private List<UserSettings> viewers;
 
     SingleGameEntry(GameSettings gameSettings, String userName) {
         this.game = null;
@@ -55,7 +54,7 @@ public class SingleGameEntry {
         return gameStatus;
     }
 
-    public void registerPlayer(PlayerSettings player) {
+    public void registerPlayer(UserSettings player) {
         gameSettings.addPlayer(player);
     }
 
@@ -97,11 +96,11 @@ public class SingleGameEntry {
         return this.gameSettings.isUserPlayerInGame(username);
     }
 
-    public List<PlayerSettings> getGameViewers() {
+    public List<UserSettings> getGameViewers() {
         return viewers;
     }
 
-    public void registerViewer(PlayerSettings user) {
+    public void registerViewer(UserSettings user) {
         viewers.add(user);
     }
 

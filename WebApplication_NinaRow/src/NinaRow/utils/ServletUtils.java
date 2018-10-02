@@ -24,7 +24,6 @@ public class ServletUtils {
      */
     private static final Object userManagerLock = new Object();
     private static final Object gamesListManagerLock = new Object();
-    private static final Object gamesManagerLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
 

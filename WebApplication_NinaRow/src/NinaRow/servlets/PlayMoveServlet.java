@@ -24,11 +24,11 @@ public class PlayMoveServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         PlayMoveResponse playMoveResponse = new PlayMoveResponse();
-        String gameNameFromSession = SessionUtils.getAttribute(request, Constants.GAMENAME);
-        if (gameNameFromSession != null) {
+        String gameNameParameter = request.getParameter(Constants.GAMENAME);
+        if (gameNameParameter != null) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            GameLogic gameLogic = gamesManager.getGameEntry(gameNameFromSession).getGameLogic();
+            GameLogic gameLogic = gamesManager.getGameEntry(gameNameParameter).getGameLogic();
 
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
@@ -67,7 +67,7 @@ public class PlayMoveServlet extends HttpServlet {
                                 playMoveResponse.winners = gameLogic.getWinners();
                                 playMoveResponse.isTie = gameLogic.isTie();
                                 if (playMoveResponse.isTie || playMoveResponse.winners.size() > 0) {
-                                    gamesManager.enableGameForRegistration(gameNameFromSession);
+                                    gamesManager.enableGameForRegistration(gameNameParameter);
                                 }
                             }
                             else {
