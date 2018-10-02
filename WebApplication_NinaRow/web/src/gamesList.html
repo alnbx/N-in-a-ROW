@@ -37,8 +37,8 @@
 			  var user = data.user;
 				//console.log(data);
 				
-				if (data.result != "true") {
-					setTimeout("location.href = 'login.html';",100); 
+				if (data.result != true) {
+					setTimeout("location.href = 'register.html';",100); 
 				} 
 				else 
 				{
@@ -49,7 +49,7 @@
 			  })
 			  .fail(function(jqxhr, textStatus, errorThrown) {
 				 console.log(errorThrown)
-				 setTimeout("location.href = 'login.html';",100);  
+				 setTimeout("location.href = 'register.html';",100);  
 			  })
 		});
 	}
@@ -103,7 +103,7 @@
 			  var user = data.user;
 				//console.log(data);
 				
-				if (data.result != "true") {
+				if (data.result != true) {
 					$('#gameTable').text("Unable to load games data");
 				} 
 				else
@@ -220,7 +220,7 @@
             </div>
 			
 			<div class="box-footer">
-				<button type="submit" class="btn btn-primary">Submit</button>
+				<button class="btn btn-primary" id="uploadFile" name="uploadFile" >Submit</button>
 			</div>
 
           </div>
@@ -251,6 +251,12 @@
 					</tr>
 				</thead>
 				<tbody>
+				</tr>
+					<td colspan="5"><center>Loading Games Data...</center></td>
+				</tr>
+				<tr>
+					<td colspan="5"><center><img src="./dist/img/loading.gif"></img></center></td>
+				<tr>
 
 				</tbody>
               </table>
@@ -269,14 +275,7 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <div class="container">
-      <div class="pull-right hidden-xs">
-        <b>Version</b> 2.4.0
-      </div>
-      <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-      reserved.
-    </div>
-    <!-- /.container -->
+    <strong>NinaRow </strong> By Alon Boxiner & Miri Kogan 
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -294,6 +293,41 @@
 <!-- AdminLTE for demo purposes -->
 <script src="./dist/js/demo.js"></script>
 
+<script>
+  $(document).ready(function() {
+    $("#uploadFile").click(function(event) {
+        $.ajax({
+            data: $(this).serialize(),
+            timeout: 2000,
+            error: function() {
+                console.error("Failed to submit");
+            },
+            success: function(data) {
+                var file = document.getElementById('exampleInputFile').files[0];
+                console.log("chosen file: " + file.name);
+                var reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = function(e) {
+                    var xmlContent = reader.result;
+                    xmlContent = xmlContent.replace(/"/g, "'");
+                    var postRequest = $.post('games.uploadGame.api');
+                    postRequest.done(function(returnedData) {
+                        console.log("in settings call back" + returnedData);
+                        jsonStr = JSON.stringify(returnedData);
+						//$("#response3").text(jsonStr);
+						alert(($.parseJSON(returnedData))['msg']);
+                    });
+                    postRequest.fail(function(xhr, status, error) {
+                        alert("Error: " + error);
+                    });
+                }
+                return false;
+            }
+        });
+        return false;
+    });
+  });
+</script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -306,7 +340,7 @@
 			  var result = data.result;
 				//console.log(data);
 				
-				if (data.result != "true") {
+				if (data.result != true) {
 					// Delete Cookies
 					var cookies = document.cookie.split(";");
 					for (var i = 0; i < cookies.length; i++) {
@@ -316,12 +350,12 @@
 						document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
 					}
 				} 
-				setTimeout("location.href = 'login.html';",500);
+				setTimeout("location.href = 'register.html';",500);
 				
 			  })
 			  .fail(function(jqxhr, textStatus, errorThrown) {
 				 console.log(errorThrown)
-				 setTimeout("location.href = 'login.html';",500);  
+				 setTimeout("location.href = 'register.html';",500);  
 			})
 
 		

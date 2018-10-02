@@ -1,5 +1,5 @@
 {  
-	"result":"true",
+	"result":true,
 	"totalgames": 5,
 	"games":[
         {"id": 111, "name": "Game X",  "status":"playing", "boardCols" : 4, "boardRows": 4, "registeredPlayers": 6, "totalPlayers": 6},
