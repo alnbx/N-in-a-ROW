@@ -11,10 +11,9 @@ public class Constants {
     public static final String SETTINGS_FILE_NOT_APPLICABLE_ERROR = "no settings file in parameter";
 
     public static final String GAMENAME = "gamename";
-    public static final String GAME_NAME_NOT_APPLICABLE_ERROR = "no game name in parameter";
+    public static final String GAME_NAME_PARAMETER_ERROR = "no game name in parameter";
     public static final String REGISTER_TO_ACTIVE_GAME_ERROR = "game has already started";
 
-    public static final String GAME_SESSION_ERROR = "no game is defined for session";
     public static final String USER_SESSION_ERROR = "no user is defined for session";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
@@ -26,4 +25,7 @@ public class Constants {
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
     public static final String LAST_MOVE = "lastmove";
     public static final String LAST_MOVE_ERROR = "invalid last move parameter";
+    public static final String CHAT_VERSION_PARAMETER = "chatversion";
+    public static final String CHAT_VERSION_ERROR = "invalid chat version parameter";
+    public static final String CHAT_PARAMETER = "userstring";
 }

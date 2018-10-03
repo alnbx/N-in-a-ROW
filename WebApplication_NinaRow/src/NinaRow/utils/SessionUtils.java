@@ -1,7 +1,5 @@
 package NinaRow.utils;
 
-import NinaRow.constants.Constants;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 

@@ -58,7 +58,7 @@ public class PlayerResignServlet extends HttpServlet {
         }
         else {
             playerResignResponse.setResult(false);
-            playerResignResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            playerResignResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, playerResignResponse);

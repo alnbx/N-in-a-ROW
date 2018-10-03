@@ -50,7 +50,7 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
             }
             else {
                 registerPlayerResponse.setResult(false);
-                registerPlayerResponse.setMsg(Constants.GAME_NAME_NOT_APPLICABLE_ERROR);
+                registerPlayerResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
             }
         }
         else {

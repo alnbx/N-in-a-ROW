@@ -1,6 +1,7 @@
 package NinaRow.utils;
 
 import com.google.gson.Gson;
+import webEngine.chat.ChatsManager;
 import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
 
@@ -17,6 +18,7 @@ public class ServletUtils {
 
     private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
     private static final String GAMES_LIST_MANAGER_ATTRIBUTE_NAME = "gamesListManager";
+    private static final String CHATS_MANAGER_ATTRIBUTE_NAME = "chatsManager";
 
     /*
     Note how the synchronization is done only on the question and\or creation of the relevant managers and once they exists -
@@ -24,6 +26,7 @@ public class ServletUtils {
      */
     private static final Object userManagerLock = new Object();
     private static final Object gamesListManagerLock = new Object();
+    private static final Object chatManagerLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -43,6 +46,15 @@ public class ServletUtils {
             }
         }
         return (GameListManager) servletContext.getAttribute(GAMES_LIST_MANAGER_ATTRIBUTE_NAME);
+    }
+
+    public static ChatsManager getChatsManager(ServletContext servletContext) {
+        synchronized (chatManagerLock) {
+            if (servletContext.getAttribute(CHATS_MANAGER_ATTRIBUTE_NAME) == null) {
+                servletContext.setAttribute(CHATS_MANAGER_ATTRIBUTE_NAME, new ChatsManager());
+            }
+        }
+        return (ChatsManager) servletContext.getAttribute(CHATS_MANAGER_ATTRIBUTE_NAME);
     }
 
     public static int getIntParameter(HttpServletRequest request, String name) {

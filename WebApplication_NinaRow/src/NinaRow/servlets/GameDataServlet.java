@@ -40,7 +40,7 @@ public class GameDataServlet extends HttpServlet {
         }
         else {
             gameDataResponse.setResult(false);
-            gameDataResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            gameDataResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, gameDataResponse);

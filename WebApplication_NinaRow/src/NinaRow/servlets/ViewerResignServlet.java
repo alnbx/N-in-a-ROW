@@ -46,7 +46,7 @@ public class ViewerResignServlet extends HttpServlet {
         }
         else {
             viewerResignResponse.setResult(false);
-            viewerResignResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            viewerResignResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, viewerResignResponse);

@@ -89,7 +89,7 @@ public class PlayMoveServlet extends HttpServlet {
         }
         else {
             playMoveResponse.setResult(false);
-            playMoveResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            playMoveResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, playMoveResponse);

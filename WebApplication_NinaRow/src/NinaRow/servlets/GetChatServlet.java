@@ -1,11 +1,11 @@
 package NinaRow.servlets;
 
-import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
-import NinaRow.utils.SessionUtils;
 import NinaRow.utils.ServletUtils;
-import engine.GameLogic;
-import engine.Move;
+import NinaRow.utils.SessionUtils;
+import NinaRow.constants.Constants;
+import webEngine.chat.ChatsManager;
+import webEngine.chat.SingleChatEntry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,47 +14,54 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class MovesListServlet extends HttpServlet {
+import static NinaRow.constants.Constants.USERNAME;
+
+public class GetChatServlet extends HttpServlet {
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        MovesListResponse movesListResponse = new MovesListResponse();
-        String gameName = request.getParameter(Constants.GAMENAME);
-        if (gameName != null) {
-            int clientNumMoves = ServletUtils.getIntParameter(request, Constants.LAST_MOVE);
-            if (clientNumMoves == Constants.INT_PARAMETER_ERROR) {
-                movesListResponse.setResult(false);
-                movesListResponse.setMsg(Constants.LAST_MOVE_ERROR);
+        String usernameFromSession = SessionUtils.getAttribute(request, USERNAME);
+        String gameNameParameter = request.getParameter(Constants.GAMENAME);
+        ChatsManager chatsManager = ServletUtils.getChatsManager(getServletContext());
+        GetChatResponse getChatResponse = new GetChatResponse();
+
+        if (usernameFromSession != null) {
+            String gameName = request.getParameter(Constants.GAMENAME);
+            if (gameName != null) {
+                int chatVersionClient = ServletUtils.getIntParameter(request, Constants.CHAT_VERSION_PARAMETER);
+                if (chatVersionClient == Constants.INT_PARAMETER_ERROR) {
+                    getChatResponse.setResult(false);
+                    getChatResponse.setMsg(Constants.CHAT_VERSION_ERROR);
+                }
+                else {
+                    synchronized (getServletContext()) {
+                        getChatResponse.version = chatsManager.getChatVersion(gameNameParameter);
+                        getChatResponse.entries = chatsManager.getChatEntries(gameNameParameter, chatVersionClient);
+                    }
+                }
             }
             else {
-                GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
-                        getGameEntry(gameName).getGameLogic();
-                List<Move> moves = null;
-                synchronized (getServletContext()) {
-                    moves = game.getMovesHistory();
-                }
-                if (clientNumMoves < 0 || clientNumMoves >= moves.size()) {
-                    clientNumMoves = 0;
-                }
-                movesListResponse.serverNumMoves = moves.size();
-                movesListResponse.movesDelta = moves.subList(clientNumMoves, moves.size());
+                getChatResponse.setResult(false);
+                getChatResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
             }
         }
         else {
-            movesListResponse.setResult(false);
-            movesListResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+            getChatResponse.setResult(false);
+            getChatResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 
-        ServletUtils.sendJsonResponse(response, movesListResponse);
+        ServletUtils.sendJsonResponse(response, getChatResponse);
+
     }
 
-    class MovesListResponse extends ServeltResponse {
-        private List<Move> movesDelta;
-        private int serverNumMoves;
+    class GetChatResponse extends ServeltResponse {
+        private List<SingleChatEntry> entries;
+        private int version;
 
-        public MovesListResponse() {
-            this.movesDelta = null;
-            this.serverNumMoves = 0;
+        public GetChatResponse() {
+            this.entries = null;
+            this.version = 0;
         }
     }
 

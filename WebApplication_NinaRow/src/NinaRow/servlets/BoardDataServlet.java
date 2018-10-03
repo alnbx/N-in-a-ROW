@@ -36,7 +36,7 @@ public class BoardDataServlet extends HttpServlet {
         }
         else {
             boardDataResponse.setResult(false);
-            boardDataResponse.setMsg(Constants.GAME_SESSION_ERROR);
+            boardDataResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, boardDataResponse);

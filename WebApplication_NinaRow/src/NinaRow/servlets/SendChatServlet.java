@@ -4,57 +4,48 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import common.UserSettings;
-import webEngine.gamesList.GameListManager;
-import webEngine.users.UserManager;
+import webEngine.chat.ChatsManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Set;
 
-public class RegisterViewerToGameServlet extends HttpServlet {
+public class SendChatServlet extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
-        // create the response
-        RegisterViewerResponse registerUserResponse = new RegisterViewerResponse();
+        SendChatResponse sendChatResponse = new SendChatResponse();
+        ChatsManager chatsManager = ServletUtils.getChatsManager(getServletContext());
+        String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
 
-        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        if (usernameFromSession != null) {
-            String gameNameParameter = request.getParameter(Constants.GAMENAME);
-            registerUserResponse.gameName = gameNameParameter;
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            if (gameNameParameter != null) {
-                GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
-                synchronized (this) {
-                    UserSettings playerSettings = userManager.getUser(usernameFromSession);
-                    gameListManager.registerViewerToGame(gameNameParameter, playerSettings);
-                    userManager.setGameToUser(usernameFromSession, gameNameParameter);
+
+        if (userNameFromSession != null) {
+            String gameName = request.getParameter(Constants.GAMENAME);
+            if (gameName != null) {
+                String userChatString = request.getParameter(Constants.CHAT_PARAMETER);
+                if (userChatString != null && !userChatString.isEmpty()) {
+                    synchronized (getServletContext()) {
+                        chatsManager.addChatString(gameName, userChatString, userNameFromSession);
+                    }
                 }
             }
             else {
-                registerUserResponse.setResult(false);
-                registerUserResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+                sendChatResponse.setResult(false);
+                sendChatResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
             }
         }
         else {
-            registerUserResponse.setResult(false);
-            registerUserResponse.setMsg(Constants.USER_SESSION_ERROR);
+            sendChatResponse.setResult(false);
+            sendChatResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 
-        ServletUtils.sendJsonResponse(response, registerUserResponse);
+        ServletUtils.sendJsonResponse(response, sendChatResponse);
     }
 
-    public class RegisterViewerResponse extends ServeltResponse {
-        String gameName;
-
-        public RegisterViewerResponse() {
-            gameName = "";
-        }
-    }
+    class SendChatResponse extends ServeltResponse { }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
