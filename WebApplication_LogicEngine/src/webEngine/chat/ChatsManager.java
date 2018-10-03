@@ -11,15 +11,16 @@ public class ChatsManager {
         chats = new HashMap<>();
     }
 
-    public synchronized void addChat(String gameName, ChatsManager chat) {
-        chats.put(gameName, new SingleChatManager());
-    }
-
     public SingleChatManager getChatManager(String gameName) {
         return chats.get(gameName);
     }
 
     public synchronized void addChatString(String gameName, String chatString, String username) {
+        SingleChatManager singleChatManager = chats.get(gameName);
+
+        if (singleChatManager == null) {
+            chats.put(gameName, new SingleChatManager());
+        }
         chats.get(gameName).addChatString(chatString, username);
     }
 
