@@ -1,6 +1,6 @@
 {  
 	"result":true,
-	"isPlayer":true,
+	"isPlayer":false,
 	"gameName":"Game-Name-1",
 	"players":[
 		{"id": 1, "name": "David",  "color":1, "current":false},

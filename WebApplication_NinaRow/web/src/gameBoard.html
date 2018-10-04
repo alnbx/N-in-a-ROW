@@ -123,8 +123,10 @@
 					console.log("Updating player stat");
 					if (data.isPlayer == true) {
 						$('#PlayerStatus').html(" <i class=\"fa fa-circle text-success\"></i> Player ");
+						$('#Resign').text("Resign");
 					} else {
 						$('#PlayerStatus').html(" <i class=\"fa fa-circle text-warning\"></i> Viewer");
+						$('#Resign').text("Back");
 					}
 					
 					//Update game name
@@ -174,7 +176,6 @@
   
 	function buildGameBoard(gameData)
 	{
-	
 		var markup = "<tr>";
 		
 		for (i = 0; i < gameData.boardColSize; i++)
@@ -318,11 +319,13 @@
         <div class="pull-left info">
           <p id="nameSideBar"></p>
           <a href="#" id="PlayerStatus"></a>
+		  
         </div>
+		<small class="label pull-right bg-red" style="margin-top: 4px;" id="Resign"></small>
       </div>
 
 	  
-	  
+	  </br>
       <!-- sidebar data -->
       <div id="gameSideBarData">
 	  </div>
@@ -391,5 +394,29 @@
 <script src="./dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="./dist/js/demo.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#Resign").click(function () {
+			if ("Resign" != $('#Resign').html())
+			{
+				setTimeout("location.href = 'gamesList.html';", 0);
+				return;
+			}
+			$.getJSON("resign.api")
+			  .then(function(data) {
+				setTimeout("location.href = 'gamesList.html';",0);
+				
+			})
+			  .fail(function(jqxhr, textStatus, errorThrown) {
+				 console.log(errorThrown)
+				 setTimeout("location.href = 'gamesList.html';",0);  
+			})
+
+		
+		});//end click function
+	});//end ready function
+</script>
+
 </body>
 </html>
