@@ -39,12 +39,26 @@
   <div class="login-box-body">
     <p class="login-box-msg">Register a new user</p>
 
+	
+	
+	
     <form action="" method="post">
       <div class="form-group has-feedback">
         <input id="username" name="username" type="text" class="form-control" placeholder="User">
+
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
-      <div class="row">
+	  <div class="row">
+        <div class="col-xs-8">
+          <div class="checkbox icheck" style="left: 20px;">
+            
+              <input id="isComputerCheck" name="isComputerCheck"type="checkbox"> This player is not human
+            </label>
+		</div>
+      </div>
+      </div>
+	  
+	  <div class="row">
         <!-- /.col -->
         <div class="col-xs-4">
           <button id="loginBTN" type="button" class="btn btn-primary btn-block btn-flat">Register</button>
@@ -68,7 +82,7 @@
 		$("#loginBTN").click(function () {
 			var dataArr = { username: "" };
 			dataArr.username = $('input[id=username]').val(); // get the content of what user typed ( in textarea )  
-			
+			dataArr.isComputer = $('#isComputerCheck').val();
 			
 			$.ajax({
 				type: "POST",

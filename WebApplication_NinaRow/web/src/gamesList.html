@@ -50,7 +50,7 @@
     var buildUrlWithContextPath = wrapBuildingURLWithContextPath();
   </script>
 
-    <script>
+<script>
 	function checkLogin()
 	{
 		$(function() {
@@ -77,7 +77,7 @@
 	}
 	checkLogin;
 	setInterval( checkLogin, 5000 );
-  </script>
+</script>
   
   
   
@@ -94,21 +94,21 @@
 		//markup += "<td><div class=\"progress progress-xs progress-striped active\"><div class=\"progress-bar progress-bar-success\" style=\"width: " + percent + "%\"></div> </div> </td>"
 		markup += "<td><span class=\"badge bg-green\"> " + itm.registeredPlayers +"/ " + itm.totalPlayers + "</span></td>";
 		
-		
+
 		if (itm.status == "playing") {
 		
 			markup += "<td><span class=\"label label-success\">On going</span></td>";
-			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" href=\"gameBoard.html#"+ itm.id +"\"><i class=\"fa fa-tv\"></i> View</a></td>";
+			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ itm.id +", true);\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
 			
 		} else if (itm.status == "ended") {
 		
 			markup += "<td><span class=\"label label-danger\">Ended</span></td>";
-			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" href=\"gameBoard.html#"+ itm.id +"\"><i class=\"fa fa-tv\"></i> View</a></td>";
+			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ itm.id +", false);\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
 		
 		} else {
 		
 			markup += "<td><span class=\"label label-warning\">Pending players</span></td>";
-			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" href=\"gameBoard.html#"+ itm.id +"\"><i class=\"fa fa-play\"></i> Play</a></td>";
+			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ itm.id +", false);\" \"><i class=\"fa fa-play\"></i> Play</a></td>";
 		
 		}
 				
@@ -123,6 +123,7 @@
             var postRequest = $.post(buildUrlWithContextPath('gamesList'));
             postRequest.done(function(data) {
 			  var user = data.user;
+			    data = jQuery.parseJSON(data);
 				//console.log(data);
 				
 				if (data.result != true) {
@@ -136,7 +137,7 @@
 					// Go over the game data array
 					$.each(data.games, function(i, item) {
 						addGameRow(item);						// add the game to the table
-						console.log("addGameRow: "+ item.name)
+						//console.log("addGameRow: "+ item.name)
 					});
 				}
 			  })
@@ -150,6 +151,31 @@
 	setInterval( getGameData, 2000 );
   </script>
 
+  
+<script>
+	function registerToGame(gID, isPlayer)
+	{
+		$(function() {
+			$.getJSON("game.reg.api?id=" + gID + "&player=" + isPlayer)
+			  .then(function(data) {
+				if (data['result'] != true) {
+					alert("Cound't register you to this game");
+					console.log("Cound't register you to this game");
+				} 
+				else 
+				{
+					console.log("sending you to the game | ID:" + gID);
+					window.location.href = 'gameBoard.html#'+ gID;
+				}
+			  })
+			  .fail(function(jqxhr, textStatus, errorThrown) {
+				 console.log("Failed:" + jqxhr);
+			  })
+		});
+	}
+	checkLogin;
+	setInterval( checkLogin, 5000 );
+</script>
 
 </head>
 <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
