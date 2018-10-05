@@ -26,6 +26,8 @@
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <!-- script src="commonWeb/jquery-2.0.3.min.js"></script -->
+  <script src="../commonWeb/context-path-helper.js"></script>
 </head>
 
 <body class="hold-transition login-page">
@@ -70,12 +72,12 @@
 			
 			$.ajax({
 				type: "POST",
-				url: "register.api",
-				data : JSON.stringify(dataArr),
+				url: buildUrlWithContextPath("login"),
+				data : dataArr,
 				dataType: "json",
 				success: function (resp) {
 					console.log(resp);
-					var success = resp['success'];
+					var success = resp['result'];
 					
 					if(success == false){
 						var error = resp['message'];
@@ -83,7 +85,7 @@
 					}
 					
 					if(success == true) {
-						setTimeout("location.href = 'gamesList.html';",1000);                
+						setTimeout("location.href = 'gamesList.html';",1000);
 					}
 				}
 			});//end ajax             

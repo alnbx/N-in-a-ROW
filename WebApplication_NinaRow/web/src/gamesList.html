@@ -27,8 +27,30 @@
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-  
+
   <script>
+    // extract the context path using the window.location data items
+    function calculateContextPath() {
+    var pathWithoutLeadingSlash = window.location.pathname.substring(1);
+    var contextPathEndIndex = pathWithoutLeadingSlash.indexOf('/');
+    return pathWithoutLeadingSlash.substr(0, contextPathEndIndex)
+    }
+
+    // returns a function that holds within her closure the context path.
+    // the returned function is one that accepts a resource to fetch,
+    // and returns a new resource with the context path at its prefix
+    function wrapBuildingURLWithContextPath() {
+    var contextPath = calculateContextPath();
+    return function(resource) {
+    return "/" + contextPath + "/" + resource;
+    };
+    }
+
+    // call the wrapper method and expose a final method to be used to build complete resource names (buildUrlWithContextPath)
+    var buildUrlWithContextPath = wrapBuildingURLWithContextPath();
+  </script>
+
+    <script>
 	function checkLogin()
 	{
 		$(function() {
@@ -85,7 +107,7 @@
 		
 		} else {
 		
-			markup += "<td><span class=\"label label-warning\">Panding players</span></td>";
+			markup += "<td><span class=\"label label-warning\">Pending players</span></td>";
 			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" href=\"gameBoard.html#"+ itm.id +"\"><i class=\"fa fa-play\"></i> Play</a></td>";
 		
 		}
@@ -98,8 +120,8 @@
 	function getGameData()
 	{
 		$(function() {
-			$.getJSON("games.data.api")
-			  .then(function(data) {
+            var postRequest = $.post(buildUrlWithContextPath('gamesList'));
+            postRequest.done(function(data) {
 			  var user = data.user;
 				//console.log(data);
 				
@@ -118,7 +140,7 @@
 					});
 				}
 			  })
-			  .fail(function(jqxhr, textStatus, errorThrown) {
+            postRequest.fail(function(jqxhr, textStatus, errorThrown) {
 				 console.log(errorThrown)
 				 $('#gameTable').html("<div class=\"alert alert-danger alert-dismissible\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">×</button><h4><i class=\"icon fa fa-ban\"></i> Error!</h4>Unable to load the games data, make sure the server is running</div>");
 			  })
@@ -127,8 +149,8 @@
 	getGameData;
 	setInterval( getGameData, 2000 );
   </script>
-  
-  
+
+
 </head>
 <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
 <body class="hold-transition skin-blue layout-top-nav" onload="javascript:checkLogin">
@@ -310,11 +332,10 @@
                 reader.onload = function(e) {
                     var xmlContent = reader.result;
                     xmlContent = xmlContent.replace(/"/g, "'");
-                    var postRequest = $.post('games.uploadGame.api');
-                    postRequest.done(function(returnedData) {
-                        console.log("in settings call back" + returnedData);
+                    var postRequest = $.post(buildUrlWithContextPath("uploadGame"), { settingsfile: xmlContent});
+                    postRequest.success(function(returnedData) {
+                        console.log("in settings call back");
                         jsonStr = JSON.stringify(returnedData);
-						//$("#response3").text(jsonStr);
 						alert(($.parseJSON(returnedData))['msg']);
                     });
                     postRequest.fail(function(xhr, status, error) {
@@ -333,7 +354,7 @@
 	$(document).ready(function() {
 		$("#logoutBTN").click(function () {
 			var dataArr = { username: "" };
-			var data = JSON.stringify(dataArr)
+			var data = dataArr
 			
 			$.getJSON("logout.api")
 			  .then(function(data) {

@@ -62,10 +62,11 @@ public class PlayMoveServlet extends HttpServlet {
                     }
 
                     if (playMoveResponse.getResult()) {
-                        synchronized (getServletContext()) {
+                        synchronized (this) {
                             if (gameLogic.play(colParameter, moveType.equals(MoveType.POPOUT))) {
                                 playMoveResponse.winners = gameLogic.getWinners();
                                 playMoveResponse.isTie = gameLogic.isTie();
+                                playMoveResponse.boardData = gameLogic.getBoardAsIntArr();
                                 if (playMoveResponse.isTie || playMoveResponse.winners.size() > 0) {
                                     gamesManager.enableGameForRegistration(gameNameParameter);
                                 }
@@ -98,10 +99,12 @@ public class PlayMoveServlet extends HttpServlet {
     class PlayMoveResponse extends ServeltResponse {
         Set<Integer> winners;
         Boolean isTie;
+        int[][] boardData;
 
         public PlayMoveResponse() {
             this.isTie = false;
             this.winners = null;
+            this.boardData = null;
         }
     }
 

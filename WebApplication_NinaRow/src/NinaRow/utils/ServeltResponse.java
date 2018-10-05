@@ -1,5 +1,7 @@
 package NinaRow.utils;
 
+import webEngine.gamesList.GameStatus;
+
 public abstract class ServeltResponse {
     private Boolean result;
     private String msg;

@@ -9,6 +9,7 @@ import engine.GameLogic;
 import engine.Player;
 import webEngine.gamesList.GameListManager;
 import engine.Move;
+import webEngine.gamesList.GameStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,6 +37,7 @@ public class GameDataServlet extends HttpServlet {
                 gameDataResponse.moves = gameLogic.getMovesHistory();
                 gameDataResponse.players = gameLogic.getPlayers();
                 gameDataResponse.viewers = gamesManager.getGameViewrs(gameNameParameter);
+                gameDataResponse.gameStatus = gamesManager.getGameStatus(gameNameParameter);
             }
         }
         else {
@@ -52,6 +54,7 @@ public class GameDataServlet extends HttpServlet {
         List<Move> moves;
         String gameName;
         Boolean isPlayer;
+        GameStatus gameStatus;
 
         public GameDataResponse() {
             this.players = null;
@@ -59,6 +62,7 @@ public class GameDataServlet extends HttpServlet {
             this.moves = null;
             this.gameName = "";
             this.isPlayer = false;
+            this.gameStatus = GameStatus.PENDING_PLAYERS;
         }
     }
 
