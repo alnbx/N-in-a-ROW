@@ -27,8 +27,29 @@
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-  
-  
+
+  <script>
+      // extract the context path using the window.location data items
+      function calculateContextPath() {
+          var pathWithoutLeadingSlash = window.location.pathname.substring(1);
+          var contextPathEndIndex = pathWithoutLeadingSlash.indexOf('/');
+          return pathWithoutLeadingSlash.substr(0, contextPathEndIndex)
+      }
+
+      // returns a function that holds within her closure the context path.
+      // the returned function is one that accepts a resource to fetch,
+      // and returns a new resource with the context path at its prefix
+      function wrapBuildingURLWithContextPath() {
+          var contextPath = calculateContextPath();
+          return function(resource) {
+              return "/" + contextPath + "/" + resource;
+          };
+      }
+
+      // call the wrapper method and expose a final method to be used to build complete resource names (buildUrlWithContextPath)
+      var buildUrlWithContextPath = wrapBuildingURLWithContextPath();
+  </script>
+
   <script>
 	function tempAlert(msg, duration)
 	{
@@ -111,8 +132,8 @@
 	function getGameGeneralData()
 	{
 		$(function() {
-			$.getJSON("gameBoard.general.api")
-			  .then(function(data) {
+			$.post(buildUrlWithContextPath("game/gameData"))
+			  .done(function(data) {
 				
 				if (data.result != true) {
 					console.log("Fail get status:" + data);
@@ -149,11 +170,11 @@
   
   
   <script>
-	function insertChip(col, isInsert)
+	function insertChip(col, isInsertMove)
 	{
 		$(function() {
-			$.getJSON("gameBoard.gameMove.api?id="+col+"&isInsert="+isInsert)
-			  .then(function(data) {
+			$.post(buildUrlWithContextPath("game/playMove"), { id:col, isInsert:isInsertMove })
+			  .done(function(data) {
 				
 				
 				if (data.result != true) {
@@ -218,8 +239,8 @@
   	function getGameData()
 	{
 		$(function() {
-			$.getJSON("gameBoard.gameData.api")
-			  .then(function(data) {
+			$.post(buildUrlWithContextPath("game/boardData"))
+			  .done(function(data) {
 				
 				
 				if (data.result != true) {
@@ -400,11 +421,20 @@
 		$("#Resign").click(function () {
 			if ("Resign" != $('#Resign').html())
 			{
-				setTimeout("location.href = 'gamesList.html';", 0);
-				return;
+                $.post(buildUrlWithContextPath("game/viewerResign"))
+                    .done(function(data) {
+                        setTimeout("location.href = 'gamesList.html';",0);
+
+                    })
+                    .fail(function(jqxhr, textStatus, errorThrown) {
+                        console.log(errorThrown)
+                        setTimeout("location.href = 'gamesList.html';",0);
+                    })
+                return;
 			}
-			$.getJSON("resign.api")
-			  .then(function(data) {
+
+			$.post(buildUrlWithContextPath("game/playerResign"))
+			  .done(function(data) {
 				setTimeout("location.href = 'gamesList.html';",0);
 				
 			})
