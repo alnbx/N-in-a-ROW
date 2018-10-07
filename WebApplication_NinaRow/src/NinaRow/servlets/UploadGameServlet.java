@@ -58,7 +58,7 @@ public class UploadGameServlet extends HttpServlet {
                         }
                     }
                     catch (Exception e) {
-                        uploadGameResponse.setMsg(e.getMessage());
+                        uploadGameResponse.setMsg(e.toString());
                         uploadGameResponse.setResult(false);
                     }
                 }
