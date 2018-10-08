@@ -22,13 +22,12 @@ public class GetChatServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         String usernameFromSession = SessionUtils.getAttribute(request, USERNAME);
-        String gameNameParameter = request.getParameter(Constants.GAMENAME);
         ChatsManager chatsManager = ServletUtils.getChatsManager(getServletContext());
         GetChatResponse getChatResponse = new GetChatResponse();
 
         if (usernameFromSession != null) {
-            String gameName = request.getParameter(Constants.GAMENAME);
-            if (gameName != null) {
+            int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+            if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
                 int chatVersionClient = ServletUtils.getIntParameter(request, Constants.CHAT_VERSION_PARAMETER);
                 if (chatVersionClient == Constants.INT_PARAMETER_ERROR) {
                     getChatResponse.setResult(false);
@@ -36,14 +35,14 @@ public class GetChatServlet extends HttpServlet {
                 }
                 else {
                     synchronized (getServletContext()) {
-                        getChatResponse.version = chatsManager.getChatVersion(gameNameParameter);
-                        getChatResponse.entries = chatsManager.getChatEntries(gameNameParameter, chatVersionClient);
+                        getChatResponse.version = chatsManager.getChatVersion(gameIdFromParam);
+                        getChatResponse.entries = chatsManager.getChatEntries(gameIdFromParam, chatVersionClient);
                     }
                 }
             }
             else {
                 getChatResponse.setResult(false);
-                getChatResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+                getChatResponse.setMsg(Constants.GAME_ID_ERROR);
             }
         }
         else {

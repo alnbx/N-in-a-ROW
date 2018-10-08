@@ -39,4 +39,5 @@ public interface GameLogic {
     void increaseRoundPlayed();
     Boolean isTie();
     int[][] getBoardAsIntArr();
+    void setPlayersFromSettings(boolean isNewPlayers);
 }

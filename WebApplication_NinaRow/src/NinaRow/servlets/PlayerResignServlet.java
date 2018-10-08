@@ -18,15 +18,15 @@ public class PlayerResignServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String gameName = request.getParameter(Constants.GAMENAME);
         response.setContentType("application/json");
 
         // create the response
         PlayerResignResponse playerResignResponse = new PlayerResignResponse();
-        if (gameName != null) {
+        int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+        if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
-                    getGameEntry(gameName).getGameLogic();
+                    getGameEntry(gameIdFromParam).getGameLogic();
 
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
@@ -61,7 +61,7 @@ public class PlayerResignServlet extends HttpServlet {
         }
         else {
             playerResignResponse.setResult(false);
-            playerResignResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+            playerResignResponse.setMsg(Constants.GAME_ID_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, playerResignResponse);

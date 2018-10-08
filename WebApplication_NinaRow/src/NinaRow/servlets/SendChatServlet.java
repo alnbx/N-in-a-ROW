@@ -21,20 +21,19 @@ public class SendChatServlet extends HttpServlet {
         ChatsManager chatsManager = ServletUtils.getChatsManager(getServletContext());
         String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
 
-
         if (userNameFromSession != null) {
-            String gameName = request.getParameter(Constants.GAMENAME);
-            if (gameName != null) {
+            int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+            if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
                 String userChatString = request.getParameter(Constants.CHAT_PARAMETER);
                 if (userChatString != null && !userChatString.isEmpty()) {
                     synchronized (getServletContext()) {
-                        chatsManager.addChatString(gameName, userChatString, userNameFromSession);
+                        chatsManager.addChatString(gameIdFromParam, userChatString, userNameFromSession);
                     }
                 }
             }
             else {
                 sendChatResponse.setResult(false);
-                sendChatResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+                sendChatResponse.setMsg(Constants.GAME_ID_ERROR);
             }
         }
         else {

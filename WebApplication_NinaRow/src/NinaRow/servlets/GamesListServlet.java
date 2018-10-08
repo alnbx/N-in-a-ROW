@@ -52,6 +52,7 @@ public class GamesListServlet extends HttpServlet {
         private GameVariant gameVariant;
         private int totalPlayers;
         private int registeredPlayers;
+        private int gameId;
 
         public SingleGameResponse(SingleGameEntry gameEntry) {
             this.name = gameEntry.getGameName();
@@ -63,6 +64,7 @@ public class GamesListServlet extends HttpServlet {
             this.target = gameEntry.getSequenceLength();
             this.gameVariant = gameEntry.getGameVariant();
             this.totalPlayers = gameEntry.getNumRequiredPlayers();
+            this.gameId = gameEntry.getGameId();
         }
     }
 

@@ -19,8 +19,8 @@ public class MovesListServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         MovesListResponse movesListResponse = new MovesListResponse();
-        String gameName = request.getParameter(Constants.GAMENAME);
-        if (gameName != null) {
+        int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+        if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             int clientNumMoves = ServletUtils.getIntParameter(request, Constants.LAST_MOVE);
             if (clientNumMoves == Constants.INT_PARAMETER_ERROR) {
                 movesListResponse.setResult(false);
@@ -28,7 +28,7 @@ public class MovesListServlet extends HttpServlet {
             }
             else {
                 GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
-                        getGameEntry(gameName).getGameLogic();
+                        getGameEntry(gameIdFromParam).getGameLogic();
                 List<Move> moves = null;
                 synchronized (getServletContext()) {
                     moves = game.getMovesHistory();
@@ -42,7 +42,7 @@ public class MovesListServlet extends HttpServlet {
         }
         else {
             movesListResponse.setResult(false);
-            movesListResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+            movesListResponse.setMsg(Constants.GAME_ID_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, movesListResponse);

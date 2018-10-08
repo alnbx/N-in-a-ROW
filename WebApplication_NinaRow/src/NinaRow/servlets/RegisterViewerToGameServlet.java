@@ -24,20 +24,20 @@ public class RegisterViewerToGameServlet extends HttpServlet {
 
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         if (usernameFromSession != null) {
-            String gameNameParameter = request.getParameter(Constants.GAMENAME);
-            registerUserResponse.gameName = gameNameParameter;
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            if (gameNameParameter != null) {
+            int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+            if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
+                UserManager userManager = ServletUtils.getUserManager(getServletContext());
                 GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
+                registerUserResponse.gameName = gameListManager.getGameName(gameIdFromParam);
                 synchronized (this) {
                     UserSettings playerSettings = userManager.getUser(usernameFromSession);
-                    gameListManager.registerViewerToGame(gameNameParameter, playerSettings);
-                    userManager.setGameToUser(usernameFromSession, gameNameParameter);
+                    gameListManager.registerViewerToGame(gameIdFromParam, playerSettings);
+                    userManager.setGameToUser(usernameFromSession, gameIdFromParam);
                 }
             }
             else {
                 registerUserResponse.setResult(false);
-                registerUserResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+                registerUserResponse.setMsg(Constants.GAME_ID_ERROR);
             }
         }
         else {

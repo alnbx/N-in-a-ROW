@@ -136,7 +136,7 @@
 				
 					// Go over the game data array
 					$.each(data.games, function(i, item) {
-						addGameRow((i + 1), item);						// add the game to the table
+						addGameRow(item['gameId'], item);						// add the game to the table
 						//console.log("addGameRow: "+ item.name)
 					});
 				}
@@ -147,7 +147,7 @@
 			  })
 		});
 	}
-	getGameData;
+	//getGameData;
 	setInterval( getGameData, 2000 );
   </script>
 
@@ -157,7 +157,7 @@
 	{
 		$(function() {
 
-            var postRequest = $.post(buildUrlWithContextPath("registerPlayerToGame"), { gamename: gName });
+            var postRequest = $.post(buildUrlWithContextPath("registerPlayerToGame"), { gameId: gID });
             postRequest.done(function(returnedData) {
                 console.log("in settings call back");
                 //jsonStr = JSON.stringify(returnedData);
@@ -167,7 +167,7 @@
                 }
                 else {
                     console.log("sending you to the game | ID:" + gID);
-                    window.location.href = 'gameBoard.html#'+ gID;
+                    window.location.href = 'gameBoard.html?gameId='+ returnedData['gameId'];
                 }
             });
             postRequest.fail(function(xhr, status, error) {

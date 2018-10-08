@@ -12,18 +12,20 @@ public class SingleGameEntry {
     final private String userName;
     // players register to the game by being added to the gameSettings
     final private GameSettings gameSettings;
+    final private int gameId;
     private GameLogic game;
     private String gameName;
     private GameStatus gameStatus;
     private List<UserSettings> viewers;
 
-    SingleGameEntry(GameSettings gameSettings, String userName) {
+    SingleGameEntry(GameSettings gameSettings, String userName, int gameId) {
         this.game = null;
         this.gameName = gameSettings.getGameTitle();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;
         this.gameSettings = gameSettings;
         this.viewers = new ArrayList<>();
+        this.gameId = gameId;
     }
 
     public boolean isPlayerListFull() {
@@ -106,5 +108,9 @@ public class SingleGameEntry {
 
     public void viewerResign(String userName) {
         viewers.removeIf(player -> player.getName().equalsIgnoreCase(userName));
+    }
+
+    public int getGameId() {
+        return gameId;
     }
 }

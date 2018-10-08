@@ -11,6 +11,8 @@ public class Constants {
     public static final String SETTINGS_FILE_NOT_APPLICABLE_ERROR = "no settings file in parameter";
 
     public static final String GAMENAME = "gamename";
+    public static final String GAME_ID = "gameId";
+    public static final String GAME_ID_ERROR = "gameId parameter is not valid";
     public static final String GAME_NAME_PARAMETER_ERROR = "no game name in parameter";
     public static final String REGISTER_TO_ACTIVE_GAME_ERROR = "game has already started";
 

@@ -70,7 +70,7 @@ public class UserManager {
         usersMap.get(userName).clearGame();
     }
 
-    public void setGameToUser(String username, String gameName) {
-        usersMap.get(username).setGame(gameName);
+    public void setGameToUser(String username, int gameId) {
+        usersMap.get(username).setGame(gameId);
     }
 }

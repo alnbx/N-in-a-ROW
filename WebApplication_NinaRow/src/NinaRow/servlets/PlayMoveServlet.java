@@ -24,11 +24,11 @@ public class PlayMoveServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         PlayMoveResponse playMoveResponse = new PlayMoveResponse();
-        String gameNameParameter = request.getParameter(Constants.GAMENAME);
-        if (gameNameParameter != null) {
+        int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+        if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            GameLogic gameLogic = gamesManager.getGameEntry(gameNameParameter).getGameLogic();
+            GameLogic gameLogic = gamesManager.getGameEntry(gameIdFromParam).getGameLogic();
 
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
@@ -45,7 +45,6 @@ public class PlayMoveServlet extends HttpServlet {
                     playMoveResponse.setResult(false);
                     playMoveResponse.setMsg(Constants.MOVE_COL_ERROR);
                 }
-
                 String moveTypeParameter = request.getParameter(Constants.MOVE_TYPE);
                 MoveType moveType = null;
                 if (moveTypeParameter != null) {
@@ -68,7 +67,7 @@ public class PlayMoveServlet extends HttpServlet {
                                 playMoveResponse.isTie = gameLogic.isTie();
                                 playMoveResponse.boardData = gameLogic.getBoardAsIntArr();
                                 if (playMoveResponse.isTie || playMoveResponse.winners.size() > 0) {
-                                    gamesManager.enableGameForRegistration(gameNameParameter);
+                                    gamesManager.enableGameForRegistration(gameIdFromParam);
                                 }
                             }
                             else {
@@ -90,7 +89,7 @@ public class PlayMoveServlet extends HttpServlet {
         }
         else {
             playMoveResponse.setResult(false);
-            playMoveResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+            playMoveResponse.setMsg(Constants.GAME_ID_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, playMoveResponse);

@@ -18,9 +18,6 @@ import java.io.IOException;
 import static NinaRow.constants.Constants.*;
 
 public class UploadGameServlet extends HttpServlet {
-    private final String GAMES_LIST_URL = "/pages/gameslist/gameslist.html"; // must start with '/' since will be used in request dispatcher
-    private final String GAME_UPLOAD_ERROR_URL = "";
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
@@ -48,7 +45,7 @@ public class UploadGameServlet extends HttpServlet {
                         }
                         else {
                             GameSettings gameSettings = new GameSettings(settingsFileFromParameter, false);
-                            gameListManager.addGame(gameSettings, usernameFromSession);
+                            uploadGameResponse.gameId = gameListManager.addGame(gameSettings, usernameFromSession);
                             uploadGameResponse.gameName = gameSettings.getGameTitle();
                             uploadGameResponse.boardRows = gameSettings.getBoardNumRows();
                             uploadGameResponse.boardCols = gameSettings.getNumCols();
@@ -80,6 +77,7 @@ public class UploadGameServlet extends HttpServlet {
         private int target;
         private GameVariant gameVariant;
         private int totalPlayers;
+        private int gameId;
 
         public UploadGameResponse() {
             this.gameName = "";
@@ -89,6 +87,7 @@ public class UploadGameServlet extends HttpServlet {
             this.target = 0;
             this.gameVariant = null;
             this.totalPlayers = 0;
+            this.gameId = 0;
         }
     }
 

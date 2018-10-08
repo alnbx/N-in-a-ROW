@@ -25,10 +25,23 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 
+  <!-- jQuery 3 -->
+  <script src="./bower_components/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.7 -->
+  <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- SlimScroll -->
+  <script src="./bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+  <!-- FastClick -->
+  <script src="./bower_components/fastclick/lib/fastclick.js"></script>
+  <!-- AdminLTE App -->
+  <script src="./dist/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="./dist/js/demo.js"></script>
+
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-  <script>
+  <script type="text/javascript">
       // extract the context path using the window.location data items
       function calculateContextPath() {
           var pathWithoutLeadingSlash = window.location.pathname.substring(1);
@@ -48,9 +61,65 @@
 
       // call the wrapper method and expose a final method to be used to build complete resource names (buildUrlWithContextPath)
       var buildUrlWithContextPath = wrapBuildingURLWithContextPath();
-  </script>
+      var refreshRate = 2000;
+      var myGameId = 0;
 
-  <script>
+      function triggerAjaxContent(func) {
+          setTimeout(func, refreshRate);
+      }
+
+      $(function() {
+          $("#Resign").click(function () {
+              if ("Resign" != $('#Resign').html())
+              {
+                  $.post(buildUrlWithContextPath("game/viewerResign"), { gameId: myGameId })
+                      .done(function(data) {
+                          setTimeout("location.href = 'gamesList.html';",0);
+
+                      })
+                      .fail(function(jqxhr, textStatus, errorThrown) {
+                          console.log(errorThrown)
+                          setTimeout("location.href = 'gamesList.html';",0);
+                      })
+                  return;
+              }
+
+              $.post(buildUrlWithContextPath("game/playerResign"), { gameId: myGameId })
+                  .done(function(data) {
+                      setTimeout("location.href = 'gamesList.html';",0);
+
+                  })
+                  .fail(function(jqxhr, textStatus, errorThrown) {
+                      console.log(errorThrown)
+                      setTimeout("location.href = 'gamesList.html';",0);
+                  })
+
+
+          });//end click function
+      });//end ready function
+
+      function getUrlParameter(sParam) {
+          var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+              sURLVariables = sPageURL.split('&'),
+              sParameterName,
+              i;
+
+          for (i = 0; i < sURLVariables.length; i++) {
+              sParameterName = sURLVariables[i].split('=');
+
+              if (sParameterName[0] === sParam) {
+                  return sParameterName[1] === undefined ? true : sParameterName[1];
+              }
+          }
+      };
+
+      $(function() {
+          myGameId = getUrlParameter('gameId');
+          checkLogin();
+          triggerAjaxContent( getGameGeneralData);
+          triggerAjaxContent( getGameData);
+      });
+
 	function tempAlert(msg, duration)
 	{
 		var el = document.getElementById("errorMsgArea");
@@ -86,17 +155,7 @@
 			  })
 		});
 	}
-	
-	checkLogin;
-	setInterval( checkLogin, 5000 );
-  </script>
-  
-  
-  
-  
-<script>
-	
-	
+
 	function updateSideBarData(data)
 	{
 		var markup = "<ul class=\"sidebar-menu\" data-widget=\"tree\" id=\"sidebarData\">";
@@ -132,7 +191,7 @@
 	function getGameGeneralData()
 	{
 		$(function() {
-			$.post(buildUrlWithContextPath("game/gameData"))
+			$.post(buildUrlWithContextPath("game/gameData"), { gameId: myGameId })
 			  .done(function(data) {
 				
 				if (data.result != true) {
@@ -155,25 +214,17 @@
 					
 					// Update Players List
 					updateSideBarData(data);
+                    triggerAjaxContent( getGameGeneralData);
 				}
 			  })
 		});
 	}
-	getGameGeneralData;
-	setInterval( getGameGeneralData, 1000 );
-  </script>
-  
-  
-  
-  
-  
-  
-  
-  <script>
+
+
 	function insertChip(col, isInsertMove)
 	{
 		$(function() {
-			$.post(buildUrlWithContextPath("game/playMove"), { id:col, isInsert:isInsertMove })
+			$.post(buildUrlWithContextPath("game/playMove"), { id:col, isInsert:isInsertMove, gameId: myGameId })
 			  .done(function(data) {
 				
 				
@@ -239,7 +290,7 @@
   	function getGameData()
 	{
 		$(function() {
-			$.post(buildUrlWithContextPath("game/boardData"))
+			$.post(buildUrlWithContextPath("game/boardData"), { gameId: myGameId })
 			  .done(function(data) {
 				
 				
@@ -251,7 +302,7 @@
 					$('#gameBoardTable tbody').empty();				//Clear current table data
 					
 					buildGameBoard(data);							//build the table headers with buttons
-					
+                    triggerAjaxContent( getGameData);
 
 				}
 			  })
@@ -261,7 +312,8 @@
 			  })
 		});
 	}
-	setInterval( getGameData, 2000 );
+
+
   </script>
   
   
@@ -402,51 +454,6 @@
 
 </div>
 <!-- ./wrapper -->
-
-<!-- jQuery 3 -->
-<script src="./bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="./bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="./bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="./dist/js/adminlte.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="./dist/js/demo.js"></script>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#Resign").click(function () {
-			if ("Resign" != $('#Resign').html())
-			{
-                $.post(buildUrlWithContextPath("game/viewerResign"))
-                    .done(function(data) {
-                        setTimeout("location.href = 'gamesList.html';",0);
-
-                    })
-                    .fail(function(jqxhr, textStatus, errorThrown) {
-                        console.log(errorThrown)
-                        setTimeout("location.href = 'gamesList.html';",0);
-                    })
-                return;
-			}
-
-			$.post(buildUrlWithContextPath("game/playerResign"))
-			  .done(function(data) {
-				setTimeout("location.href = 'gamesList.html';",0);
-				
-			})
-			  .fail(function(jqxhr, textStatus, errorThrown) {
-				 console.log(errorThrown)
-				 setTimeout("location.href = 'gamesList.html';",0);  
-			})
-
-		
-		});//end click function
-	});//end ready function
-</script>
 
 </body>
 </html>

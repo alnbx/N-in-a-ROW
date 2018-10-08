@@ -45,10 +45,9 @@ public class Game implements GameLogic, Serializable {
         this.playedMoves = new ArrayList<Move>();
         this.lastMovePlayed = null;
         this.startingTime = null;
-        setPlayersFromSettings(restartPlayers);
     }
 
-    protected void setPlayersFromSettings(boolean isNewPlayers) {
+    public void setPlayersFromSettings(boolean isNewPlayers) {
         if (isNewPlayers) {
             this.players = new ArrayList<Player>();
             List<UserSettings> playersSettings = gameSettings.getPlayersSettings();

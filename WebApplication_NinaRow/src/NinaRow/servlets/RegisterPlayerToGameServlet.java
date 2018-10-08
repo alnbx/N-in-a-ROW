@@ -22,19 +22,19 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
         response.setContentType("application/json");
         // create the response
         RegisterPlayerResponse registerPlayerResponse = new RegisterPlayerResponse();
-
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
         if (usernameFromSession != null) {
-            String gameNameFromParameter = request.getParameter(Constants.GAMENAME);
-            registerPlayerResponse.gameName = gameNameFromParameter;
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            if (gameNameFromParameter != null) {
+            int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+            if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
+                UserManager userManager = ServletUtils.getUserManager(getServletContext());
                 GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
+                registerPlayerResponse.gameId = gameIdFromParam;
+                registerPlayerResponse.gameName = gameListManager.getGameName(gameIdFromParam);
                 synchronized (this) {
-                    if (!gameListManager.isGameActive(gameNameFromParameter)) {
+                    if (!gameListManager.isGameActive(gameIdFromParam)) {
                         UserSettings playerSettings = userManager.getUser(usernameFromSession);
-                        gameListManager.registerPlayerToGame(gameNameFromParameter, playerSettings);
-                        userManager.setGameToUser(usernameFromSession, gameNameFromParameter);
+                        gameListManager.registerPlayerToGame(gameIdFromParam, playerSettings);
+                        userManager.setGameToUser(usernameFromSession, gameIdFromParam);
                     }
                     else {
                         registerPlayerResponse.setResult(false);
@@ -42,15 +42,15 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
                     }
 
                     // if this player makes the num of registered players match the requirement - init the game
-                    if (gameListManager.isPlayersListFull(gameNameFromParameter)) {
-                        gameListManager.initGame(gameNameFromParameter);
+                    if (gameListManager.isPlayersListFull(gameIdFromParam)) {
+                        gameListManager.initGame(gameIdFromParam);
                         registerPlayerResponse.gameStatus = GameStatus.PLAYING;
                     }
                 }
             }
             else {
                 registerPlayerResponse.setResult(false);
-                registerPlayerResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+                registerPlayerResponse.setMsg(Constants.GAME_ID_ERROR);
             }
         }
         else {
@@ -64,10 +64,12 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
     public class RegisterPlayerResponse extends ServeltResponse {
         String gameName;
         GameStatus gameStatus;
+        int gameId;
 
         public RegisterPlayerResponse() {
             gameStatus = GameStatus.PENDING_PLAYERS;
             gameName = "";
+            gameId = 0;
         }
     }
 

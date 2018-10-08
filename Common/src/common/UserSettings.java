@@ -4,13 +4,13 @@ public class UserSettings {
     private String name;
     private int id;
     private PlayerTypes playerType;
-    private String gameName;
+    private int gameId;
 
     public UserSettings(String name, int id, PlayerTypes playerType) {
         this.name = name;
         this.id = id;
         this.playerType = playerType;
-        this.gameName = null;
+        this.gameId = 0;
     }
 
     public String getName() {
@@ -25,15 +25,15 @@ public class UserSettings {
         return playerType;
     }
 
-    public String getGame() {
-        return this.gameName;
+    public int getGame() {
+        return this.gameId;
     }
 
     public void clearGame() {
-        this.gameName = null;
+        this.gameId = 0;
     }
 
-    public void setGame(String gameName) {
-        this.gameName = gameName;
+    public void setGame(int gameId) {
+        this.gameId = gameId;
     }
 }

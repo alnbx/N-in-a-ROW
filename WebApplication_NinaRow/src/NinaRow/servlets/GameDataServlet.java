@@ -24,25 +24,24 @@ public class GameDataServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        String gameNameParameter = request.getParameter(Constants.GAMENAME);
         GameDataResponse gameDataResponse = new GameDataResponse();
-
-        if (gameNameParameter != null) {
-            gameDataResponse.gameName = gameNameParameter;
+        int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
+        if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
+            gameDataResponse.gameName = gamesManager.getGameName(gameIdFromParam);
 
             synchronized (getServletContext()) {
-                GameLogic gameLogic = gamesManager.getGameEntry(gameNameParameter).getGameLogic();
-                gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameNameParameter, usernameFromSession);
+                GameLogic gameLogic = gamesManager.getGameEntry(gameIdFromParam).getGameLogic();
+                gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameIdFromParam, usernameFromSession);
                 gameDataResponse.moves = gameLogic.getMovesHistory();
                 gameDataResponse.players = gameLogic.getPlayers();
-                gameDataResponse.viewers = gamesManager.getGameViewrs(gameNameParameter);
-                gameDataResponse.gameStatus = gamesManager.getGameStatus(gameNameParameter);
+                gameDataResponse.viewers = gamesManager.getGameViewrs(gameIdFromParam);
+                gameDataResponse.gameStatus = gamesManager.getGameStatus(gameIdFromParam);
             }
         }
         else {
             gameDataResponse.setResult(false);
-            gameDataResponse.setMsg(Constants.GAME_NAME_PARAMETER_ERROR);
+            gameDataResponse.setMsg(Constants.GAME_ID_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, gameDataResponse);
