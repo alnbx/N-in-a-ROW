@@ -30,9 +30,11 @@ public class ViewerResignServlet extends HttpServlet {
             if (userNameFromSession != null) {
                 Integer playerId = userManager.getPlayerID(userNameFromSession);
                 if (playerId != null) {
-                    GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-                    gamesManager.viewerResigne(gameIdFromParam, userNameFromSession);
-                    userManager.setGameToUser(userNameFromSession, gameIdFromParam);
+                    synchronized (this) {
+                        GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
+                        gamesManager.viewerResign(gameIdFromParam, userNameFromSession);
+                        userManager.setGameToUser(userNameFromSession, gameIdFromParam);
+                    }
                 }
                 else {
                     viewerResignResponse.setResult(false);

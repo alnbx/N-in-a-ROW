@@ -30,7 +30,7 @@ public class MovesListServlet extends HttpServlet {
                 GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
                         getGameEntry(gameIdFromParam).getGameLogic();
                 List<Move> moves = null;
-                synchronized (getServletContext()) {
+                synchronized (this) {
                     moves = game.getMovesHistory();
                 }
                 if (clientNumMoves < 0 || clientNumMoves >= moves.size()) {

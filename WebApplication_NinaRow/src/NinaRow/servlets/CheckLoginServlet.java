@@ -4,66 +4,36 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import common.UserSettings;
-import engine.GameLogic;
-import engine.Player;
-import webEngine.gamesList.GameListManager;
-import engine.Move;
-import webEngine.gamesList.GameStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-public class GameDataServlet extends HttpServlet {
+public class CheckLoginServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
+        // create the response
+        CheckLoginResponse checkLoginResponse = new CheckLoginResponse();
         String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        GameDataResponse gameDataResponse = new GameDataResponse();
-        int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
-        if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
-            GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            gameDataResponse.gameName = gamesManager.getGameName(gameIdFromParam);
-
-            synchronized (this) {
-                GameLogic gameLogic = gamesManager.getGameEntry(gameIdFromParam).getGameLogic();
-                gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameIdFromParam, usernameFromSession);
-                gameDataResponse.moves = gameLogic.getMovesHistory();
-                gameDataResponse.players = gameLogic.getPlayers();
-                gameDataResponse.viewers = gamesManager.getGameViewrs(gameIdFromParam);
-                gameDataResponse.gameStatus = gamesManager.getGameStatus(gameIdFromParam);
+        if (usernameFromSession != null) {
+            if (!SessionUtils.isSessionValid(request)) {
+                checkLoginResponse.setResult(false);
+                checkLoginResponse.setMsg(Constants.INVALID_SESSION_ERROR);
             }
         }
         else {
-            gameDataResponse.setResult(false);
-            gameDataResponse.setMsg(Constants.GAME_ID_ERROR);
+            checkLoginResponse.setResult(false);
+            checkLoginResponse.setMsg(Constants.USER_SESSION_ERROR);
         }
 
-        ServletUtils.sendJsonResponse(response, gameDataResponse);
+        ServletUtils.sendJsonResponse(response, checkLoginResponse);
     }
 
-    class GameDataResponse extends ServeltResponse {
-        List<Player> players;
-        List<UserSettings> viewers;
-        List<Move> moves;
-        String gameName;
-        Boolean isPlayer;
-        GameStatus gameStatus;
-
-        public GameDataResponse() {
-            this.players = null;
-            this.viewers = null;
-            this.moves = null;
-            this.gameName = "";
-            this.isPlayer = false;
-            this.gameStatus = GameStatus.PENDING_PLAYERS;
-        }
-    }
+    class CheckLoginResponse extends ServeltResponse { }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

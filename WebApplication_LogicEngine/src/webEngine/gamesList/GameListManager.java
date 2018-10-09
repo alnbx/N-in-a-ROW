@@ -87,7 +87,7 @@ public class GameListManager {
         gameEntriesMap.get(gameId).registerViewer(user);
     }
 
-    public void viewerResigne(int gameId, String userName) {
+    public void viewerResign(int gameId, String userName) {
         gameEntriesMap.get(gameId).viewerResign(userName);
     }
 

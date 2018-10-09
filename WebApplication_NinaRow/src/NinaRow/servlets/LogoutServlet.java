@@ -31,14 +31,6 @@ public class LogoutServlet extends HttpServlet {
             userManager.removeUser(usernameFromSession);
             SessionUtils.clearSession(request);
 
-            /*
-            when sending redirect, tomcat has a shitty logic how to calculate the URL given, weather its relative or not
-            you can read about it here:
-            https://tomcat.apache.org/tomcat-5.5-doc/servletapi/javax/servlet/http/HttpServletResponse.html#sendRedirect(java.lang.String)
-            the best way (IMO) is to fetch the context path dynamically and build the redirection from it and on
-             */
-
-            response.sendRedirect(request.getContextPath() + "/index.html");
         } else {
             logoutServletResponse.setResult(false);
             logoutServletResponse.setMsg(Constants.USER_SESSION_ERROR);

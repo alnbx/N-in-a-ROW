@@ -26,7 +26,7 @@ public class SendChatServlet extends HttpServlet {
             if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
                 String userChatString = request.getParameter(Constants.CHAT_PARAMETER);
                 if (userChatString != null && !userChatString.isEmpty()) {
-                    synchronized (getServletContext()) {
+                    synchronized (this) {
                         chatsManager.addChatString(gameIdFromParam, userChatString, userNameFromSession);
                     }
                 }

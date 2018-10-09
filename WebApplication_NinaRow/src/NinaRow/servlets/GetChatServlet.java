@@ -34,7 +34,7 @@ public class GetChatServlet extends HttpServlet {
                     getChatResponse.setMsg(Constants.CHAT_VERSION_ERROR);
                 }
                 else {
-                    synchronized (getServletContext()) {
+                    synchronized (this) {
                         getChatResponse.version = chatsManager.getChatVersion(gameIdFromParam);
                         getChatResponse.entries = chatsManager.getChatEntries(gameIdFromParam, chatVersionClient);
                     }

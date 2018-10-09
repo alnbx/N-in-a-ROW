@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet {
                     playerType = PlayerTypes.COMPUTER;
                 }
                 loginResponse.playerType = playerType;
-                synchronized (this) {
+                synchronized (getServletContext()) {
                     if (userManager.isUserExists(usernameFromParameter)) {
                         // user already exists
                         loginResponse.setMsg(USER_NAME_EXISTS_ERROR);

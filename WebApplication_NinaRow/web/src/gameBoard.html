@@ -133,8 +133,8 @@
 	function checkLogin()
 	{
 		$(function() {
-			$.getJSON("game.login.api")
-			  .then(function(data) {
+			$.post(buildUrlWithContextPath('checkLogin'))
+                .done(function(data) {
 			  var user = data.user;
 				//console.log(data);
 				

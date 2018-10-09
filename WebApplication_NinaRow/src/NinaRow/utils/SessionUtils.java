@@ -14,4 +14,8 @@ public class SessionUtils {
     public static void clearSession (HttpServletRequest request) {
         request.getSession().invalidate();
     }
+
+    public static boolean isSessionValid(HttpServletRequest request) {
+        return request.getSession(false) != null;
+    }
 }

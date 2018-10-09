@@ -51,6 +51,10 @@
         <servlet-name>ViewerResignServlet</servlet-name>
         <servlet-class>NinaRow.servlets.ViewerResignServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CheckLogin</servlet-name>
+        <servlet-class>NinaRow.servlets.CheckLoginServlet</servlet-class>
+    </servlet>
 
     <!-- ================================================ -->
 
@@ -101,6 +105,10 @@
     <servlet-mapping>
         <servlet-name>ViewerResignServlet</servlet-name>
         <url-pattern>/game/viewerResign</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckLogin</servlet-name>
+        <url-pattern>/checkLogin</url-pattern>
     </servlet-mapping>
 
 </web-app>
