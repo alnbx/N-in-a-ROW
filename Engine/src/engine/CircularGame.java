@@ -18,7 +18,6 @@ public class CircularGame extends Game {
         this.currentPlayer = null;
         this.playedMoves = new ArrayList<Move>();
         this.startingTime = null;
-        super.setPlayersFromSettings(restartPlayers);
     }
 
     @Override
