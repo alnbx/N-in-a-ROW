@@ -31,69 +31,13 @@ public class GameListManager {
 
     public boolean isGameExists(String gameSettingsXml) throws Exception {
         GameSettings gameSettings = new GameSettings(gameSettingsXml, false);
-        return gameEntriesMap.containsKey(gameSettings.getGameTitle());
+        for (SingleGameEntry sge : gameEntriesMap.values()) {
+            if (sge.getGameName().equalsIgnoreCase(gameSettings.getGameTitle()))
+                return true;
+        }
+        return false;
     }
 
-//    public void registerPlayerToGame(String gameName, UserSettings user) {
-//        gameEntriesMap.get(gameName).registerPlayer(user);
-//    }
-//
-//    public boolean isPlayersListFull(String gameName) {
-//        SingleGameEntry sge = gameEntriesMap.get(gameName);
-//        return sge.isPlayerListFull();
-//    }
-//
-//    public void setGameStatus(String gameName, GameStatus gameStatus) {
-//        gameEntriesMap.get(gameName).setGameStatus(gameStatus);
-//    }
-//
-//    public SingleGameEntry getGameEntry(String gameName) {
-//        return gameEntriesMap.get(gameName);
-//    }
-//
-//    public String getGameName(String gameFile) {
-//        return gameEntriesMap.get(gameFile).getGameName();
-//    }
-//
-//    public void initGame(String gameName) {
-//        SingleGameEntry gameEntry = gameEntriesMap.get(gameName);
-//        if (gameEntry != null) {
-//            gameEntry.setGameLogic(gameFactory.getNewGame(gameEntry.getGameSettings()));
-//            gameEntry.setGameStatus(GameStatus.PLAYING);
-//        }
-//    }
-//
-//    public boolean isGameActive(String gameName) {
-//        return gameEntriesMap.get(gameName).getGameStatus() == GameStatus.PLAYING;
-//    }
-//
-//    public void enableGameForRegistration(String gameName) {
-//        gameEntriesMap.get(gameName).enableGameForRegistration();
-//    }
-//
-//    public Boolean isUserPlayerInGame(String gameName, String username) {
-//        return gameEntriesMap.get(gameName).isUserPlayerInGame(username);
-//    }
-//
-//    public List<UserSettings> getGameViewrs(String gameName) {
-//        return gameEntriesMap.get(gameName).getGameViewers();
-//    }
-//
-//    public void registerViewerToGame(String gameName, UserSettings user) {
-//        gameEntriesMap.get(gameName).registerViewer(user);
-//    }
-//
-//    public void viewerResigne(String gameName, String userName) {
-//        gameEntriesMap.get(gameName).viewerResign(userName);
-//    }
-//
-//    public GameStatus getGameStatus(String gameName) {
-//        return gameEntriesMap.get(gameName).getGameStatus();
-//    }
-//
-//    public int getGameId(String gameName) {
-//        return gameEntriesMap.get(gameName).getGameId();
-//    }
     public void registerPlayerToGame(int gameId, UserSettings user) {
         gameEntriesMap.get(gameId).registerPlayer(user);
     }
