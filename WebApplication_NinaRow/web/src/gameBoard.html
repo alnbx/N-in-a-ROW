@@ -82,7 +82,7 @@
 	function checkLogin()
 	{
 		$(function() {
-			$.getJSON("game.login.api")
+			$.getJSON(buildUrlWithContextPath('checkLogin'))
 			  .then(function(data) {
 			  var user = data.user;
 				//console.log(data);
@@ -127,7 +127,7 @@
               else
                   markup += ' text-yellow"></i> ';
 
-              switch(item.color) {
+              switch(item.id) {
                   case 1:
                       markup += '<span style="color:#2652d6;">';
                       break;
@@ -157,7 +157,7 @@
           markup += "<li class=\"header\">Last Moves</li>";
 
           $.each(data.moves, function(i, item) {
-              markup += '<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>'+ item.playerName + " : " + item.move + " : " + item.moveType + '</span></a></li>';
+              markup += '<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>'+ item.playerName + " : " + item.moveIndex + " : " + item.moveType + '</span></a></li>';
           });
 
           $('#gameSideBarData').html(markup);		// Append changes to the page
@@ -195,7 +195,7 @@
 	}
 
     getGameGeneralData;
-    setInterval( getGameGeneralData, 1000 );
+    var gameGeneralDataInterval = setInterval( getGameGeneralData, 1000 );
 
   </script>
 
@@ -229,7 +229,7 @@
 		var markup = "<tr>";
 		
 		for (i = 0; i < gameData.boardColSize; i++)
-			markup += "	<td align=\"center\" onclick=\"insertChip('"+i+"', 'insert');\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
+			markup += "	<td style=\"width:20px\" align=\"center\" onclick=\"insertChip('"+i+"', 'insert');\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
 
 		
 		markup += "</tr>";
@@ -240,7 +240,7 @@
 		$.each(gameData.boardData, function(i, row) {
             markup += "<tr>";
             $.each(row, function (j, col) {
-                markup += "<td align=\"center\"><img src=\"./dist/img/p" + gameData.boardData[i][j] + ".png\"></img></td>";
+                markup += "<td style=\"width:20px\" align=\"center\"><img src=\"./dist/img/p" + gameData.boardData[i][j] + ".png\"></img></td>";
                 console.log("cellNumber:" + cellNumber + " | boardColSize" + gameData.boardColSize + " | boardRowSize: " + gameData.boardRowSize);
                 cellNumber++;
             });
@@ -249,7 +249,7 @@
 
         markup += "</tr>";
 		for (i = 0; i < gameData.boardColSize; i++) { 
-				markup += "	<td align=\"center\" onclick=\"insertChip('"+i+"', 'popout');\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
+				markup += "	<td style=\"width:20px\" align=\"center\" onclick=\"insertChip('"+i+"', 'popout');\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
 		}
 		markup += "</tr>";
 
@@ -273,21 +273,25 @@
 					
 					buildGameBoard(data);//build the table headers with buttons
                     if (data.isTie) {
+                        clearInterval(gameDataInterval);
+                        clearInterval(gameGeneralDataInterval);
                         tieAlert();
                     }
                     else if (data.hasWinner) {
-                        winnerAlert(data.winnersList)
+                        clearInterval(gameDataInterval);
+                        clearInterval(gameGeneralDataInterval);
+                        winnerAlert(data.winnersList);
                     }
 				}
 			  })
 			  .fail(function(jqxhr, textStatus, errorThrown) {
-				 console.log(errorThrown)
+				 console.log(errorThrown);
 				 $('#gameBoardTable').html("<div class=\"alert alert-danger alert-dismissible\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">×</button><h4><i class=\"icon fa fa-ban\"></i> Error!</h4>Unable to load the games data, make sure the server is running</div>");
 			  })
 		});
 	}
 
-    setInterval( getGameData, 2000 );
+    var gameDataInterval = setInterval( getGameData, 2000 );
 
   </script>
 
@@ -404,8 +408,8 @@
 		
           <div class="box" style="margin-top:20px">
             <!-- /.box-header -->
-            <div class="box-body" style="overflow:scroll; max-height:700px;">
-              <table class="table" style="margin:0px auto" id="gameBoardTable">
+            <div class="box-body" style="overflow:scroll; max-height:720px;">
+              <table style="margin:0px auto; table-layout: fixed" id="gameBoardTable">
 				<tbody>
                 </tbody>
 			  </table>
