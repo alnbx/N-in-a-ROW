@@ -82,12 +82,9 @@ public class PlayMoveServlet extends HttpServlet {
                         if (gameLogic.play(colParameter, moveType.equals(MoveType.POPOUT))) {
                             gamesManager.setIsTie(gameIdFromParam, gameLogic.isTie());
                             gamesManager.setWinners(gameIdFromParam, userManager.getWinnersNames(gameLogic.getWinners()));
-                                /*
                                 if (gamesManager.isGameEnded(gameIdFromParam)) {
-                                    // the order of the 2 operations below matters!
-                                    userManager.clearGame(gamesManager.getAllGamePlayersAndViewers(gameIdFromParam));
                                     gamesManager.enableGameForRegistration(gameIdFromParam);
-                                }*/
+                                }
                         } else {
                             playMoveResponse.setResult(false);
                             playMoveResponse.setMsg(Constants.INVALID_MOVE_ERROR);

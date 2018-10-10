@@ -34,7 +34,6 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
                     if (!gameListManager.isGameActive(gameIdFromParam)) {
                         UserSettings playerSettings = userManager.getUser(usernameFromSession);
                         gameListManager.registerPlayerToGame(gameIdFromParam, playerSettings);
-                        userManager.setGameToUser(usernameFromSession, gameIdFromParam);
                     }
                     else {
                         registerPlayerResponse.setResult(false);
@@ -43,7 +42,7 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
 
                     // if this player makes the num of registered players match the requirement - init the game
                     if (gameListManager.isPlayersListFull(gameIdFromParam)) {
-                        gameListManager.initGame(gameIdFromParam);
+                        gameListManager.startGame(gameIdFromParam);
                         registerPlayerResponse.gameStatus = GameStatus.PLAYING;
                     }
                 }

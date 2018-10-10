@@ -3,9 +3,6 @@ package NinaRow.servlets;
 import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
-import NinaRow.utils.SessionUtils;
-import engine.GameLogic;
-import engine.Player;
 import webEngine.gamesList.GameListManager;
 
 import javax.servlet.ServletException;
@@ -13,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 public class BoardDataServlet extends HttpServlet {
 
@@ -26,13 +22,12 @@ public class BoardDataServlet extends HttpServlet {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
             //GameLogic gameLogic = null;
             synchronized (this) {
-                GameLogic gameLogic = gamesManager.getGameEntry(gameIdFromParam).getGameLogic();
-                boardDataResponse.boardRowSize = gameLogic.getRows();
-                boardDataResponse.boardColSize = gameLogic.getCols();
-                boardDataResponse.boardData = gameLogic.getBoardAsIntArr();
-                int currentPlayerId = gameLogic.getIdOfCurrentPlayer();
+                boardDataResponse.boardRowSize = gamesManager.getGameRows(gameIdFromParam);
+                boardDataResponse.boardColSize = gamesManager.getGameCols(gameIdFromParam);
+                boardDataResponse.boardData = gamesManager.getGameBoardData(gameIdFromParam);
+                boardDataResponse.currentPlayer = ServletUtils.getUserManager(getServletContext()).
+                        getPlayerName(gamesManager.getIdOfCurrentPlayer(gameIdFromParam));
             }
-
         }
         else {
             boardDataResponse.setResult(false);
@@ -50,11 +45,13 @@ public class BoardDataServlet extends HttpServlet {
         // int is 0 = no disc in position
         // int is not 0 = disc of player id is in position
         int[][] boardData;
+        String currentPlayer;
 
         public BoardDataResponse() {
             this.boardRowSize = 0;
             this.boardColSize = 0;
             this.boardData = null;
+            this.currentPlayer = "";
         }
     }
 

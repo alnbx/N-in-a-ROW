@@ -3,6 +3,7 @@ package webEngine.gamesList;
 import common.GameSettings;
 import common.UserSettings;
 import engine.GameFactory;
+import engine.Move;
 
 import java.util.*;
 
@@ -18,8 +19,7 @@ public class GameListManager {
 
     // returns the newly created game Id, which identifies the game that was added
     public synchronized int addGame(GameSettings gameSettings, String userName) throws Exception {
-        SingleGameEntry gameEntry = new SingleGameEntry(gameSettings, userName, ++gamesCount);
-        gameEntry.setGameLogic(gameFactory.getNewGame(gameSettings));
+        SingleGameEntry gameEntry = new SingleGameEntry(gameFactory.getNewGame(gameSettings), userName, ++gamesCount);
         gameEntriesMap.put(gamesCount, gameEntry);
         return gamesCount;
     }
@@ -59,12 +59,8 @@ public class GameListManager {
         return gameEntriesMap.get(gameId).getGameName();
     }
 
-    public void initGame(int gameId) {
-        SingleGameEntry gameEntry = gameEntriesMap.get(gameId);
-        if (gameEntry != null) {
-            gameEntry.getGameLogic().setPlayersFromSettings(true);
-            gameEntry.setGameStatus(GameStatus.PLAYING);
-        }
+    public void startGame(int gameId) {
+        gameEntriesMap.get(gameId).startNewGame();
     }
 
     public boolean isGameActive(int gameId) {
@@ -125,5 +121,29 @@ public class GameListManager {
 
     public Set<String> getGameWinners(int gameId) {
         return gameEntriesMap.get(gameId).getWinners();
+    }
+
+    public List<Move> getMovesHistory(int gameId) {
+        return gameEntriesMap.get(gameId).getMovesHistory();
+    }
+
+    public List<UserSettings> getPlayers(int gameId) {
+        return gameEntriesMap.get(gameId).getPlayers();
+    }
+
+    public int getGameRows(int gameId) {
+        return gameEntriesMap.get(gameId).getRows();
+    }
+
+    public int getGameCols(int gameId) {
+        return gameEntriesMap.get(gameId).getCols();
+    }
+
+    public int[][] getGameBoardData(int gameId) {
+        return gameEntriesMap.get(gameId).getBoardData();
+    }
+
+    public int getIdOfCurrentPlayer(int gameId) {
+        return gameEntriesMap.get(gameId).getIdOfCurrentPlayer();
     }
 }

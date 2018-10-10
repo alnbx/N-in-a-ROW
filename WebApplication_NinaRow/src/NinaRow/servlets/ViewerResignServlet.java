@@ -33,7 +33,6 @@ public class ViewerResignServlet extends HttpServlet {
                     synchronized (this) {
                         GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
                         gamesManager.viewerResign(gameIdFromParam, userNameFromSession);
-                        userManager.setGameToUser(userNameFromSession, gameIdFromParam);
                     }
                 }
                 else {

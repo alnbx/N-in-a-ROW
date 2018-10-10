@@ -4,6 +4,8 @@ import common.GameSettings;
 import common.GameVariant;
 import common.UserSettings;
 import engine.GameLogic;
+import engine.Move;
+import engine.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +13,10 @@ import java.util.Set;
 
 public class SingleGameEntry {
     final private String userName;
-    // players register to the game by being added to the gameSettings
-    final private GameSettings gameSettings;
+    // players register to the gameLogic by being added to the gameSettings
+    //final private GameSettings gameSettings;
     final private int gameId;
-    private GameLogic game;
+    private GameLogic gameLogic;
     private String gameName;
     private GameStatus gameStatus;
     private List<UserSettings> viewers;
@@ -22,12 +24,11 @@ public class SingleGameEntry {
     private boolean isTie;
     private Set<String> winners;
 
-    SingleGameEntry(GameSettings gameSettings, String userName, int gameId) {
-        this.game = null;
-        this.gameName = gameSettings.getGameTitle();
+    SingleGameEntry(GameLogic gamaLogic, String userName, int gameId) {
+        this.gameLogic = gamaLogic;
+        this.gameName = gameLogic.getGameName();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         this.userName = userName;
-        this.gameSettings = gameSettings;
         this.viewers = new ArrayList<>();
         this.gameId = gameId;
         this.hasWinner = false;
@@ -36,7 +37,7 @@ public class SingleGameEntry {
     }
 
     public boolean isPlayerListFull() {
-        return gameSettings.isPlayerListFull();
+        return gameLogic.isPlayerListFull();
     }
 
     public String getUserName() {
@@ -44,11 +45,11 @@ public class SingleGameEntry {
     }
 
     public int getNumRegisteredPlayers() {
-        return gameSettings.getNumRegisteredPlayers();
+        return gameLogic.getNumRegisteredPlayers();
     }
 
     public int getNumRequiredPlayers() {
-        return gameSettings.getNumOfPlayers();
+        return gameLogic.getNumberOfRequiredPlayers();
     }
 
     public void setGameStatus(GameStatus gameStatus) {
@@ -64,49 +65,44 @@ public class SingleGameEntry {
     }
 
     public void registerPlayer(UserSettings player) {
-        gameSettings.addPlayer(player);
+        gameLogic.addPlayer(player);
     }
 
     public int getRows() {
-        return gameSettings.getNumRows();
+        return gameLogic.getRows();
     }
 
     public int getCols() {
-        return gameSettings.getNumCols();
+        return gameLogic.getCols();
     }
 
     public int getSequenceLength() {
-        return gameSettings.getTarget();
+        return gameLogic.getSequenceLength();
     }
 
     public GameVariant getGameVariant() {
-        return gameSettings.getGameVariant();
+        return gameLogic.getGameVariant();
     }
 
     public GameLogic getGameLogic() {
-        return game;
-    }
-
-    public GameSettings getGameSettings() {
-        return gameSettings;
-    }
-
-    public void setGameLogic(GameLogic gameLogic) {
-        this.game = gameLogic;
+        return gameLogic;
     }
 
     public void enableGameForRegistration() {
-        this.game = null;
-        this.gameSettings.clearPlayers();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
+        gameLogic.clearRegisteredPlayers();
+    }
+
+    public void startNewGame() {
+        gameLogic.setRoundFromSettings(true);
+        this.gameStatus = GameStatus.PLAYING;
         this.hasWinner = false;
         this.isTie = false;
         this.winners = null;
-
     }
 
     public Boolean isUserPlayerInGame(String username) {
-        return this.gameSettings.isUserPlayerInGame(username);
+        return gameLogic.isUserPlayerInGame(username);
     }
 
     public List<UserSettings> getGameViewers() {
@@ -136,7 +132,7 @@ public class SingleGameEntry {
 
     public List<String> getAllGamePlayersAndViewers() {
         List<String> usersNames = new ArrayList<>();
-        for (UserSettings player : gameSettings.getPlayersSettings()) {
+        for (Player player : gameLogic.getPlayers()) {
             usersNames.add(player.getName());
         }
 
@@ -161,5 +157,33 @@ public class SingleGameEntry {
 
     public Set<String> getWinners() {
         return winners;
+    }
+
+    public List<Move> getMovesHistory() {
+        return gameLogic.getMovesHistory();
+    }
+
+    public List<UserSettings> getPlayers() {
+        List<Player> activePlayers = gameLogic.getPlayers();
+        List<UserSettings> registeredPlayers = null;
+
+        if (activePlayers == null) {
+            registeredPlayers = gameLogic.getRegisteredUsers();
+        }
+        else {
+            registeredPlayers = new ArrayList<>();
+            for (Player p: activePlayers) {
+                registeredPlayers.add(p.getUserSettings());
+            }
+        }
+        return registeredPlayers;
+    }
+
+    public int[][] getBoardData() {
+        return gameLogic.getBoardAsIntArr();
+    }
+
+    public int getIdOfCurrentPlayer() {
+        return gameLogic.getIdOfCurrentPlayer();
     }
 }

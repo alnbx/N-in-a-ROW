@@ -54,21 +54,14 @@ public class PlayerResignServlet extends HttpServlet {
                         // check if the player's resignation lead to the game's end
                         gameListManager.setIsTie(gameIdFromParam, gameLogic.isTie());
                         gameListManager.setWinners(gameIdFromParam, userManager.getWinnersNames(gameLogic.getWinners()));
-                        /*
                         if (gameListManager.isGameEnded(gameIdFromParam)) {
-                            // the order of the 2 operations below matters!
-                            userManager.clearGame(gameListManager.getAllGamePlayersAndViewers(gameIdFromParam));
                             gameListManager.enableGameForRegistration(gameIdFromParam);
                         }
                         else {
                             // clear the game from the single resigning player
                             List<String> resigningPlayer = new ArrayList<>();
                             resigningPlayer.add(userNameFromSession);
-                            userManager.clearGame(resigningPlayer);
-                        }*/
-                        List<String> resigningPlayer = new ArrayList<>();
-                        resigningPlayer.add(userNameFromSession);
-                        userManager.clearGame(resigningPlayer);
+                        }
                     }
                 }
             }

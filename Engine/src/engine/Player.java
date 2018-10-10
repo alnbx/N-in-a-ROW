@@ -7,24 +7,16 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Player implements Serializable {
-    private int numOfMovesMade;
-    private String name;
-    private int id;
-    private PlayerTypes playerType;
+    private UserSettings userSettings;
+//    private String name;
+//    private int id;
+//    private PlayerTypes playerType;
     private boolean isActive;
-
-    public Player(int id, PlayerTypes playerType, String name) {
-        this.playerType = playerType;
-        this.id = id;
-        this.name = name;
-        this.isActive = true;
-        this.numOfMovesMade = 0;
-    }
+    private int gameId;
+    private int numOfMovesMade;
 
     public Player(UserSettings player) {
-        this.playerType = player.getPlayerType();
-        this.id = player.getId();
-        this.name = player.getName();
+        this.userSettings = player;
         this.isActive = true;
         this.numOfMovesMade = 0;
     }
@@ -42,7 +34,7 @@ public class Player implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return userSettings.getName();
     }
 
 
@@ -64,20 +56,20 @@ public class Player implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return id == player.id;
+        return userSettings.getId() == player.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(userSettings.getId());
     }
 
     public PlayerTypes getPlayerType() {
-        return playerType;
+        return userSettings.getPlayerType();
     }
 
     public int getId() {
-        return id;
+        return userSettings.getId();
     }
 
     public int getNumMovesMade() { return this.numOfMovesMade; }
@@ -85,4 +77,20 @@ public class Player implements Serializable {
     public void restart() { this.numOfMovesMade = 0; }
 
     public void deactivatePlayer() { this.isActive = false; }
+
+    public UserSettings getUserSettings() {
+        return userSettings;
+    }
+
+    public int getGame() {
+        return this.gameId;
+    }
+
+    public void clearGame() {
+        this.gameId = 0;
+    }
+
+    public void setGame(int gameId) {
+        this.gameId = gameId;
+    }
 }

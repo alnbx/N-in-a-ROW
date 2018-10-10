@@ -66,16 +66,6 @@ public class UserManager {
         return playerType;
     }
 
-    public void clearGame(List<String> usersNames) {
-        for (String userName : usersNames) {
-            usersMap.get(userName).clearGame();
-        }
-    }
-
-    public void setGameToUser(String username, int gameId) {
-        usersMap.get(username).setGame(gameId);
-    }
-
     public Set<String> getWinnersNames(Set<Integer> winners) {
         Set<String> winnersNames = new HashSet<>();
         for (int playerId : winners) {
@@ -84,7 +74,7 @@ public class UserManager {
         return winnersNames;
     }
 
-    private String getPlayerName(int playerId) {
+    public String getPlayerName(int playerId) {
         String playerName = "";
         for (UserSettings userSettings : usersMap.values()) {
             if (userSettings.getId() == playerId) {

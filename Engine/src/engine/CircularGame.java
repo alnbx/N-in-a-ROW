@@ -10,15 +10,15 @@ public class CircularGame extends Game {
         super(gameSettings);
     }
 
-    @Override
-    public void setRoundFromSettings(boolean restartPlayers) {
-        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), true);
-        this.hasWinner = false;
-        this.isBoardFull = false;
-        this.currentPlayer = null;
-        this.playedMoves = new ArrayList<Move>();
-        this.startingTime = null;
-    }
+//    @Override
+//    public void setRoundFromSettings(boolean restartPlayers) {
+//        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), true);
+//        this.hasWinner = false;
+//        this.isBoardFull = false;
+//        this.currentPlayer = null;
+//        this.playedMoves = new ArrayList<Move>();
+//        this.startingTime = null;
+//    }
 
     @Override
     public GameVariant getGameVariant() { return GameVariant.CIRCULAR; }

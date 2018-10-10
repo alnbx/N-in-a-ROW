@@ -2,6 +2,7 @@ package engine;
 
 import common.GameVariant;
 import common.PlayerTypes;
+import common.UserSettings;
 
 import java.util.List;
 import java.util.Set;
@@ -41,4 +42,12 @@ public interface GameLogic {
     int[][] getBoardAsIntArr();
     void setPlayersFromSettings(boolean isNewPlayers);
     String getPlayerName(int playerId);
+    String getGameName();
+    boolean isPlayerListFull();
+    int getNumRegisteredPlayers();
+    void addPlayer(UserSettings player);
+    boolean isUserPlayerInGame(String userName);
+    void clearRegisteredPlayers();
+    List<UserSettings> getRegisteredUsers();
 }
+

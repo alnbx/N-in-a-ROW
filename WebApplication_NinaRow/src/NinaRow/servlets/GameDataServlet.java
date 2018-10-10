@@ -36,10 +36,9 @@ public class GameDataServlet extends HttpServlet {
             gameDataResponse.gameName = gamesManager.getGameName(gameIdFromParam);
 
             synchronized (this) {
-                GameLogic gameLogic = gamesManager.getGameEntry(gameIdFromParam).getGameLogic();
                 gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameIdFromParam, usernameFromSession);
-                gameDataResponse.moves = gameLogic.getMovesHistory();
-                gameDataResponse.players = gameLogic.getPlayers();
+                gameDataResponse.moves = gamesManager.getMovesHistory(gameIdFromParam);
+                gameDataResponse.players = gamesManager.getPlayers(gameIdFromParam);
                 gameDataResponse.viewers = gamesManager.getGameViewrs(gameIdFromParam);
                 gameDataResponse.gameStatus = gamesManager.getGameStatus(gameIdFromParam);
                 gameDataResponse.hasWinner = gamesManager.getGameHasWinner(gameIdFromParam);
@@ -56,7 +55,7 @@ public class GameDataServlet extends HttpServlet {
     }
 
     class GameDataResponse extends ServeltResponse {
-        private List<Player> players;
+        private List<UserSettings> players;
         private List<UserSettings> viewers;
         private List<Move> moves;
         private String gameName;

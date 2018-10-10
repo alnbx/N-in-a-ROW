@@ -32,7 +32,6 @@ public class RegisterViewerToGameServlet extends HttpServlet {
                 synchronized (this) {
                     UserSettings playerSettings = userManager.getUser(usernameFromSession);
                     gameListManager.registerViewerToGame(gameIdFromParam, playerSettings);
-                    userManager.setGameToUser(usernameFromSession, gameIdFromParam);
                 }
             }
             else {

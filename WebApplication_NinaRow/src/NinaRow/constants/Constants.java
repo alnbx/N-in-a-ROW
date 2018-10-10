@@ -31,4 +31,6 @@ public class Constants {
     public static final String CHAT_VERSION_PARAMETER = "chatversion";
     public static final String CHAT_VERSION_ERROR = "invalid chat version parameter";
     public static final String CHAT_PARAMETER = "userstring";
+
+    public static final String GAME_STATUS = "gameStatus";
 }

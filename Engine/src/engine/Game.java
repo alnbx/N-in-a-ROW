@@ -23,14 +23,15 @@ public class Game implements GameLogic, Serializable {
     protected int activePlayers;
     protected int roundsPlayed;
 
-    public Game()
-    {
+    public Game() {
         this.startingTime = null;
     }
 
     public Game(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
         this.roundsPlayed = 0;
+        this.playedMoves = new ArrayList<Move>();
+        board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
     }
 
     public String getGameTitle() {
@@ -38,13 +39,16 @@ public class Game implements GameLogic, Serializable {
     }
 
     public void setRoundFromSettings(boolean restartPlayers) {
-        this.board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
-        this.hasWinner = false;
-        this.isBoardFull = false;
-        this.currentPlayer = null;
-        this.playedMoves = new ArrayList<Move>();
-        this.lastMovePlayed = null;
-        this.startingTime = null;
+        board = new Board(gameSettings.getBoardNumRows(), gameSettings.getNumCols(), gameSettings.getGameVariant() == GameVariant.CIRCULAR);
+        hasWinner = false;
+        isBoardFull = false;
+        startingTime = null;
+        players = null;
+        currentPlayer = null;
+        playedMoves.clear();
+        lastMovePlayed = null;
+        activePlayers = 0;
+        setPlayersFromSettings(restartPlayers);
     }
 
     public void setPlayersFromSettings(boolean isNewPlayers) {
@@ -373,5 +377,33 @@ public class Game implements GameLogic, Serializable {
 
     public String getPlayerName(int playerId) {
         return gameSettings.getPlayerName(playerId);
+    }
+
+    public String getGameName() {
+        return gameSettings.getGameTitle();
+    }
+
+    public boolean isPlayerListFull() {
+        return gameSettings.isPlayerListFull();
+    }
+
+    public int getNumRegisteredPlayers() {
+        return gameSettings.getNumRegisteredPlayers();
+    }
+
+    public void addPlayer(UserSettings player) {
+        gameSettings.addPlayer(player);
+    }
+
+    public boolean isUserPlayerInGame(String userName){
+        return gameSettings.isUserPlayerInGame(userName);
+    }
+
+    public void clearRegisteredPlayers() {
+        gameSettings.clearPlayers();;
+    }
+
+    public List<UserSettings> getRegisteredUsers() {
+        return gameSettings.getPlayersSettings();
     }
 }
