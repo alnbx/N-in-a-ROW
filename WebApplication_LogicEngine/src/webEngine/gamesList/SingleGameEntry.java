@@ -1,6 +1,5 @@
 package webEngine.gamesList;
 
-import common.GameSettings;
 import common.GameVariant;
 import common.UserSettings;
 import engine.GameLogic;
@@ -13,8 +12,6 @@ import java.util.Set;
 
 public class SingleGameEntry {
     final private String userName;
-    // players register to the gameLogic by being added to the gameSettings
-    //final private GameSettings gameSettings;
     final private int gameId;
     private GameLogic gameLogic;
     private String gameName;
@@ -35,6 +32,17 @@ public class SingleGameEntry {
         this.isTie = false;
         this.winners = null;
     }
+
+    /* Note (1):
+        active players/viewers are displayed to clients that their game status is PLAYING
+        registered players/viewers are displayed to clients that their game status is PENDING_PLAYERS
+     */
+
+    /* Note (2):
+        activeViewrs = this.viewers
+        activePlayers = gameLogic.Players
+        registered viewers/players = viewers/players from gameLogic.gameSettings
+     */
 
     public boolean isPlayerListFull() {
         return gameLogic.isPlayerListFull();
@@ -91,21 +99,23 @@ public class SingleGameEntry {
     public void enableGameForRegistration() {
         this.gameStatus = GameStatus.PENDING_PLAYERS;
         gameLogic.clearRegisteredPlayers();
+        gameLogic.clearRegisteredViewers();
     }
 
     public void startNewGame() {
-        gameLogic.setRoundFromSettings(true);
+        this.gameLogic.setRoundFromSettings(true);
         this.gameStatus = GameStatus.PLAYING;
         this.hasWinner = false;
         this.isTie = false;
         this.winners = null;
+        this.viewers = gameLogic.getRegisteredViewers();
     }
 
     public Boolean isUserPlayerInGame(String username) {
         return gameLogic.isUserPlayerInGame(username);
     }
 
-    public List<UserSettings> getGameViewers() {
+    public List<UserSettings> getActiveViewers() {
         return viewers;
     }
 
@@ -114,7 +124,7 @@ public class SingleGameEntry {
     }
 
     public void viewerResign(String userName) {
-        viewers.removeIf(player -> player.getName().equalsIgnoreCase(userName));
+        viewers.removeIf(user -> user.getName().equalsIgnoreCase(userName));
     }
 
     public int getGameId() {
@@ -163,20 +173,18 @@ public class SingleGameEntry {
         return gameLogic.getMovesHistory();
     }
 
-    public List<UserSettings> getPlayers() {
-        List<Player> activePlayers = gameLogic.getPlayers();
-        List<UserSettings> registeredPlayers = null;
+    public List<UserSettings> getActivePlayers() {
+        List<UserSettings> players = new ArrayList<>();
 
-        if (activePlayers == null) {
-            registeredPlayers = gameLogic.getRegisteredUsers();
+        for (Player p: gameLogic.getPlayers()) {
+            players.add(p.getUserSettings());
         }
-        else {
-            registeredPlayers = new ArrayList<>();
-            for (Player p: activePlayers) {
-                registeredPlayers.add(p.getUserSettings());
-            }
-        }
-        return registeredPlayers;
+
+        return players;
+    }
+
+    public List<UserSettings> getRegisteredPlayers() {
+        return gameLogic.getRegisteredPlayers();
     }
 
     public int[][] getBoardData() {
@@ -185,5 +193,13 @@ public class SingleGameEntry {
 
     public int getIdOfCurrentPlayer() {
         return gameLogic.getIdOfCurrentPlayer();
+    }
+
+    public int[][] getEmptyGameBoardData() {
+        return gameLogic.getEmptyBoardAsIntArr();
+    }
+
+    public List<UserSettings> getRegisteredViewers() {
+        return gameLogic.getRegisteredViewers();
     }
 }

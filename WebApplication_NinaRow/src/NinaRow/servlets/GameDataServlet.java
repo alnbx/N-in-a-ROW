@@ -4,10 +4,7 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
-import common.MoveType;
 import common.UserSettings;
-import engine.GameLogic;
-import engine.Player;
 import webEngine.gamesList.GameListManager;
 import engine.Move;
 import webEngine.gamesList.GameStatus;
@@ -19,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,15 +33,26 @@ public class GameDataServlet extends HttpServlet {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             gameDataResponse.gameName = gamesManager.getGameName(gameIdFromParam);
 
+            String gameStatus = request.getParameter(Constants.GAME_STATUS);
             synchronized (this) {
                 gameDataResponse.isPlayer = gamesManager.isUserPlayerInGame(gameIdFromParam, usernameFromSession);
-                gameDataResponse.moves = gamesManager.getMovesHistory(gameIdFromParam);
-                gameDataResponse.players = gamesManager.getPlayers(gameIdFromParam);
-                gameDataResponse.viewers = gamesManager.getGameViewrs(gameIdFromParam);
                 gameDataResponse.gameStatus = gamesManager.getGameStatus(gameIdFromParam);
-                gameDataResponse.hasWinner = gamesManager.getGameHasWinner(gameIdFromParam);
-                gameDataResponse.isTie = gamesManager.getGameIsTie(gameIdFromParam);
-                gameDataResponse.winnersList = gamesManager.getGameWinners(gameIdFromParam);
+                if (gameStatus.equalsIgnoreCase("PENDING_PLAYERS")) {
+                    gameDataResponse.moves = new ArrayList<>();
+                    gameDataResponse.players = gamesManager.getRegisteredPlayers(gameIdFromParam);
+                    gameDataResponse.hasWinner = false;
+                    gameDataResponse.isTie = false;
+                    gameDataResponse.winnersList = new HashSet<>();
+                    gameDataResponse.viewers = gamesManager.getRegisteredViewers(gameIdFromParam);
+                }
+                else {
+                    gameDataResponse.moves = gamesManager.getMovesHistory(gameIdFromParam);
+                    gameDataResponse.players = gamesManager.getActivePlayers(gameIdFromParam);
+                    gameDataResponse.hasWinner = gamesManager.getGameHasWinner(gameIdFromParam);
+                    gameDataResponse.isTie = gamesManager.getGameIsTie(gameIdFromParam);
+                    gameDataResponse.winnersList = gamesManager.getGameWinners(gameIdFromParam);
+                    gameDataResponse.viewers = gamesManager.getActiveViewrs(gameIdFromParam);
+                }
             }
         }
         else {

@@ -75,8 +75,8 @@ public class GameListManager {
         return gameEntriesMap.get(gameId).isUserPlayerInGame(username);
     }
 
-    public List<UserSettings> getGameViewrs(int gameId) {
-        return gameEntriesMap.get(gameId).getGameViewers();
+    public List<UserSettings> getActiveViewrs(int gameId) {
+        return gameEntriesMap.get(gameId).getActiveViewers();
     }
 
     public void registerViewerToGame(int gameId, UserSettings user) {
@@ -127,8 +127,12 @@ public class GameListManager {
         return gameEntriesMap.get(gameId).getMovesHistory();
     }
 
-    public List<UserSettings> getPlayers(int gameId) {
-        return gameEntriesMap.get(gameId).getPlayers();
+    public List<UserSettings> getActivePlayers(int gameId) {
+        return gameEntriesMap.get(gameId).getActivePlayers();
+    }
+
+    public List<UserSettings> getRegisteredPlayers(int gameId) {
+        return gameEntriesMap.get(gameId).getRegisteredPlayers();
     }
 
     public int getGameRows(int gameId) {
@@ -145,5 +149,13 @@ public class GameListManager {
 
     public int getIdOfCurrentPlayer(int gameId) {
         return gameEntriesMap.get(gameId).getIdOfCurrentPlayer();
+    }
+
+    public int[][] getEmptyGameBoardData(int gameId) {
+        return gameEntriesMap.get(gameId).getEmptyGameBoardData();
+    }
+
+    public List<UserSettings> getRegisteredViewers(int gameId) {
+        return gameEntriesMap.get(gameId).getRegisteredViewers();
     }
 }

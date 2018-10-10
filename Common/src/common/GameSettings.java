@@ -24,6 +24,7 @@ public class GameSettings implements Serializable {
     private GameType gameType;
     private String settingsFilePath;
     private List<UserSettings> players;
+    private List<UserSettings> viewers;
     private int numOfPlayers;
     private String gameTitle;
 
@@ -577,5 +578,13 @@ public class GameSettings implements Serializable {
             }
         }
         return  "";
+    }
+
+    public List<UserSettings> getViewers() {
+        return viewers;
+    }
+
+    public void clearViewers() {
+        viewers.clear();
     }
 }

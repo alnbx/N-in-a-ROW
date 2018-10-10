@@ -20,13 +20,20 @@ public class BoardDataServlet extends HttpServlet {
         int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
         if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            //GameLogic gameLogic = null;
+            String gameStatus = request.getParameter(Constants.GAME_STATUS);
             synchronized (this) {
                 boardDataResponse.boardRowSize = gamesManager.getGameRows(gameIdFromParam);
                 boardDataResponse.boardColSize = gamesManager.getGameCols(gameIdFromParam);
-                boardDataResponse.boardData = gamesManager.getGameBoardData(gameIdFromParam);
-                boardDataResponse.currentPlayer = ServletUtils.getUserManager(getServletContext()).
-                        getPlayerName(gamesManager.getIdOfCurrentPlayer(gameIdFromParam));
+                if (gameStatus.equalsIgnoreCase("PENDING_PLAYERS")) {
+                    boardDataResponse.boardData = gamesManager.getEmptyGameBoardData(gameIdFromParam);
+                    boardDataResponse.currentPlayer = "";
+                }
+                else {
+                    boardDataResponse.boardData = gamesManager.getGameBoardData(gameIdFromParam);
+                    boardDataResponse.currentPlayer = ServletUtils.getUserManager(getServletContext()).
+                            getPlayerName(gamesManager.getIdOfCurrentPlayer(gameIdFromParam));
+                }
+
             }
         }
         else {

@@ -227,6 +227,11 @@ public class Game implements GameLogic, Serializable {
         return board.getBoardAsIntArray();
     }
 
+    @Override
+    public int[][] getEmptyBoardAsIntArr() {
+        return board.getEmptyBoardAsIntArr();
+    }
+
     public boolean getHasWinner() { return this.hasWinner; }
     public boolean getIsBoardFull() { return this.isBoardFull; }
 
@@ -403,7 +408,15 @@ public class Game implements GameLogic, Serializable {
         gameSettings.clearPlayers();;
     }
 
-    public List<UserSettings> getRegisteredUsers() {
+    public List<UserSettings> getRegisteredPlayers() {
         return gameSettings.getPlayersSettings();
+    }
+
+    public List<UserSettings> getRegisteredViewers() {
+        return gameSettings.getViewers();
+    }
+
+    public void clearRegisteredViewers() {
+        gameSettings.clearViewers();
     }
 }

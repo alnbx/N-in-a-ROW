@@ -321,4 +321,16 @@ public class Board implements Serializable {
             this.emptySpaces += board[i].removeDiscsFromCol(playerID);
         }
     }
+
+    public int[][] getEmptyBoardAsIntArr() {
+        int[][] res = new int[this.rows][this.cols];
+        for (int row  = 0; row < this.rows; row++)
+        {
+            for (int col = 0; col < this.cols; col++) {
+                res[row][col] = 0;
+            }
+        }
+
+        return res;
+    }
 }

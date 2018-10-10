@@ -40,6 +40,7 @@ public interface GameLogic {
     void increaseRoundPlayed();
     Boolean isTie();
     int[][] getBoardAsIntArr();
+    int[][] getEmptyBoardAsIntArr();
     void setPlayersFromSettings(boolean isNewPlayers);
     String getPlayerName(int playerId);
     String getGameName();
@@ -48,6 +49,8 @@ public interface GameLogic {
     void addPlayer(UserSettings player);
     boolean isUserPlayerInGame(String userName);
     void clearRegisteredPlayers();
-    List<UserSettings> getRegisteredUsers();
+    List<UserSettings> getRegisteredPlayers();
+    List<UserSettings> getRegisteredViewers();
+    void clearRegisteredViewers();
 }
 
