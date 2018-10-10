@@ -24,6 +24,7 @@ public class Constants {
     public static final String MOVE_TYPE_ERROR = "invalid move type parameter";
     public static final String MOVE_TYPE_PARAMETER_ERROR = "no move type parameter";
     public static final String PLAYER_ERROR = "It's not your turn yet, please be patient";
+    public static final String GAME_NOT_STARTED_ERROR = "The game hasn't started yet, waiting for additional players";
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
     public static final String LAST_MOVE = "lastmove";
     public static final String LAST_MOVE_ERROR = "invalid last move parameter";

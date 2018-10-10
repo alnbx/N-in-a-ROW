@@ -35,13 +35,17 @@ public class PlayMoveServlet extends HttpServlet {
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
             if (userNameFromSession != null) {
-                Integer playerId = userManager.getPlayerID(userNameFromSession);
-                if (playerId == null ||
-                        playerId != gameLogic.getIdOfCurrentPlayer() ||
-                        gamesManager.getGameStatus(gameIdFromParam) != GameStatus.PLAYING)
-                {
+                if (gamesManager.getGameStatus(gameIdFromParam) != GameStatus.PLAYING) {
                     playMoveResponse.setResult(false);
-                    playMoveResponse.setMsg(Constants.PLAYER_ERROR);
+                    playMoveResponse.setMsg(Constants.GAME_NOT_STARTED_ERROR);
+                }
+
+                Integer playerId = userManager.getPlayerID(userNameFromSession);
+                if (playMoveResponse.getResult()) {
+                    if (playerId == null ||playerId != gameLogic.getIdOfCurrentPlayer()) {
+                        playMoveResponse.setResult(false);
+                        playMoveResponse.setMsg(Constants.PLAYER_ERROR);
+                    }
                 }
 
                 int colParameter = ServletUtils.getIntParameter(request, Constants.MOVE_COL);
