@@ -41,30 +41,27 @@
     <p class="login-box-msg">Register a new user</p>
     <div  id="errorMsgArea">
     </div>
-    <form action="" method="post">
-      <div class="form-group has-feedback">
-        <input id="username" name="username" type="text" class="form-control" placeholder="User">
+    <div class="form-group has-feedback">
+      <input id="username" name="username" type="text" class="form-control" placeholder="User">
 
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="row">
-        <div class="col-xs-8">
-          <div class="checkbox icheck" style="left: 20px;">
+    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+  </div>
+  <div class="row">
+    <div class="col-xs-8">
+      <div class="checkbox icheck" style="left: 20px;">
 
-            <input id="isComputerCheck" name="isComputerCheck"type="checkbox"> This player is not human
-            </label>
-          </div>
-        </div>
+        <input id="isComputerCheck" name="isComputerCheck"type="checkbox"> This player is not human
       </div>
+    </div>
+  </div>
 
-      <div class="row">
-        <!-- /.col -->
-        <div class="col-xs-4">
-          <button id="loginBTN" type="button" class="btn btn-primary btn-block btn-flat">Register</button>
-        </div>
-        <!-- /.col -->
-      </div>
-    </form>
+  <div class="row">
+    <!-- /.col -->
+    <div class="col-xs-4">
+      <button id="loginBTN" type="button" class="btn btn-primary btn-block btn-flat">Register</button>
+    </div>
+    <!-- /.col -->
+  </div>
 
   </div>
   <!-- /.login-box-body -->
@@ -86,7 +83,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#loginBTN").click(function () {
+        var submit = function () {
             var dataArr = { username: "" };
             dataArr.username = $('input[id=username]').val(); // get the content of what user typed ( in textarea )
             dataArr.isComputer = $('#isComputerCheck').val();
@@ -110,8 +107,16 @@
                     }
                 }
             });//end ajax
-        });//end click function
+        };
+        $("#loginBTN").click(submit);//end click function
+        $("#username").keyup(function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                submit();
+            }
+        });
     });//end ready function
+
 </script>
 </body>
 </html>
