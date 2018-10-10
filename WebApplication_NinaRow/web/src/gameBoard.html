@@ -199,27 +199,21 @@
 
 		
 		markup += "</tr>";
-		markup += "<tr>";
+		//markup += "<tr>";
 		
 		// Go over the game data array
 		var cellNumber = 1;
-		$.each(gameData.boardData, function(i, item) {
-			markup += "<td align=\"center\"><img src=\"./dist/img/p" + item + ".png\"></img></td>";
-			
-			
-			console.log("cellNumber:" + cellNumber + " | boardColSize" + gameData.boardColSize+ " | boardRowSize: " + gameData.boardRowSize);
-			
-			//Create new Row
-			if ( (cellNumber % gameData.boardColSize) == 0){
-				markup += "</tr>";
-				markup += "<tr>";
-			}
-				
-			
-			cellNumber++;
-		});
-		
-		
+		$.each(gameData.boardData, function(i, row) {
+            markup += "<tr>";
+            $.each(row, function (j, col) {
+                markup += "<td align=\"center\"><img src=\"./dist/img/p" + gameData.boardData[i][j] + ".png\"></img></td>";
+                console.log("cellNumber:" + cellNumber + " | boardColSize" + gameData.boardColSize + " | boardRowSize: " + gameData.boardRowSize);
+                cellNumber++;
+            });
+            markup += "</tr>";
+        });
+
+        markup += "</tr>";
 		for (i = 0; i < gameData.boardColSize; i++) { 
 				markup += "	<td align=\"center\" onclick=\"insertChip('"+i+"', 0);\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
 		}
