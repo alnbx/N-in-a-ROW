@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import static NinaRow.constants.Constants.INT_PARAMETER_ERROR;
@@ -63,9 +64,8 @@ public class PlayMoveServlet extends HttpServlet {
                     if (playMoveResponse.getResult()) {
                         synchronized (this) {
                             if (gameLogic.play(colParameter, moveType.equals(MoveType.POPOUT))) {
-                                playMoveResponse.winners = gameLogic.getWinners();
+                                playMoveResponse.winners = userManager.getWinnersNames(gameLogic.getWinners());
                                 playMoveResponse.isTie = gameLogic.isTie();
-                                playMoveResponse.boardData = gameLogic.getBoardAsIntArr();
                                 if (playMoveResponse.isTie || playMoveResponse.winners.size() > 0) {
                                     gamesManager.enableGameForRegistration(gameIdFromParam);
                                 }
@@ -96,14 +96,12 @@ public class PlayMoveServlet extends HttpServlet {
     }
 
     class PlayMoveResponse extends ServeltResponse {
-        Set<Integer> winners;
+        Set<String> winners;
         Boolean isTie;
-        int[][] boardData;
 
         public PlayMoveResponse() {
             this.isTie = false;
             this.winners = null;
-            this.boardData = null;
         }
     }
 

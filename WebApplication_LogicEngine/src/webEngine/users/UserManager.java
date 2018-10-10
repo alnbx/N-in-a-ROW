@@ -25,7 +25,7 @@ public class UserManager {
         usersMap.remove(username);
     }
 
-    public synchronized Set<String> getUsersNames() {
+    public synchronized Set<String> getAllUsersNames() {
         Set<String> usersNames = new HashSet<>();
 
         for (UserSettings player : usersMap.values()) {
@@ -72,5 +72,24 @@ public class UserManager {
 
     public void setGameToUser(String username, int gameId) {
         usersMap.get(username).setGame(gameId);
+    }
+
+    public Set<String> getWinnersNames(Set<Integer> winners) {
+        Set<String> winnersNames = new HashSet<>();
+        for (int playerId : winners) {
+            winnersNames.add(getPlayerName(playerId));
+        }
+        return winnersNames;
+    }
+
+    private String getPlayerName(int playerId) {
+        String playerName = "";
+        for (UserSettings userSettings : usersMap.values()) {
+            if (userSettings.getId() == playerId) {
+                playerName = userSettings.getName();
+                break;
+            }
+        }
+        return playerName;
     }
 }

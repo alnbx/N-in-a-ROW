@@ -48,8 +48,7 @@ public class PlayerResignServlet extends HttpServlet {
                     synchronized (this) {
                         game.resignPlayer();
                         // check if the player's resignation lead to a win
-                        playerResignResponse.winners = game.getWinners();
-                        playerResignResponse.boardData = game.getBoardAsIntArr();
+                        playerResignResponse.winners = userManager.getWinnersNames(game.getWinners());
                         userManager.clearGame(userNameFromSession);
                     }
                 }
@@ -68,12 +67,10 @@ public class PlayerResignServlet extends HttpServlet {
     }
 
     class PlayerResignResponse extends ServeltResponse {
-        Set<Integer> winners;
-        int[][] boardData;
+        Set<String> winners;
 
         public PlayerResignResponse() {
             this.winners = null;
-            this.boardData = null;
         }
     }
 
