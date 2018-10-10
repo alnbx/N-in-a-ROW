@@ -106,34 +106,58 @@
 
   <script>
 
-	function updateSideBarData(data)
-	{
-		var markup = "<ul class=\"sidebar-menu\" data-widget=\"tree\" id=\"sidebarData\">";
-		
-		
-		// Build Playes List
-		markup += "<li class=\"header\">Players</li>";
-		
-		$.each(data.players, function(i, item) {
-			//console.log("players: "+ item.name);
-			
-			if (item.current == false)
-				markup += '<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>'+ item.name +'</span></a></li>';
-			else
-				markup += '<li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>'+ item.name +'</span></a></li>';
-		});
-		
-		
-		// Build last moves
-		markup += "<li class=\"header\">Last Moves</li>";
-		
-		$.each(data.moves, function(i, item) {
-			markup += '<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>'+ item.playerName + " : " + item.move + " : " + item.moveType + '</span></a></li>';
-		});
-		
-		
-		$('#gameSideBarData').html(markup);		// Append changes to the page
-	}
+      function updateSideBarData(data)
+      {
+          var markup = "<ul class=\"sidebar-menu\" data-widget=\"tree\" id=\"sidebarData\">";
+
+          // Build Playes List
+          markup += "<li class=\"header\">Players</li>";
+
+          $.each(data.players, function(i, item) {
+              //console.log("players: "+ item.name);
+
+              markup += '<li><a href="#"><i class="fa fa-circle-o ';
+
+              if (item.current == false)
+                  markup += ' text-aqua"></i> ';
+              else
+                  markup += ' text-yellow"></i> ';
+
+              switch(item.color) {
+                  case 1:
+                      markup += '<span style="color:#2652d6;">';
+                      break;
+                  case 2:
+                      markup += '<span style="color:#80e021;">';
+                      break;
+                  case 3:
+                      markup += '<span style="color:#dd2020;">';
+                      break;
+                  case 4:
+                      markup += '<span style="color:#d22aa8;">';
+                      break;
+                  case 5:
+                      markup += '<span style="color:#28d7d7;">';
+                      break;
+                  case 6:
+                      markup += '<span style="color:#dcad22;">';
+                      break;
+                  default:
+                      markup += '<span>';
+              }
+
+              markup += item.name +'</span></a></li>';
+          });
+
+          // Build last moves
+          markup += "<li class=\"header\">Last Moves</li>";
+
+          $.each(data.moves, function(i, item) {
+              markup += '<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>'+ item.playerName + " : " + item.move + " : " + item.moveType + '</span></a></li>';
+          });
+
+          $('#gameSideBarData').html(markup);		// Append changes to the page
+      }
 
 	function getGameGeneralData()
 	{
@@ -376,7 +400,7 @@
 		
           <div class="box" style="margin-top:20px">
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="box-body" style="overflow:scroll; max-height:700px;">
               <table class="table" style="margin:0px auto" id="gameBoardTable">
 				<tbody>
                 </tbody>
