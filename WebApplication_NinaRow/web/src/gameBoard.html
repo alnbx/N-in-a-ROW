@@ -67,12 +67,16 @@
     {
         var el = document.getElementById("errorMsgArea");
         el.innerHTML = "<div class=\"callout callout-warning\"><h4>Game Ended with a tie!</h4></div>";
+
+        setTimeout("location.href = 'gamesList.html';",3500);
     }
 
     function winnerAlert(winners)
     {
         var el = document.getElementById("errorMsgArea");
         el.innerHTML = "<div class=\"callout callout-success\"><h4>Game Ended with a Winner!</h4><p id=\"winnerMsg\">Winners: "+winners+"</p></div>";
+
+        setTimeout("location.href = 'gamesList.html';",3500);
     }
   
 	function checkLogin()
