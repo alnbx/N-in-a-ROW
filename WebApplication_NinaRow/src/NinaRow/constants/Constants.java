@@ -18,10 +18,11 @@ public class Constants {
     public static final String INVALID_SESSION_ERROR = "no session is define";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
-    public static final String MOVE_COL = "movecol";
+    public static final String MOVE_COL = "moveCol";
     public static final String MOVE_COL_ERROR = "invalid col parameter";
-    public static final String MOVE_TYPE = "movetype";
+    public static final String MOVE_TYPE = "moveType";
     public static final String MOVE_TYPE_ERROR = "invalid move type parameter";
+    public static final String MOVE_TYPE_PARAMETER_ERROR = "no move type parameter";
     public static final String PLAYER_ERROR = "It's not your turn yet, please be patient";
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
     public static final String LAST_MOVE = "lastmove";

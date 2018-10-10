@@ -153,7 +153,6 @@
 					
 					// Update Players List
 					updateSideBarData(data);
-                    triggerAjaxContent( getGameGeneralData);
 				}
 			  })
 		});
@@ -165,10 +164,11 @@
   </script>
 
   <script>
-	function insertChip(col, isInsertMove)
+	function insertChip(col, typeOfMove)
 	{
 		$(function() {
-			$.post(buildUrlWithContextPath("game/playMove"), { id:col, isInsert:isInsertMove, gameId: myGameId })
+		    var colOfMove = parseInt(col) + 1;
+			$.post(buildUrlWithContextPath("game/playMove"), { moveCol:colOfMove, moveType:typeOfMove, gameId: myGameId })
 			  .done(function(data) {
 				
 				
@@ -195,7 +195,7 @@
 		var markup = "<tr>";
 		
 		for (i = 0; i < gameData.boardColSize; i++)
-			markup += "	<td align=\"center\" onclick=\"insertChip('"+i+"', 1);\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
+			markup += "	<td align=\"center\" onclick=\"insertChip('"+i+"', 'insert');\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
 
 		
 		markup += "</tr>";
@@ -215,7 +215,7 @@
 
         markup += "</tr>";
 		for (i = 0; i < gameData.boardColSize; i++) { 
-				markup += "	<td align=\"center\" onclick=\"insertChip('"+i+"', 0);\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
+				markup += "	<td align=\"center\" onclick=\"insertChip('"+i+"', 'popout');\"><img src=\"./dist/img/arrow_down.png\"></img></td>";
 		}
 		markup += "</tr>";
 
@@ -240,8 +240,6 @@
 					$('#gameBoardTable tbody').empty();				//Clear current table data
 					
 					buildGameBoard(data);							//build the table headers with buttons
-                    triggerAjaxContent( getGameData);
-
 				}
 			  })
 			  .fail(function(jqxhr, textStatus, errorThrown) {

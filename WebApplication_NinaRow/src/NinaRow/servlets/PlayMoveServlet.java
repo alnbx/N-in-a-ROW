@@ -79,7 +79,7 @@ public class PlayMoveServlet extends HttpServlet {
                 }
                 else {
                     playMoveResponse.setResult(false);
-                    playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
+                    playMoveResponse.setMsg(Constants.MOVE_TYPE_PARAMETER_ERROR);
                 }
             }
             else {
