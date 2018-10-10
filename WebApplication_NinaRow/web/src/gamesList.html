@@ -89,14 +89,12 @@
 	setInterval( checkLogin, 5000 );
     </script>
 
-
     <script>
 	function addGameRow(index, itm)
 	{
 		var boardSize = (itm.boardCols * itm.boardRows);
 		//var percent = Math.floor((itm.boardComplete / boardSize ) * 100);
-		
-	
+
 		var markup = "<tr>";
 		markup += "<td>" + index + "</td>";
         markup += "<td>" + itm.name + "</td>";
@@ -319,9 +317,6 @@
             </div>
             <!-- /.box-body -->
           </div>
-		
-		
-		
 
       </section>
       <!-- /.content -->
@@ -414,7 +409,6 @@
                     setTimeout("location.href = 'register.html';",500);
                 })
 
-
         });//end click function
     });//end ready function
 </script>
@@ -431,6 +425,5 @@
         setInterval( getGameData, refreshRate );
     });
 </script>
-
 </body>
 </html>

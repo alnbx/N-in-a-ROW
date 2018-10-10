@@ -75,7 +75,6 @@
         el.innerHTML = "<div class=\"callout callout-success\"><h4>Game Ended with a Winner!</h4><p id=\"winnerMsg\">Winners: "+winners+"</p></div>";
     }
   
-  
 	function checkLogin()
 	{
 		$(function() {
@@ -196,9 +195,7 @@
 			  })
 		});
 	}
-  
-  
-  
+
 	function buildGameBoard(gameData)
 	{
 		var markup = "<tr>";
@@ -231,9 +228,7 @@
 
 		$("#gameBoardTable tbody").append(markup);
 	}
-	
 
-	
   	function getGameData()
 	{
 		$(function() {
@@ -267,8 +262,7 @@
     setInterval( getGameData, 2000 );
 
   </script>
-  
-  
+
 </head>
 <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
 <!-- the fixed layout is not compatible with sidebar-mini -->
