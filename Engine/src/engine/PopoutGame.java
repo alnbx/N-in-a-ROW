@@ -23,7 +23,8 @@ public class PopoutGame extends Game
         boolean turnPlayed = popout ? playHumanPlayerPopout(col, playerID) : playHumanPlayerRegular(col, playerID);
         if (turnPlayed) {
             //record move
-            this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), moveType);
+            this.lastMovePlayed = new Move(playerID, gameSettings.getPlayerName(playerID),
+                    col, timeFromBegining(), moveType);
             playedMoves.add(this.lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
@@ -43,7 +44,8 @@ public class PopoutGame extends Game
     private boolean playHumanPlayerPopout(int col, int playerID) {
         if (!this.board.playPopoutMove(col, playerID)) { return false; }
 
-        this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), MoveType.POPOUT);
+        this.lastMovePlayed = new Move(playerID, gameSettings.getPlayerName(playerID),
+                col, timeFromBegining(), MoveType.POPOUT);
         playedMoves.add(this.lastMovePlayed);
 
         Set<Integer> winners = checkWinningMove(col);
@@ -59,7 +61,8 @@ public class PopoutGame extends Game
     private boolean playHumanPlayerRegular(int col, int playerID) {
         if (!this.board.playMove(col, playerID)) { return false; }
 
-        this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), MoveType.INSERT);
+        this.lastMovePlayed = new Move(playerID, gameSettings.getPlayerName(playerID),
+                col, timeFromBegining(), MoveType.INSERT);
         playedMoves.add(this.lastMovePlayed);
 
         Set<Integer> winners = checkWinningMove(col);
@@ -79,7 +82,7 @@ public class PopoutGame extends Game
         int rand = r.nextInt(board.getCols());
 
         while(!board.playMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
-        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining(), MoveType.INSERT);
+        this.lastMovePlayed = new Move(playerID, gameSettings.getPlayerName(playerID), rand, timeFromBegining(), MoveType.INSERT);
         playedMoves.add(this.lastMovePlayed);
 
         Set<Integer> winners = checkWinningMove(rand);
@@ -104,7 +107,7 @@ public class PopoutGame extends Game
 
         //record move
         // columns counting statrs from 1, as ComputerPlayer makes a pseudo move in column 0
-        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining(), MoveType.POPOUT);
+        this.lastMovePlayed = new Move(playerID, gameSettings.getPlayerName(playerID), rand, timeFromBegining(), MoveType.POPOUT);
         playedMoves.add(this.lastMovePlayed);
 
         Set<Integer> winners = checkWinningMove(rand);

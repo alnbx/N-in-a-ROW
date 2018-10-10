@@ -71,7 +71,7 @@ public class Game implements GameLogic, Serializable {
 
         if (board.playMove(col, playerID)) {
             //record move
-            this.lastMovePlayed = new Move(playerID, col, timeFromBegining(), MoveType.INSERT);
+            this.lastMovePlayed = new Move(playerID, gameSettings.getPlayerName(playerID), col, timeFromBegining(), MoveType.INSERT);
             playedMoves.add(lastMovePlayed);
             getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
@@ -100,7 +100,8 @@ public class Game implements GameLogic, Serializable {
         while(!board.playMove(rand, playerID)) { rand = r.nextInt(board.getCols()); }
 
         //record move
-        this.lastMovePlayed = new Move(playerID, rand, timeFromBegining(), MoveType.INSERT);
+        this.lastMovePlayed = new Move(playerID, gameSettings.getPlayerName(playerID),
+                rand, timeFromBegining(), MoveType.INSERT);
         playedMoves.add(lastMovePlayed);
         getPlayerById(playerID).increaseNumberOfTurnsPlayed();
 
@@ -368,5 +369,9 @@ public class Game implements GameLogic, Serializable {
     public void increaseRoundPlayed()    { this.roundsPlayed++; }
     public Boolean isTie() {
         return gameSettings.getGameVariant() != GameVariant.POPOUT && board.isFull();
+    }
+
+    public String getPlayerName(int playerId) {
+        return gameSettings.getPlayerName(playerId);
     }
 }

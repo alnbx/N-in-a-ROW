@@ -4,18 +4,21 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import common.MoveType;
 import common.UserSettings;
 import engine.GameLogic;
 import engine.Player;
 import webEngine.gamesList.GameListManager;
 import engine.Move;
 import webEngine.gamesList.GameStatus;
+import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +32,7 @@ public class GameDataServlet extends HttpServlet {
         int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
         if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
+            UserManager userManager = ServletUtils.getUserManager(getServletContext());
             gameDataResponse.gameName = gamesManager.getGameName(gameIdFromParam);
 
             synchronized (this) {

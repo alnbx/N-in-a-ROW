@@ -569,4 +569,13 @@ public class GameSettings implements Serializable {
         }
         return false;
     }
+
+    public String getPlayerName(int playerId) {
+        for (UserSettings user : players) {
+            if (user.getId() == playerId) {
+                return user.getName();
+            }
+        }
+        return  "";
+    }
 }

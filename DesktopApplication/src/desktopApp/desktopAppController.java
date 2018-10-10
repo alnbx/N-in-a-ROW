@@ -688,7 +688,8 @@ public class desktopAppController {
                 // Patch...
                 Move move = null;
                 if (this.computerFirst) {
-                    move = new Move(currentPlayerID.get(), 1, this.gameLogic.timeFromBegining() ,MoveType.INSERT);
+                    move = new Move(currentPlayerID.get(), gameLogic.getPlayerName(currentPlayerID.get()),
+                            1, this.gameLogic.timeFromBegining() ,MoveType.INSERT);
                     this.computerFirst = false;
                 } else {
                     move = gameLogic.getLastMove();

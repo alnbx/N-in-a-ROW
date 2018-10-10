@@ -10,6 +10,7 @@ public class Move implements Serializable {
     static int movesCount;
     private int moveIndex;
     private int playerId;
+    private String playerName;
     private int col;  // cols are counted from left to right, starting from 1
     private String timeStamp;
     private MoveType moveType;
@@ -36,9 +37,10 @@ public class Move implements Serializable {
         return col;
     }
 
-    public Move(int playerId, int col, String timeStamp, MoveType moveType) {
+    public Move(int playerId, String playerName, int col, String timeStamp, MoveType moveType) {
         this.moveIndex = movesCount++;
         this.playerId = playerId;
+        this.playerName = playerName;
         this.col = col;
         this.timeStamp = timeStamp;
         this.moveType = moveType;

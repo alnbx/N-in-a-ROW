@@ -40,4 +40,5 @@ public interface GameLogic {
     Boolean isTie();
     int[][] getBoardAsIntArr();
     void setPlayersFromSettings(boolean isNewPlayers);
+    String getPlayerName(int playerId);
 }
