@@ -37,11 +37,10 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Register a new user</p>
 
-	
-	
-	
+    <p class="login-box-msg">Register a new user</p>
+    <div  id="errorMsgArea">
+    </div>
     <form action="" method="post">
       <div class="form-group has-feedback">
         <input id="username" name="username" type="text" class="form-control" placeholder="User">
@@ -77,6 +76,14 @@
 <!-- Bootstrap 3.3.7 -->
 <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
+<script>
+    function tempAlert(msg)
+    {
+        var el = document.getElementById("errorMsgArea");
+        el.innerHTML = "<div class=\"callout callout-danger\"><h5>Oh Oh! "+msg+"</div>";
+    }
+</script>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#loginBTN").click(function () {
@@ -95,7 +102,7 @@
 					
 					if(success == false){
 						var error = resp['msg'];
-						alert(error); // just in case somebody to click on share witout writing anything :
+                        tempAlert(error); // just in case somebody to click on share witout writing anything :
 					}
 					
 					if(success == true) {
