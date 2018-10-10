@@ -28,7 +28,7 @@ public class BoardDataServlet extends HttpServlet {
             synchronized (this) {
                 GameLogic gameLogic = gamesManager.getGameEntry(gameIdFromParam).getGameLogic();
                 boardDataResponse.boardRowSize = gameLogic.getRows();
-                boardDataResponse.boardRowSize = gameLogic.getCols();
+                boardDataResponse.boardColSize = gameLogic.getCols();
                 boardDataResponse.boardData = gameLogic.getBoardAsIntArr();
                 int currentPlayerId = gameLogic.getIdOfCurrentPlayer();
             }

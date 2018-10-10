@@ -68,7 +68,7 @@
           setTimeout(func, refreshRate);
       }
 
-      $(function() {
+      $(document).ready(function() {
           $("#Resign").click(function () {
               if ("Resign" != $('#Resign').html())
               {
@@ -113,7 +113,7 @@
           }
       };
 
-      $(function() {
+      $(document).ready(function() {
           myGameId = getUrlParameter('gameId');
           checkLogin();
           triggerAjaxContent( getGameGeneralData);
@@ -128,8 +128,7 @@
 					el.innerHTML = "";
 					}, duration);
 	}
-  
-  
+
 	function checkLogin()
 	{
 		$(function() {
@@ -184,10 +183,7 @@
 		
 		$('#gameSideBarData').html(markup);		// Append changes to the page
 	}
-	
-	
 
-	
 	function getGameGeneralData()
 	{
 		$(function() {
@@ -220,7 +216,6 @@
 		});
 	}
 
-
 	function insertChip(col, isInsertMove)
 	{
 		$(function() {
@@ -243,9 +238,7 @@
 			  })
 		});
 	}
-  
-  
-  
+
 	function buildGameBoard(gameData)
 	{
 		var markup = "<tr>";
@@ -284,9 +277,7 @@
 
 		$("#gameBoardTable tbody").append(markup);
 	}
-	
 
-	
   	function getGameData()
 	{
 		$(function() {

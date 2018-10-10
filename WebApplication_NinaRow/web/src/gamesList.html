@@ -28,29 +28,42 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-  <script>
-    // extract the context path using the window.location data items
-    function calculateContextPath() {
-    var pathWithoutLeadingSlash = window.location.pathname.substring(1);
-    var contextPathEndIndex = pathWithoutLeadingSlash.indexOf('/');
-    return pathWithoutLeadingSlash.substr(0, contextPathEndIndex)
-    }
+    <!-- jQuery 3 -->
+    <script src="./bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="./bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="./bower_components/fastclick/lib/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="./dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="./dist/js/demo.js"></script>
 
-    // returns a function that holds within her closure the context path.
-    // the returned function is one that accepts a resource to fetch,
-    // and returns a new resource with the context path at its prefix
-    function wrapBuildingURLWithContextPath() {
-    var contextPath = calculateContextPath();
-    return function(resource) {
-    return "/" + contextPath + "/" + resource;
-    };
-    }
+    <script type="text/javascript">
 
-    // call the wrapper method and expose a final method to be used to build complete resource names (buildUrlWithContextPath)
+        // extract the context path using the window.location data items
+        function calculateContextPath() {
+            var pathWithoutLeadingSlash = window.location.pathname.substring(1);
+            var contextPathEndIndex = pathWithoutLeadingSlash.indexOf('/');
+            return pathWithoutLeadingSlash.substr(0, contextPathEndIndex)
+        }
+
+        // returns a function that holds within her closure the context path.
+        // the returned function is one that accepts a resource to fetch,
+        // and returns a new resource with the context path at its prefix
+        function wrapBuildingURLWithContextPath() {
+            var contextPath = calculateContextPath();
+            return function(resource) {
+                return "/" + contextPath + "/" + resource;
+            };
+        }
+
+        // call the wrapper method and expose a final method to be used to build complete resource names (buildUrlWithContextPath)
     var buildUrlWithContextPath = wrapBuildingURLWithContextPath();
-  </script>
+    var refreshRate = 2000;
 
-<script>
 	function checkLogin()
 	{
 		$(function() {
@@ -75,13 +88,7 @@
 			  })
 		});
 	}
-	checkLogin;
-	setInterval( checkLogin, 5000 );
-</script>
-  
-  
-  
-  <script>
+
 	function addGameRow(index, itm)
 	{
 		var boardSize = (itm.boardCols * itm.boardRows);
@@ -115,9 +122,7 @@
 				
         $("#gameTable tbody").append(markup);
 	}
-	
-  
-  
+
 	function getGameData()
 	{
 		$(function() {
@@ -147,12 +152,7 @@
 			  })
 		});
 	}
-	//getGameData;
-	setInterval( getGameData, 2000 );
-  </script>
 
-  
-<script>
 	function registerToGame(gID, gName)
 	{
 		$(function() {
@@ -175,8 +175,84 @@
             });
 		});
 	}
-	checkLogin;
-	setInterval( checkLogin, 5000 );
+
+        $(document).ready(function() {
+            $("#uploadFile").click(function(event) {
+                $.ajax({
+                    data: $(this).serialize(),
+                    timeout: 2000,
+                    error: function() {
+                        console.error("Failed to submit");
+                    },
+                    success: function(data) {
+                        var file = document.getElementById('exampleInputFile').files[0];
+                        console.log("chosen file: " + file.name);
+                        var reader = new FileReader();
+                        reader.readAsText(file);
+                        reader.onload = function(e) {
+                            var xmlContent = reader.result;
+                            xmlContent = xmlContent.replace(/"/g, "'");
+                            var postRequest = $.post(buildUrlWithContextPath("uploadGame"), { settingsfile: xmlContent});
+                            postRequest.done(function(returnedData) {
+                                console.log("in settings call back");
+                                //jsonStr = JSON.stringify(returnedData);
+                                if (returnedData.result != true) {
+                                    alert(returnedData['msg']);
+                                }
+                            });
+                            postRequest.fail(function(xhr, status, error) {
+                                alert("Error: " + error);
+                            });
+                        }
+                        return false;
+                    }
+                });
+                return false;
+            });
+        });
+
+        $(document).ready(function() {
+            $("#logoutBTN").click(function () {
+                var dataArr = { username: "" };
+                var data = dataArr
+                $.post(buildUrlWithContextPath("logout"))
+                    .done(function(data) {
+                        var result = data.result;
+                        //console.log(data);
+
+                        if (data.result != true) {
+                            // Delete Cookies
+                            var cookies = document.cookie.split(";");
+                            for (var i = 0; i < cookies.length; i++) {
+                                var cookie = cookies[i];
+                                var eqPos = cookie.indexOf("=");
+                                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                            }
+                        }
+                        setTimeout("location.href = 'register.html';",500);
+
+                    })
+                    .fail(function(jqxhr, textStatus, errorThrown) {
+                        console.log(errorThrown)
+                        setTimeout("location.href = 'register.html';",500);
+                    })
+
+
+            });//end click function
+        });//end ready function
+
+        function triggerAjaxContent(func) {
+            setTimeout(func, refreshRate);
+        }
+
+        $(document).ready(function() {
+            checkLogin();
+            triggerAjaxContent(getGameData);
+            //getGameData;
+            setInterval( getGameData, refreshRate );
+        });
+
 </script>
 
 </head>
@@ -330,88 +406,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery 3 -->
-<script src="./bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- SlimScroll -->
-<script src="./bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="./bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="./dist/js/adminlte.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="./dist/js/demo.js"></script>
 
-<script>
-    $(document).ready(function() {
-        $("#uploadFile").click(function(event) {
-            $.ajax({
-                data: $(this).serialize(),
-                timeout: 2000,
-                error: function() {
-                    console.error("Failed to submit");
-                },
-                success: function(data) {
-                    var file = document.getElementById('exampleInputFile').files[0];
-                    console.log("chosen file: " + file.name);
-                    var reader = new FileReader();
-                    reader.readAsText(file);
-                    reader.onload = function(e) {
-                        var xmlContent = reader.result;
-                        xmlContent = xmlContent.replace(/"/g, "'");
-                        var postRequest = $.post(buildUrlWithContextPath("uploadGame"), { settingsfile: xmlContent});
-                        postRequest.done(function(returnedData) {
-                            console.log("in settings call back");
-                            //jsonStr = JSON.stringify(returnedData);
-                            if (returnedData.result != true) {
-                                alert(returnedData['msg']);
-                            }
-                        });
-                        postRequest.fail(function(xhr, status, error) {
-                            alert("Error: " + error);
-                        });
-                    }
-                    return false;
-                }
-            });
-            return false;
-        });
-    });
-</script>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#logoutBTN").click(function () {
-			var dataArr = { username: "" };
-			var data = dataArr
-			$.post(buildUrlWithContextPath("logout"))
-			  .done(function(data) {
-			  var result = data.result;
-				//console.log(data);
-				
-				if (data.result != true) {
-					// Delete Cookies
-					var cookies = document.cookie.split(";");
-					for (var i = 0; i < cookies.length; i++) {
-						var cookie = cookies[i];
-						var eqPos = cookie.indexOf("=");
-						var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-						document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-					}
-				} 
-				setTimeout("location.href = 'register.html';",500);
-				
-			  })
-			  .fail(function(jqxhr, textStatus, errorThrown) {
-				 console.log(errorThrown)
-				 setTimeout("location.href = 'register.html';",500);  
-			})
-
-		
-		});//end click function
-	});//end ready function
-</script>
 
 </body>
 </html>
