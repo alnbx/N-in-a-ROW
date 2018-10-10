@@ -5,6 +5,7 @@ import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import engine.GameLogic;
+import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class PlayerResignServlet extends HttpServlet {
@@ -25,8 +28,8 @@ public class PlayerResignServlet extends HttpServlet {
         int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
         if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            GameLogic game = ServletUtils.getGamesListManager(getServletContext()).
-                    getGameEntry(gameIdFromParam).getGameLogic();
+            GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
+            GameLogic gameLogic = gameListManager.getGameEntry(gameIdFromParam).getGameLogic();
 
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
@@ -34,7 +37,7 @@ public class PlayerResignServlet extends HttpServlet {
                 Integer playerId = userManager.getPlayerID(userNameFromSession);
                 if (playerId != null) {
                     // only the current player can quit the game
-                    if (playerId != game.getIdOfCurrentPlayer()) {
+                    if (playerId != gameLogic.getIdOfCurrentPlayer()) {
                         playerResignResponse.setResult(false);
                         playerResignResponse.setMsg(Constants.PLAYER_ERROR);
                     }
@@ -45,11 +48,27 @@ public class PlayerResignServlet extends HttpServlet {
                 }
 
                 if (playerResignResponse.getResult() == true) {
+
                     synchronized (this) {
-                        game.resignPlayer();
-                        // check if the player's resignation lead to a win
-                        playerResignResponse.winners = userManager.getWinnersNames(game.getWinners());
-                        userManager.clearGame(userNameFromSession);
+                        gameLogic.resignPlayer();
+                        // check if the player's resignation lead to the game's end
+                        gameListManager.setIsTie(gameIdFromParam, gameLogic.isTie());
+                        gameListManager.setWinners(gameIdFromParam, userManager.getWinnersNames(gameLogic.getWinners()));
+                        /*
+                        if (gameListManager.isGameEnded(gameIdFromParam)) {
+                            // the order of the 2 operations below matters!
+                            userManager.clearGame(gameListManager.getAllGamePlayersAndViewers(gameIdFromParam));
+                            gameListManager.enableGameForRegistration(gameIdFromParam);
+                        }
+                        else {
+                            // clear the game from the single resigning player
+                            List<String> resigningPlayer = new ArrayList<>();
+                            resigningPlayer.add(userNameFromSession);
+                            userManager.clearGame(resigningPlayer);
+                        }*/
+                        List<String> resigningPlayer = new ArrayList<>();
+                        resigningPlayer.add(userNameFromSession);
+                        userManager.clearGame(resigningPlayer);
                     }
                 }
             }
@@ -66,13 +85,7 @@ public class PlayerResignServlet extends HttpServlet {
         ServletUtils.sendJsonResponse(response, playerResignResponse);
     }
 
-    class PlayerResignResponse extends ServeltResponse {
-        Set<String> winners;
-
-        public PlayerResignResponse() {
-            this.winners = null;
-        }
-    }
+    class PlayerResignResponse extends ServeltResponse { }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

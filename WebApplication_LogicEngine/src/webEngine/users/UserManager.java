@@ -66,8 +66,10 @@ public class UserManager {
         return playerType;
     }
 
-    public void clearGame(String userName) {
-        usersMap.get(userName).clearGame();
+    public void clearGame(List<String> usersNames) {
+        for (String userName : usersNames) {
+            usersMap.get(userName).clearGame();
+        }
     }
 
     public void setGameToUser(String username, int gameId) {

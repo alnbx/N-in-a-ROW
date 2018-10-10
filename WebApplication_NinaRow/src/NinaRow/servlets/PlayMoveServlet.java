@@ -64,11 +64,14 @@ public class PlayMoveServlet extends HttpServlet {
                     if (playMoveResponse.getResult()) {
                         synchronized (this) {
                             if (gameLogic.play(colParameter, moveType.equals(MoveType.POPOUT))) {
-                                playMoveResponse.winners = userManager.getWinnersNames(gameLogic.getWinners());
-                                playMoveResponse.isTie = gameLogic.isTie();
-                                if (playMoveResponse.isTie || playMoveResponse.winners.size() > 0) {
+                                gamesManager.setIsTie(gameIdFromParam, gameLogic.isTie());
+                                gamesManager.setWinners(gameIdFromParam, userManager.getWinnersNames(gameLogic.getWinners()));
+                                /*
+                                if (gamesManager.isGameEnded(gameIdFromParam)) {
+                                    // the order of the 2 operations below matters!
+                                    userManager.clearGame(gamesManager.getAllGamePlayersAndViewers(gameIdFromParam));
                                     gamesManager.enableGameForRegistration(gameIdFromParam);
-                                }
+                                }*/
                             }
                             else {
                                 playMoveResponse.setResult(false);
@@ -95,15 +98,7 @@ public class PlayMoveServlet extends HttpServlet {
         ServletUtils.sendJsonResponse(response, playMoveResponse);
     }
 
-    class PlayMoveResponse extends ServeltResponse {
-        Set<String> winners;
-        Boolean isTie;
-
-        public PlayMoveResponse() {
-            this.isTie = false;
-            this.winners = null;
-        }
-    }
+    class PlayMoveResponse extends ServeltResponse { }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

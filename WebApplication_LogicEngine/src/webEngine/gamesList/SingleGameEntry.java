@@ -7,6 +7,7 @@ import engine.GameLogic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SingleGameEntry {
     final private String userName;
@@ -17,6 +18,9 @@ public class SingleGameEntry {
     private String gameName;
     private GameStatus gameStatus;
     private List<UserSettings> viewers;
+    private boolean hasWinner;
+    private boolean isTie;
+    private Set<String> winners;
 
     SingleGameEntry(GameSettings gameSettings, String userName, int gameId) {
         this.game = null;
@@ -26,6 +30,9 @@ public class SingleGameEntry {
         this.gameSettings = gameSettings;
         this.viewers = new ArrayList<>();
         this.gameId = gameId;
+        this.hasWinner = false;
+        this.isTie = false;
+        this.winners = null;
     }
 
     public boolean isPlayerListFull() {
@@ -92,6 +99,10 @@ public class SingleGameEntry {
         this.game = null;
         this.gameSettings.clearPlayers();
         this.gameStatus = GameStatus.PENDING_PLAYERS;
+        this.hasWinner = false;
+        this.isTie = false;
+        this.winners = null;
+
     }
 
     public Boolean isUserPlayerInGame(String username) {
@@ -112,5 +123,43 @@ public class SingleGameEntry {
 
     public int getGameId() {
         return gameId;
+    }
+
+    public void setIsTie(Boolean isTie) {
+        this.isTie = isTie;
+    }
+
+    public void setWinners(Set<String> winners) {
+        this.winners = winners;
+        this.hasWinner = winners.size() > 0;
+    }
+
+    public List<String> getAllGamePlayersAndViewers() {
+        List<String> usersNames = new ArrayList<>();
+        for (UserSettings player : gameSettings.getPlayersSettings()) {
+            usersNames.add(player.getName());
+        }
+
+        for (UserSettings viewer : viewers) {
+            usersNames.add(viewer.getName());
+        }
+
+        return usersNames;
+    }
+
+    public boolean isGameEnded() {
+        return isTie || hasWinner;
+    }
+
+    public boolean getHasWinner() {
+        return hasWinner;
+    }
+
+    public boolean getIsTie() {
+        return isTie;
+    }
+
+    public Set<String> getWinners() {
+        return winners;
     }
 }

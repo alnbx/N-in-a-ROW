@@ -98,4 +98,32 @@ public class GameListManager {
     public int getGameId(String gameName) {
         return gameEntriesMap.get(gameName).getGameId();
     }
+
+    public void setIsTie(int gameId, Boolean isTie) {
+        gameEntriesMap.get(gameId).setIsTie(isTie);
+    }
+
+    public void setWinners(int gameId, Set<String> winners) {
+        gameEntriesMap.get(gameId).setWinners(winners);
+    }
+
+    public List<String> getAllGamePlayersAndViewers(int gameId) {
+        return gameEntriesMap.get(gameId).getAllGamePlayersAndViewers();
+    }
+
+    public boolean isGameEnded(int gameId) {
+        return gameEntriesMap.get(gameId).isGameEnded();
+    }
+
+    public boolean getGameHasWinner(int gameId) {
+        return gameEntriesMap.get(gameId).getHasWinner();
+    }
+
+    public boolean getGameIsTie(int gameId) {
+        return gameEntriesMap.get(gameId).getIsTie();
+    }
+
+    public Set<String> getGameWinners(int gameId) {
+        return gameEntriesMap.get(gameId).getWinners();
+    }
 }

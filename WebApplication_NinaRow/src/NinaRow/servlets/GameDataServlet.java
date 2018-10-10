@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public class GameDataServlet extends HttpServlet {
 
@@ -37,6 +38,9 @@ public class GameDataServlet extends HttpServlet {
                 gameDataResponse.players = gameLogic.getPlayers();
                 gameDataResponse.viewers = gamesManager.getGameViewrs(gameIdFromParam);
                 gameDataResponse.gameStatus = gamesManager.getGameStatus(gameIdFromParam);
+                gameDataResponse.hasWinner = gamesManager.getGameHasWinner(gameIdFromParam);
+                gameDataResponse.isTie = gamesManager.getGameIsTie(gameIdFromParam);
+                gameDataResponse.winners = gamesManager.getGameWinners(gameIdFromParam);
             }
         }
         else {
@@ -48,12 +52,16 @@ public class GameDataServlet extends HttpServlet {
     }
 
     class GameDataResponse extends ServeltResponse {
-        List<Player> players;
-        List<UserSettings> viewers;
-        List<Move> moves;
-        String gameName;
-        Boolean isPlayer;
-        GameStatus gameStatus;
+        private List<Player> players;
+        private List<UserSettings> viewers;
+        private List<Move> moves;
+        private String gameName;
+        private Boolean isPlayer;
+        private GameStatus gameStatus;
+        private boolean hasWinner;
+        private boolean isTie;
+        private Set<String> winners;
+
 
         public GameDataResponse() {
             this.players = null;
@@ -62,6 +70,9 @@ public class GameDataServlet extends HttpServlet {
             this.gameName = "";
             this.isPlayer = false;
             this.gameStatus = GameStatus.PENDING_PLAYERS;
+            this.hasWinner = false;
+            this.isTie = false;
+            this.winners = null;
         }
     }
 
