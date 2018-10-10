@@ -55,13 +55,25 @@
 
   <script>
 	function tempAlert(msg, duration)
-	{
-		var el = document.getElementById("errorMsgArea");
-		el.innerHTML = "<div class=\"callout callout-danger\"><h4>Oh Oh!</h4><p id=\"errorMsg\">"+msg+"</p></div>";
-		setTimeout(function(){
-					el.innerHTML = "";
-					}, duration);
-	}
+    {
+        var el = document.getElementById("errorMsgArea");
+        el.innerHTML = "<div class=\"callout callout-danger\"><h4>Oh Oh!</h4><p id=\"errorMsg\">"+msg+"</p></div>";
+        setTimeout(function(){
+            el.innerHTML = "";
+        }, duration);
+    }
+
+    function tieAlert()
+    {
+        var el = document.getElementById("errorMsgArea");
+        el.innerHTML = "<div class=\"callout callout-warning\"><h4>Game Ended with a tie!</h4></div>";
+    }
+
+    function winnerAlert(winners)
+    {
+        var el = document.getElementById("errorMsgArea");
+        el.innerHTML = "<div class=\"callout callout-success\"><h4>Game Ended with a Winner!</h4><p id=\"winnerMsg\">Winners: "+winners+"</p></div>";
+    }
   
   
 	function checkLogin()
@@ -123,10 +135,7 @@
 		
 		$('#gameSideBarData').html(markup);		// Append changes to the page
 	}
-	
-	
 
-	
 	function getGameGeneralData()
 	{
 		$(function() {
@@ -233,13 +242,19 @@
 				
 				
 				if (data.result != true) {
-					$('#gameBoardTable').text("Unable to load games data");
+					$('#gameBoardTable').text("Unable to load game data");
 				} 
 				else
 				{
 					$('#gameBoardTable tbody').empty();				//Clear current table data
 					
-					buildGameBoard(data);							//build the table headers with buttons
+					buildGameBoard(data);//build the table headers with buttons
+                    if (data.isTie) {
+                        tieAlert();
+                    }
+                    else if (data.hasWinner) {
+                        winnerAlert(data.winnersList)
+                    }
 				}
 			  })
 			  .fail(function(jqxhr, textStatus, errorThrown) {
