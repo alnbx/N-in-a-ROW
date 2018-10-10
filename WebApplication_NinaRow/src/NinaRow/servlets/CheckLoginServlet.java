@@ -18,22 +18,32 @@ public class CheckLoginServlet extends HttpServlet {
         response.setContentType("application/json");
         // create the response
         CheckLoginResponse checkLoginResponse = new CheckLoginResponse();
-        String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
-        if (usernameFromSession != null) {
-            if (!SessionUtils.isSessionValid(request)) {
+        if (SessionUtils.isSessionValid(request)) {
+            String usernameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
+            if (usernameFromSession != null) {
+                checkLoginResponse.user = usernameFromSession;
+            }
+            else {
                 checkLoginResponse.setResult(false);
-                checkLoginResponse.setMsg(Constants.INVALID_SESSION_ERROR);
+                checkLoginResponse.setMsg(Constants.USER_SESSION_ERROR);
             }
         }
         else {
             checkLoginResponse.setResult(false);
-            checkLoginResponse.setMsg(Constants.USER_SESSION_ERROR);
+            checkLoginResponse.setMsg(Constants.INVALID_SESSION_ERROR);
         }
+
 
         ServletUtils.sendJsonResponse(response, checkLoginResponse);
     }
 
-    class CheckLoginResponse extends ServeltResponse { }
+    class CheckLoginResponse extends ServeltResponse {
+        private String user;
+
+        public CheckLoginResponse() {
+            this.user = "";
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
