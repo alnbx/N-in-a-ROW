@@ -86,7 +86,8 @@
         var submit = function () {
             var dataArr = { username: "" };
             dataArr.username = $('input[id=username]').val(); // get the content of what user typed ( in textarea )
-            dataArr.isComputer = $('#isComputerCheck').checked; //? 'on' : 'off';
+            dataArr.isComputer = document.getElementById('isComputerCheck').checked; //? 'on' : 'off';
+            debugger;
 
             $.ajax({
                 type: "POST",
