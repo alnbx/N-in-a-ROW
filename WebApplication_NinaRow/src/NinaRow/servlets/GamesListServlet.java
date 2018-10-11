@@ -22,11 +22,13 @@ public class GamesListServlet extends HttpServlet {
         //returning JSON objects, not HTML
         response.setContentType("application/json");
         GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-        List<SingleGameEntry> gamesList = gamesManager.getGames();
         List<SingleGameResponse> games = new ArrayList<>();
 
-        for (SingleGameEntry seg : gamesList) {
-            games.add(new SingleGameResponse(seg));
+        synchronized (getServletContext()) {
+            List<SingleGameEntry> gamesList = gamesManager.getGames();
+            for (SingleGameEntry seg : gamesList) {
+                games.add(new SingleGameResponse(seg));
+            }
         }
 
         ServletUtils.sendJsonResponse(response, new GamesListResponse((games)));
@@ -44,25 +46,25 @@ public class GamesListServlet extends HttpServlet {
 
     public class SingleGameResponse {
         private String name;
-        private GameStatus status;
+        private String status;
         private String userName;
         private int boardRows;
         private int boardCols;
         private int target;
-        private GameVariant gameVariant;
+        private String gameVariant;
         private int totalPlayers;
         private int registeredPlayers;
         private int gameId;
 
         public SingleGameResponse(SingleGameEntry gameEntry) {
             this.name = gameEntry.getGameName();
-            this.status = gameEntry.getGameStatus();
+            this.status = gameEntry.getGameStatus().name();
             this.userName = gameEntry.getUserName();
             this.registeredPlayers = gameEntry.getNumRegisteredPlayers();
             this.boardRows = gameEntry.getRows();
             this.boardCols = gameEntry.getCols();
             this.target = gameEntry.getSequenceLength();
-            this.gameVariant = gameEntry.getGameVariant();
+            this.gameVariant = gameEntry.getGameVariant().name();
             this.totalPlayers = gameEntry.getNumRequiredPlayers();
             this.gameId = gameEntry.getGameId();
         }

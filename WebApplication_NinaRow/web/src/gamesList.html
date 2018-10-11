@@ -104,11 +104,11 @@
 
 		var gameName = "'" + String(itm.name) + "'";
 
-		if (itm.status == "playing") {
+		if (itm.status === "PLAYING") {
 			markup += "<td><span class=\"label label-success\">On going</span></td>";
 			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ index +", "+ gameName +");\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
 			
-		} else if (itm.status == "ended") {
+		} else if (itm.status === "ended") {
 		
 			markup += "<td><span class=\"label label-danger\">Ended</span></td>";
 			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ index +", "+ gameName +");\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
@@ -153,8 +153,8 @@
 		});
 	}
 
-	getGameData;
-    setInterval( getGameData, 2000 );
+	//getGameData;
+    //setInterval( getGameData, 2000 );
     </script>
 
     <script>
@@ -414,14 +414,9 @@
 </script>
 
 <script>
-    function triggerAjaxContent(func) {
-        setTimeout(func, refreshRate);
-    }
 
     $(function() {
         checkLogin();
-        triggerAjaxContent(getGameData);
-        //getGameData;
         setInterval( getGameData, refreshRate );
     });
 </script>
