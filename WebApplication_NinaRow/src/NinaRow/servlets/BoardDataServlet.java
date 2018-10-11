@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BoardDataServlet extends HttpServlet {
 
@@ -24,14 +26,23 @@ public class BoardDataServlet extends HttpServlet {
             synchronized (this) {
                 boardDataResponse.boardRowSize = gamesManager.getGameRows(gameIdFromParam);
                 boardDataResponse.boardColSize = gamesManager.getGameCols(gameIdFromParam);
+                boardDataResponse.boardData = gamesManager.getGameBoardData(gameIdFromParam);
+                boardDataResponse.currentPlayer = ServletUtils.getUserManager(getServletContext()).
+                        getPlayerName(gamesManager.getIdOfCurrentPlayer(gameIdFromParam));
                 if (gameStatus.equalsIgnoreCase("PENDING_PLAYERS")) {
                     boardDataResponse.boardData = gamesManager.getEmptyGameBoardData(gameIdFromParam);
                     boardDataResponse.currentPlayer = "";
+                    boardDataResponse.hasWinner = false;
+                    boardDataResponse.isTie = false;
+                    boardDataResponse.winnersList = new HashSet<>();
                 }
                 else {
                     boardDataResponse.boardData = gamesManager.getGameBoardData(gameIdFromParam);
                     boardDataResponse.currentPlayer = ServletUtils.getUserManager(getServletContext()).
                             getPlayerName(gamesManager.getIdOfCurrentPlayer(gameIdFromParam));
+                    boardDataResponse.hasWinner = gamesManager.getGameHasWinner(gameIdFromParam);
+                    boardDataResponse.isTie = gamesManager.getGameIsTie(gameIdFromParam);
+                    boardDataResponse.winnersList = gamesManager.getGameWinners(gameIdFromParam);
                 }
 
             }
@@ -53,12 +64,18 @@ public class BoardDataServlet extends HttpServlet {
         // int is not 0 = disc of player id is in position
         int[][] boardData;
         String currentPlayer;
+        private boolean hasWinner;
+        private boolean isTie;
+        private Set<String> winnersList;
 
         public BoardDataResponse() {
             this.boardRowSize = 0;
             this.boardColSize = 0;
             this.boardData = null;
             this.currentPlayer = "";
+            this.hasWinner = false;
+            this.isTie = false;
+            this.winnersList = null;
         }
     }
 

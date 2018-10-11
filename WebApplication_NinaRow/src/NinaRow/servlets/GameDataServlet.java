@@ -40,17 +40,11 @@ public class GameDataServlet extends HttpServlet {
                 if (gameStatus.equalsIgnoreCase("PENDING_PLAYERS")) {
                     gameDataResponse.moves = new ArrayList<>();
                     gameDataResponse.players = gamesManager.getRegisteredPlayers(gameIdFromParam);
-                    gameDataResponse.hasWinner = false;
-                    gameDataResponse.isTie = false;
-                    gameDataResponse.winnersList = new HashSet<>();
                     gameDataResponse.viewers = gamesManager.getRegisteredViewers(gameIdFromParam);
                 }
                 else {
                     gameDataResponse.moves = gamesManager.getMovesHistory(gameIdFromParam);
                     gameDataResponse.players = gamesManager.getActivePlayers(gameIdFromParam);
-                    gameDataResponse.hasWinner = gamesManager.getGameHasWinner(gameIdFromParam);
-                    gameDataResponse.isTie = gamesManager.getGameIsTie(gameIdFromParam);
-                    gameDataResponse.winnersList = gamesManager.getGameWinners(gameIdFromParam);
                     gameDataResponse.viewers = gamesManager.getActiveViewrs(gameIdFromParam);
                 }
             }
@@ -70,11 +64,7 @@ public class GameDataServlet extends HttpServlet {
         private String gameName;
         private Boolean isPlayer;
         private GameStatus gameStatus;
-        private boolean hasWinner;
-        private boolean isTie;
-        private Set<String> winnersList;
-
-
+        
         public GameDataResponse() {
             this.players = null;
             this.viewers = null;
@@ -82,9 +72,6 @@ public class GameDataServlet extends HttpServlet {
             this.gameName = "";
             this.isPlayer = false;
             this.gameStatus = GameStatus.PENDING_PLAYERS;
-            this.hasWinner = false;
-            this.isTie = false;
-            this.winnersList = null;
         }
     }
 
