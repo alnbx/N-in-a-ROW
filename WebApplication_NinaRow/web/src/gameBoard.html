@@ -158,7 +158,8 @@
           markup += "<li class=\"header\">Last Moves</li>";
 
           $.each(data.moves, function(i, item) {
-              markup += '<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>'+ item.playerName + " : " + item.moveIndex + " : " + item.moveType + '</span></a></li>';
+              var colOfMove = parseInt(item.col) + 1;
+              markup += '<li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>'+ item.playerName + " : " + colOfMove + " : " + item.moveType + '</span></a></li>';
           });
 
           $('#gameSideBarData').html(markup);		// Append changes to the page
