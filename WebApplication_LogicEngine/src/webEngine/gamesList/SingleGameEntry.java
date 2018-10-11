@@ -173,18 +173,20 @@ public class SingleGameEntry {
         return gameLogic.getMovesHistory();
     }
 
-    public List<UserSettings> getActivePlayers() {
-        List<UserSettings> players = new ArrayList<>();
-
-        for (Player p: gameLogic.getPlayers()) {
-            players.add(p.getUserSettings());
-        }
-
-        return players;
+    public List<Player> getActivePlayers() {
+        return gameLogic.getPlayers();
     }
 
-    public List<UserSettings> getRegisteredPlayers() {
-        return gameLogic.getRegisteredPlayers();
+    public List<Player> getRegisteredPlayers() {
+        List<Player> registeredPlayers = new ArrayList();
+
+        for (UserSettings user : gameLogic.getRegisteredPlayers()) {
+            registeredPlayers.add(new Player(user));
+        }
+
+        registeredPlayers.get(0).setCurrent(true);
+
+        return registeredPlayers;
     }
 
     public int[][] getBoardData() {

@@ -151,7 +151,8 @@
                       markup += '<span>';
               }
 
-              markup += item.name +'</span></a></li>';
+              var playerName = this.userSettings.name;
+              markup += playerName +'</span></a></li>';
           });
 
           // Build last moves
@@ -194,6 +195,8 @@
 					
 					//Update game name
 					$('#gameName').text(data.gameName);
+
+					playComputerMove(data);
 					
 					// Update Players List
 					updateSideBarData(data);
@@ -204,6 +207,17 @@
 
     getGameGeneralData;
     var gameGeneralDataInterval = setInterval( getGameGeneralData, 1000 );
+
+    function playComputerMove(data) {
+        if (data.gameStatus === 'PLAYING') {
+            $.each(data.players, function (i, item) {
+                var playerType = this.userSettings.playerType;
+                if (this.current === true && playerType === 'COMPUTER') {
+                    insertChip(0, 'insert');
+                }
+            });
+        }
+    }
 
   </script>
 

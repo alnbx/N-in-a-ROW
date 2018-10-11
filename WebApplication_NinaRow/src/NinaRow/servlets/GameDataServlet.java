@@ -5,6 +5,7 @@ import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import common.UserSettings;
+import engine.Player;
 import webEngine.gamesList.GameListManager;
 import engine.Move;
 import webEngine.gamesList.GameStatus;
@@ -58,13 +59,13 @@ public class GameDataServlet extends HttpServlet {
     }
 
     class GameDataResponse extends ServeltResponse {
-        private List<UserSettings> players;
+        private List<Player> players;
         private List<UserSettings> viewers;
         private List<Move> moves;
         private String gameName;
         private Boolean isPlayer;
         private GameStatus gameStatus;
-        
+
         public GameDataResponse() {
             this.players = null;
             this.viewers = null;

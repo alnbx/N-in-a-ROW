@@ -8,17 +8,15 @@ import java.util.Objects;
 
 public class Player implements Serializable {
     private UserSettings userSettings;
-//    private String name;
-//    private int id;
-//    private PlayerTypes playerType;
     private boolean isActive;
-    private int gameId;
     private int numOfMovesMade;
+    private boolean current;
 
     public Player(UserSettings player) {
         this.userSettings = player;
         this.isActive = true;
         this.numOfMovesMade = 0;
+        this.current = false;
     }
 
     public int getMoves() {
@@ -82,15 +80,7 @@ public class Player implements Serializable {
         return userSettings;
     }
 
-    public int getGame() {
-        return this.gameId;
-    }
-
-    public void clearGame() {
-        this.gameId = 0;
-    }
-
-    public void setGame(int gameId) {
-        this.gameId = gameId;
+    public void setCurrent(boolean current) {
+        this.current = current;
     }
 }

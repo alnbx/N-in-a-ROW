@@ -10,7 +10,6 @@ public class UserSettings {
         this.name = name;
         this.id = id;
         this.playerType = playerType;
-        //this.gameId = 0;
     }
 
     public String getName() {
@@ -25,15 +24,4 @@ public class UserSettings {
         return playerType;
     }
 
-//    public int getGame() {
-//        return this.gameId;
-//    }
-//
-//    public void clearGame() {
-//        this.gameId = 0;
-//    }
-//
-//    public void setGame(int gameId) {
-//        this.gameId = gameId;
-//    }
 }

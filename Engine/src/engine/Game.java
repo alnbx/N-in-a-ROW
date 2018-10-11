@@ -66,6 +66,14 @@ public class Game implements GameLogic, Serializable {
 
         this.currentPlayer = players.get(0);
         this.activePlayers = this.players.size();
+        setCurrentAttrForPlayers();
+    }
+
+    private void setCurrentAttrForPlayers() {
+        players.get(0).setCurrent(true);
+        for (Player p : players.subList(1, players.size())) {
+            p.setCurrent(false);
+        }
     }
 
     protected boolean playHumanPlayer(int col, boolean popout)
@@ -165,13 +173,27 @@ public class Game implements GameLogic, Serializable {
 
             if (this.startingTime == null) { setStartingTime(); }
         }
+
         return ret;
     }
 
     private void setNextPlayer()
     {
+        int prevPlayerId = this.currentPlayer.getId();
+        int currentPlayerId;
+
         currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size());
-        while(!currentPlayer.isActive()) { currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size()); }
+        while(!currentPlayer.isActive()) {
+            currentPlayer = players.get((getIndexOfCurrentPlayer() + 1) % players.size());
+        }
+
+        currentPlayerId = this.currentPlayer.getId();
+        toggleCurrentAttrAfterTurn(prevPlayerId, currentPlayerId);
+    }
+
+    private void toggleCurrentAttrAfterTurn(int prevPlayerId, int currentPlayerId) {
+        getPlayerById(prevPlayerId).setCurrent(false);
+        getPlayerById(currentPlayerId).setCurrent(true);
     }
 
     private int getIndexOfCurrentPlayer() {

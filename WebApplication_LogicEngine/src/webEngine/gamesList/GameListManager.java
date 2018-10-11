@@ -4,6 +4,7 @@ import common.GameSettings;
 import common.UserSettings;
 import engine.GameFactory;
 import engine.Move;
+import engine.Player;
 
 import java.util.*;
 
@@ -127,11 +128,11 @@ public class GameListManager {
         return gameEntriesMap.get(gameId).getMovesHistory();
     }
 
-    public List<UserSettings> getActivePlayers(int gameId) {
+    public List<Player> getActivePlayers(int gameId) {
         return gameEntriesMap.get(gameId).getActivePlayers();
     }
 
-    public List<UserSettings> getRegisteredPlayers(int gameId) {
+    public List<Player> getRegisteredPlayers(int gameId) {
         return gameEntriesMap.get(gameId).getRegisteredPlayers();
     }
 

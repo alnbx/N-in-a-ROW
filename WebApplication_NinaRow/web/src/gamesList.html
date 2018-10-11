@@ -167,7 +167,8 @@
                 }
                 else {
                     console.log("sending you to the game | ID:" + gID);
-                    window.location.href = 'gameBoard.html?gameId='+ returnedData['gameId'];
+                    var params = 'gameId=' +  returnedData['gameId'];
+                    window.location.href = 'gameBoard.html?'+ params;
                 }
             });
             postRequest.fail(function(xhr, status, error) {

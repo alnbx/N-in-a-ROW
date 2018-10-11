@@ -33,4 +33,7 @@ public class Constants {
     public static final String CHAT_PARAMETER = "userstring";
 
     public static final String GAME_STATUS = "gameStatus";
+    public static final int DUMMY_COL_COMP_PLAYER = 0;
+    public static final String PLAYER_ID = "playerId";
+    public static final String PLAYER_ID_ERROR = "playerId parameter is not valid";
 }
