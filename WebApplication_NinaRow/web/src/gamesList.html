@@ -108,11 +108,6 @@
 			markup += "<td><span class=\"label label-success\">On going</span></td>";
 			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ index +", "+ gameName +");\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
 			
-		} else if (itm.status === "ended") {
-		
-			markup += "<td><span class=\"label label-danger\">Ended</span></td>";
-			markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ index +", "+ gameName +");\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
-		
 		} else {
 		
 			markup += "<td><span class=\"label label-warning\">Pending players</span></td>";

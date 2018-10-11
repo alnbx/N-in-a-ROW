@@ -2,7 +2,7 @@ package NinaRow.constants;
 
 public class Constants {
     public static final String USERNAME = "username";
-    public static final String USER_TYPE = "playertype";
+    public static final String IS_COMPUTER_USER = "isComputer";
     public static final String USER_NAME_EXISTS_ERROR = "user already exists";
     public static final String USER_NAME_NOT_APPLICABLE_ERROR = "no username in session and no username in parameter";
 

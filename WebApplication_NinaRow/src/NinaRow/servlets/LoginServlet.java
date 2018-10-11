@@ -7,27 +7,17 @@ import NinaRow.utils.ServletUtils;
 import common.PlayerTypes;
 import webEngine.users.UserManager;
 import java.io.IOException;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static NinaRow.constants.Constants.USERNAME;
-import static NinaRow.constants.Constants.USER_TYPE;
+import static NinaRow.constants.Constants.IS_COMPUTER_USER;
 import static NinaRow.constants.Constants.USER_NAME_EXISTS_ERROR;
 import static NinaRow.constants.Constants.USER_NAME_NOT_APPLICABLE_ERROR;
 
 public class LoginServlet extends HttpServlet {
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -38,7 +28,7 @@ public class LoginServlet extends HttpServlet {
         // create the response
         LoginResponse loginResponse = new LoginResponse();
         String usernameFromParameter = request.getParameter(USERNAME);
-        String playerTypeFromParameter = request.getParameter(USER_TYPE);
+        boolean isPlayerComputerFromParameter = request.getParameter(IS_COMPUTER_USER) == null ? false : true;
 
         if (usernameFromSession == null) {
             //user is not logged in yet
@@ -51,8 +41,7 @@ public class LoginServlet extends HttpServlet {
                 usernameFromParameter = usernameFromParameter.trim();
                 loginResponse.user = usernameFromParameter;
                 PlayerTypes playerType = PlayerTypes.HUMAN;
-                if (playerTypeFromParameter != null &&
-                        playerTypeFromParameter.trim().equalsIgnoreCase("computer")) {
+                if (isPlayerComputerFromParameter) {
                     playerType = PlayerTypes.COMPUTER;
                 }
                 loginResponse.playerType = playerType;
