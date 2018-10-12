@@ -4,6 +4,7 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import common.PlayerTypes;
 import common.UserSettings;
 import webEngine.gamesList.GameListManager;
 import webEngine.gamesList.GameStatus;
@@ -30,6 +31,8 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
                 GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
                 registerPlayerResponse.gameId = gameIdFromParam;
                 registerPlayerResponse.gameName = gameListManager.getGameName(gameIdFromParam);
+                registerPlayerResponse.playerId = userManager.getPlayerID(usernameFromSession);
+                registerPlayerResponse.playerType = userManager.getPlayerType(usernameFromSession);
                 synchronized (this) {
                     if (!gameListManager.isGameActive(gameIdFromParam)) {
                         UserSettings playerSettings = userManager.getUser(usernameFromSession);
@@ -61,14 +64,18 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
     }
 
     public class RegisterPlayerResponse extends ServeltResponse {
-        String gameName;
-        GameStatus gameStatus;
-        int gameId;
+        private String gameName;
+        private GameStatus gameStatus;
+        private int gameId;
+        private int playerId;
+        private PlayerTypes playerType;
 
         public RegisterPlayerResponse() {
             gameStatus = GameStatus.PENDING_PLAYERS;
             gameName = "";
             gameId = 0;
+            playerId = 0;
+            playerType = PlayerTypes.HUMAN;
         }
     }
 

@@ -31,7 +31,9 @@
   <script type="text/javascript">
       var refreshRate = 2000;
       var myGameId = 0;
-      var myGameStatus;
+      var myGameStatus = 'PENDING_PLAYERS';
+      var myPlayerId = 0;
+      var myPlayerType = 'HUMAN';
       // extract the context path using the window.location data items
       function calculateContextPath() {
           var pathWithoutLeadingSlash = window.location.pathname.substring(1);
@@ -187,7 +189,7 @@
 						$('#Resign').text("Back");
 					}
 
-					// myGameStatus can only chane once, from PENDING_PLAYERS to PLAYING
+					// myGameStatus can only change once, from PENDING_PLAYERS to PLAYING
                     // after myGameStatus was set to PLAYING it won't change back again to PENDING_PLAYERS
 					if (data['gameStatus'] === 'PLAYING' && myGameStatus === 'PENDING_PLAYERS') {
                         myGameStatus = 'PLAYING';
@@ -209,13 +211,8 @@
     var gameGeneralDataInterval = setInterval( getGameGeneralData, 1000 );
 
     function playComputerMove(data) {
-        if (data.gameStatus === 'PLAYING') {
-            $.each(data.players, function (i, item) {
-                var playerType = this.userSettings.playerType;
-                if (this.current === true && playerType === 'COMPUTER') {
-                    insertChip(0, 'insert');
-                }
-            });
+        if (data.gameStatus === 'PLAYING' && data.currentPlayerId === myPlayerId && myPlayerType === 'COMPUTER') {
+            insertChip(0, 'insert');
         }
     }
 
@@ -523,7 +520,9 @@
 
     $(function() {
         myGameId = getUrlParameter('gameId');
+        myPlayerId = parseInt(getUrlParameter('playerId'));
         myGameStatus = 'PENDING_PLAYERS';
+        myPlayerType = getUrlParameter('playerType');
         checkLogin();
         triggerAjaxContent( getGameGeneralData);
         triggerAjaxContent( getGameData);

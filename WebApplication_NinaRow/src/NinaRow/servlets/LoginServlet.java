@@ -28,8 +28,7 @@ public class LoginServlet extends HttpServlet {
         // create the response
         LoginResponse loginResponse = new LoginResponse();
         String usernameFromParameter = request.getParameter(USERNAME);
-        String test = request.getParameter(IS_COMPUTER_USER);
-        boolean isPlayerComputerFromParameter = test.equalsIgnoreCase("true") ? true : false;
+        boolean isPlayerComputerFromParameter = request.getParameter(IS_COMPUTER_USER).equalsIgnoreCase("true") ? true : false;
 
         if (usernameFromSession == null) {
             //user is not logged in yet

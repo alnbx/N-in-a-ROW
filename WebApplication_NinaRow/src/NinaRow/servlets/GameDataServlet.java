@@ -33,6 +33,7 @@ public class GameDataServlet extends HttpServlet {
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             gameDataResponse.gameName = gamesManager.getGameName(gameIdFromParam);
+            gameDataResponse.currentPlayerId = gamesManager.getIdOfCurrentPlayer(gameIdFromParam);
 
             String gameStatus = request.getParameter(Constants.GAME_STATUS);
             synchronized (this) {
@@ -65,6 +66,7 @@ public class GameDataServlet extends HttpServlet {
         private String gameName;
         private Boolean isPlayer;
         private GameStatus gameStatus;
+        private int currentPlayerId;
 
         public GameDataResponse() {
             this.players = null;
@@ -73,6 +75,7 @@ public class GameDataServlet extends HttpServlet {
             this.gameName = "";
             this.isPlayer = false;
             this.gameStatus = GameStatus.PENDING_PLAYERS;
+            this.currentPlayerId = 0;
         }
     }
 
