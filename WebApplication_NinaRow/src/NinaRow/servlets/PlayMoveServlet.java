@@ -28,14 +28,13 @@ public class PlayMoveServlet extends HttpServlet {
         if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             GameListManager gamesManager = ServletUtils.getGamesListManager(getServletContext());
-            GameLogic gameLogic = gamesManager.getGameEntry(gameIdFromParam).getGameLogic();
 
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
             if (userNameFromSession != null) {
                 if (gamesManager.getGameStatus(gameIdFromParam) == GameStatus.PLAYING) {
                     Integer playerId = userManager.getPlayerID(userNameFromSession);
-                    if (playerId != null && playerId == gameLogic.getIdOfCurrentPlayer()) {
+                    if (playerId != null && playerId == gamesManager.getIdOfCurrentPlayer(gameIdFromParam)) {
                         int colParameter = ServletUtils.getIntParameter(request, Constants.MOVE_COL);
                         if (colParameter != INT_PARAMETER_ERROR) {
                             String moveTypeParameter = request.getParameter(Constants.MOVE_TYPE);
@@ -54,9 +53,10 @@ public class PlayMoveServlet extends HttpServlet {
 
                                     if (playMoveResponse.getResult()) {
                                         synchronized (this) {
-                                            if (gameLogic.play(colParameter, moveType.equals(MoveType.POPOUT))) {
-                                                gamesManager.setIsTie(gameIdFromParam, gameLogic.isTie());
-                                                gamesManager.setWinners(gameIdFromParam, userManager.getWinnersNames(gameLogic.getWinners()));
+                                            if (gamesManager.makeMoveInGame(gameIdFromParam,
+                                                    colParameter, moveType.equals(MoveType.POPOUT))) {
+                                                gamesManager.setIsTie(gameIdFromParam);
+                                                gamesManager.setWinners(gameIdFromParam);
                                                 if (gamesManager.isGameEnded(gameIdFromParam)) {
                                                     gamesManager.enableGameForRegistration(gameIdFromParam);
                                                 }

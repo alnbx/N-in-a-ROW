@@ -52,5 +52,6 @@ public interface GameLogic {
     List<UserSettings> getRegisteredPlayers();
     List<UserSettings> getRegisteredViewers();
     void clearRegisteredViewers();
+    void removePlayerFromRegisteredPlayers(int playerId);
 }
 

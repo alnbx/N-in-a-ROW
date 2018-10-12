@@ -7,6 +7,7 @@ import engine.Move;
 import engine.Player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -131,13 +132,18 @@ public class SingleGameEntry {
         return gameId;
     }
 
-    public void setIsTie(Boolean isTie) {
-        this.isTie = isTie;
+    public void setIsTie() {
+        this.isTie = gameLogic.isTie();
     }
 
-    public void setWinners(Set<String> winners) {
-        this.winners = winners;
-        this.hasWinner = winners.size() > 0;
+    public void setWinners() {
+        Set<Integer> winnersIds = gameLogic.getWinners();
+        this.winners = new HashSet<>();
+        for (Integer winnerId : winnersIds) {
+            this.winners.add(gameLogic.getPlayerName(winnerId));
+        }
+
+        this.hasWinner = this.winners.size() > 0;
     }
 
     public List<String> getAllGamePlayersAndViewers() {
@@ -203,5 +209,17 @@ public class SingleGameEntry {
 
     public List<UserSettings> getRegisteredViewers() {
         return gameLogic.getRegisteredViewers();
+    }
+
+    public void resignPlayerFromGame(Integer playerId) {
+        gameLogic.resignPlayer();
+    }
+
+    public void removePlayerFromRegisteredPlayers(Integer playerId) {
+        gameLogic.removePlayerFromRegisteredPlayers(playerId);
+    }
+
+    public boolean makeMoveInGame(int col, boolean isPopout) {
+        return gameLogic.play(col, isPopout);
     }
 }

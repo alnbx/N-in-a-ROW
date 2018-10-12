@@ -96,12 +96,12 @@ public class GameListManager {
         return gameEntriesMap.get(gameName).getGameId();
     }
 
-    public void setIsTie(int gameId, Boolean isTie) {
-        gameEntriesMap.get(gameId).setIsTie(isTie);
+    public void setIsTie(int gameId) {
+        gameEntriesMap.get(gameId).setIsTie();
     }
 
-    public void setWinners(int gameId, Set<String> winners) {
-        gameEntriesMap.get(gameId).setWinners(winners);
+    public void setWinners(int gameId) {
+        gameEntriesMap.get(gameId).setWinners();
     }
 
     public List<String> getAllGamePlayersAndViewers(int gameId) {
@@ -158,5 +158,17 @@ public class GameListManager {
 
     public List<UserSettings> getRegisteredViewers(int gameId) {
         return gameEntriesMap.get(gameId).getRegisteredViewers();
+    }
+
+    public void resignPlayerFromGame(int gameId, Integer playerId) {
+        gameEntriesMap.get(gameId).resignPlayerFromGame(playerId);
+    }
+
+    public void removePlayerFromRegisteredPlayers(int gameId, Integer playerId) {
+        gameEntriesMap.get(gameId).removePlayerFromRegisteredPlayers(playerId);
+    }
+
+    public boolean makeMoveInGame(int gameId, int col, boolean isPopout) {
+        return gameEntriesMap.get(gameId).makeMoveInGame(col, isPopout);
     }
 }

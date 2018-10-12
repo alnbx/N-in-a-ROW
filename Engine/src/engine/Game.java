@@ -351,6 +351,11 @@ public class Game implements GameLogic, Serializable {
         }
     }
 
+    @Override
+    public void removePlayerFromRegisteredPlayers(int playerId) {
+        gameSettings.removePlayer(playerId);
+    }
+
     // if there's a single player left in the game: returns player ID
     // otherwise: returns -1
     private int getLastActivePlayerId() {

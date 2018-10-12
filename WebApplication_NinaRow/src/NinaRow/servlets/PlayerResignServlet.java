@@ -6,6 +6,7 @@ import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import engine.GameLogic;
 import webEngine.gamesList.GameListManager;
+import webEngine.gamesList.GameStatus;
 import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
@@ -28,28 +29,32 @@ public class PlayerResignServlet extends HttpServlet {
         if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
-            GameLogic gameLogic = gameListManager.getGameEntry(gameIdFromParam).getGameLogic();
 
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
             if (userNameFromSession != null) {
                 Integer playerId = userManager.getPlayerID(userNameFromSession);
                 if (playerId != null) {
-                    // only the current player can quit the game
-                    if (playerId == gameLogic.getIdOfCurrentPlayer()) {
-                        synchronized (this) {
-                            gameLogic.resignPlayer();
-                            // check if the player's resignation lead to the game's end
-                            gameListManager.setIsTie(gameIdFromParam, gameLogic.isTie());
-                            gameListManager.setWinners(gameIdFromParam, userManager.getWinnersNames(gameLogic.getWinners()));
-                            if (gameListManager.isGameEnded(gameIdFromParam)) {
-                                gameListManager.enableGameForRegistration(gameIdFromParam);
+                    if (gameListManager.getGameStatus(gameIdFromParam) == GameStatus.PLAYING ) {
+                        // only the current player can quit the game
+                        if (playerId == gameListManager.getIdOfCurrentPlayer(gameIdFromParam)) {
+                            synchronized (this) {
+                                gameListManager.resignPlayerFromGame(gameIdFromParam, playerId);
+                                // check if the player's resignation lead to the game's end
+                                gameListManager.setIsTie(gameIdFromParam);
+                                gameListManager.setWinners(gameIdFromParam);
+                                if (gameListManager.isGameEnded(gameIdFromParam)) {
+                                    gameListManager.enableGameForRegistration(gameIdFromParam);
+                                }
                             }
+                        }
+                        else {
+                            playerResignResponse.setResult(false);
+                            playerResignResponse.setMsg(Constants.PLAYER_ERROR);
                         }
                     }
                     else {
-                        playerResignResponse.setResult(false);
-                        playerResignResponse.setMsg(Constants.PLAYER_ERROR);
+                        gameListManager.removePlayerFromRegisteredPlayers(gameIdFromParam, playerId);
                     }
                 }
                 else {
