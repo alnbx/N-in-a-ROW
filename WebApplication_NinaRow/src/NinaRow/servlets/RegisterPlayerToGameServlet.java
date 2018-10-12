@@ -57,7 +57,7 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
         }
         else {
             registerPlayerResponse.setResult(false);
-            registerPlayerResponse.setMsg(Constants.USER_SESSION_ERROR);
+            registerPlayerResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, registerPlayerResponse);

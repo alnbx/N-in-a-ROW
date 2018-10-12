@@ -14,8 +14,9 @@ public class Constants {
     public static final String GAME_ID_ERROR = "gameId parameter is not valid";
     public static final String REGISTER_TO_ACTIVE_GAME_ERROR = "game has already started";
 
-    public static final String USER_SESSION_ERROR = "no user is defined for session";
+    public static final String NO_USER_SESSION_ERROR = "no user is defined for session";
     public static final String INVALID_SESSION_ERROR = "no session is define";
+    public static final String INVALID_USER_SESSION_ERROR = "user defined in session is invalid";
 
     public static final int INT_PARAMETER_ERROR = Integer.MIN_VALUE;
     public static final String MOVE_COL = "moveCol";
@@ -33,7 +34,4 @@ public class Constants {
     public static final String CHAT_PARAMETER = "userstring";
 
     public static final String GAME_STATUS = "gameStatus";
-    public static final int DUMMY_COL_COMP_PLAYER = 0;
-    public static final String PLAYER_ID = "playerId";
-    public static final String PLAYER_ID_ERROR = "playerId parameter is not valid";
 }

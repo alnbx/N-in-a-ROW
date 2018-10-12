@@ -472,24 +472,24 @@
             {
                 $.post(buildUrlWithContextPath("game/viewerResign"), { gameId: myGameId })
                     .done(function(data) {
-                        setTimeout("location.href = 'gamesList.html';",0);
+                        window.location.href = 'gamesList.html';
 
                     })
                     .fail(function(jqxhr, textStatus, errorThrown) {
                         console.log(errorThrown)
-                        setTimeout("location.href = 'gamesList.html';",0);
+                        window.location.href = 'gamesList.html';
                     })
                 return;
             }
 
             $.post(buildUrlWithContextPath("game/playerResign"), { gameId: myGameId })
                 .done(function(data) {
-                    setTimeout("location.href = 'gamesList.html';",0);
+                    window.location.href = 'gamesList.html';
 
                 })
                 .fail(function(jqxhr, textStatus, errorThrown) {
                     console.log(errorThrown)
-                    setTimeout("location.href = 'gamesList.html';",0);
+                    window.location.href = 'gamesList.html';
                 })
 
 

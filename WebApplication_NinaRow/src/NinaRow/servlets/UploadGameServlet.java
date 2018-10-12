@@ -7,7 +7,6 @@ import NinaRow.utils.SessionUtils;
 import common.GameSettings;
 import common.GameVariant;
 import webEngine.gamesList.GameListManager;
-import webEngine.gamesList.GameStatus;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -63,7 +62,7 @@ public class UploadGameServlet extends HttpServlet {
         }
         else {
             uploadGameResponse.setResult(false);
-            uploadGameResponse.setMsg(Constants.USER_SESSION_ERROR);
+            uploadGameResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, uploadGameResponse);

@@ -33,7 +33,7 @@ public class LogoutServlet extends HttpServlet {
 
         } else {
             logoutServletResponse.setResult(false);
-            logoutServletResponse.setMsg(Constants.USER_SESSION_ERROR);
+            logoutServletResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, logoutServletResponse);

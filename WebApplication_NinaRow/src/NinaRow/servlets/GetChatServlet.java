@@ -47,7 +47,7 @@ public class GetChatServlet extends HttpServlet {
         }
         else {
             getChatResponse.setResult(false);
-            getChatResponse.setMsg(Constants.USER_SESSION_ERROR);
+            getChatResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, getChatResponse);

@@ -25,7 +25,7 @@ public class CheckLoginServlet extends HttpServlet {
             }
             else {
                 checkLoginResponse.setResult(false);
-                checkLoginResponse.setMsg(Constants.USER_SESSION_ERROR);
+                checkLoginResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
             }
         }
         else {

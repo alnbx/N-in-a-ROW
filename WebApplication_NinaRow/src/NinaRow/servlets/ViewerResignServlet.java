@@ -42,7 +42,7 @@ public class ViewerResignServlet extends HttpServlet {
             }
             else {
                 viewerResignResponse.setResult(false);
-                viewerResignResponse.setMsg(Constants.USER_SESSION_ERROR);
+                viewerResignResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
             }
         }
         else {

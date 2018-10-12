@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Set;
 
 public class SendChatServlet extends HttpServlet {
 
@@ -38,7 +37,7 @@ public class SendChatServlet extends HttpServlet {
         }
         else {
             sendChatResponse.setResult(false);
-            sendChatResponse.setMsg(Constants.USER_SESSION_ERROR);
+            sendChatResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, sendChatResponse);

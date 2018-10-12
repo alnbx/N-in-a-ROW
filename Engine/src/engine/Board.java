@@ -13,7 +13,7 @@ public class Board implements Serializable {
     private int cols;
     private Col[] board;
     private boolean hasWinner;
-    private Set<Integer> winningPlayer;
+    private Set<Integer> winningPlayers;
     private int emptySpaces;
     private boolean isCircular;
 
@@ -23,7 +23,7 @@ public class Board implements Serializable {
         this.cols = cols;
         board = new Col[cols];
         this.hasWinner = false;
-        this.winningPlayer = new HashSet<Integer>();
+        this.winningPlayers = new HashSet<Integer>();
         this.emptySpaces = this.rows * this.cols;
         this.isCircular = isCircular;
 
@@ -130,17 +130,17 @@ public class Board implements Serializable {
     public void setWinner(int winningPlayer)
     {
         this.hasWinner = true;
-        this.winningPlayer.add(winningPlayer);
+        this.winningPlayers.add(winningPlayer);
     }
 
     public void setWinner(Set<Integer> winningPlayer)
     {
         this.hasWinner = true;
-        this.winningPlayer = winningPlayer;
+        this.winningPlayers = winningPlayer;
     }
 
     public boolean isHasWinner() { return this.hasWinner; }
-    public Set<Integer> getWinner() { return this.winningPlayer; }
+    public Set<Integer> getWinner() { return this.winningPlayers; }
 
     public char[][] getBoardAsCharArray()
     {

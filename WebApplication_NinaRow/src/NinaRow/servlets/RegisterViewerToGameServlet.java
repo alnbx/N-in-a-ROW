@@ -41,7 +41,7 @@ public class RegisterViewerToGameServlet extends HttpServlet {
         }
         else {
             registerUserResponse.setResult(false);
-            registerUserResponse.setMsg(Constants.USER_SESSION_ERROR);
+            registerUserResponse.setMsg(Constants.NO_USER_SESSION_ERROR);
         }
 
         ServletUtils.sendJsonResponse(response, registerUserResponse);
