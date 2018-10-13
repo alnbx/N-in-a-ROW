@@ -483,6 +483,7 @@
 <script src="./dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="./dist/js/demo.js"></script>
+<script src="../commonWeb/extract-params-from-url-helper.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -534,23 +535,6 @@
     function triggerAjaxContent(func) {
         setTimeout(func, refreshRate);
     }
-
-    function getUrlParameter(sParam) {
-        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-            sURLVariables = sPageURL.split('&'),
-            sParameterName,
-            i;
-
-        for (i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-
-            if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? true : sParameterName[1];
-            }
-        }
-    };
-
-
 
     $(function() {
         myGameId = getUrlParameter('gameId');
