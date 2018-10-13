@@ -31,6 +31,7 @@
   <script type="text/javascript">
       var refreshRate = 2000;
       var myGameId = 0;
+      var myGameName = "";
       var myGameStatus = 'PENDING_PLAYERS';
       var myPlayerId = 0;
       var myPlayerType = 'HUMAN';
@@ -518,7 +519,7 @@
         $("#chat").click(function () {
             $.post(buildUrlWithContextPath("game/loginToChat"), { gameId: myGameId })
                 .done(function(data) {
-                    var params = '?gameId=' + myGameId;
+                    var params = '?gameId=' + myGameId + "&gameName=" + myGameName;
                     window.open('chatroom.html' + params,'_blank',"width=200,heigh=150,top=200,left=400",'');
                 })
                 .fail(function(jqxhr, textStatus, errorThrown) {
@@ -538,6 +539,7 @@
 
     $(function() {
         myGameId = getUrlParameter('gameId');
+        myGameName = decodeURI(getUrlParameter('gameName'));
         myPlayerId = parseInt(getUrlParameter('playerId'));
         myGameStatus = 'PENDING_PLAYERS';
         myPlayerType = getUrlParameter('playerType');

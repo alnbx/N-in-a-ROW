@@ -189,7 +189,9 @@
                         console.log("sending you to the game | ID:" + gID);
                         var params = 'gameId=' +  returnedData['gameId'] +
                             '&playerId=' + returnedData['playerId'] +
-                            '&playerType=' + returnedData['playerType']
+                            '&playerType=' + returnedData['playerType'] +
+                            '&gameName=' + returnedData['gameName'];
+
                         window.location.href = 'gameBoard.html?'+ params;
                     }
                 });

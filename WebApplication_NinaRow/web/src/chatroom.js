@@ -1,6 +1,7 @@
 var myChatVersion = 0;
 var refreshRate = 2000; //mili seconds
 var myGameId = 0;
+var myGameName = "";
 var CHAT_USERS_URL = buildUrlWithContextPath("game/getChatUsers");
 var GET_CHAT_URL = buildUrlWithContextPath("game/getChat");
 var SEND_CHAT_URL = buildUrlWithContextPath("game/sendChat");
@@ -156,6 +157,9 @@ $(document).ready(function() {
 //activate the timer calls after the page is loaded
 $(function() {
     myGameId = getUrlParameter('gameId');
+    myGameName = decodeURI(getUrlParameter('gameName'));
+    document.title = myGameName;
+    $("#chatTitle").html("Chat for the game: " + myGameName);
     //The users list is refreshed automatically every second
     setInterval(ajaxUsersList, refreshRate);
 

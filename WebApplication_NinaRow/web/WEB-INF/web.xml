@@ -36,10 +36,6 @@
         <servlet-class>NinaRow.servlets.UsersListServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>MovesListServlet</servlet-name>
-        <servlet-class>NinaRow.servlets.MovesListServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>BoardDataServlet</servlet-name>
         <servlet-class>NinaRow.servlets.BoardDataServlet</servlet-class>
     </servlet>
@@ -109,10 +105,6 @@
     <servlet-mapping>
         <servlet-name>UsersListServlet</servlet-name>
         <url-pattern>/usersList</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MovesListServlet</servlet-name>
-        <url-pattern>/game/movesList</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>BoardDataServlet</servlet-name>
