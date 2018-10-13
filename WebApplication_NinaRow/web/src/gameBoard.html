@@ -209,7 +209,7 @@
 					}
 
 					// myGameStatus can only change once, from PENDING_PLAYERS to PLAYING
-                    // after myGameStatus was set to PLAYING it won't change back again to PENDING_PLAYERS
+                    // after myGameStatus is set to PLAYING it won't change back again to PENDING_PLAYERS
 					if (data['gameStatus'] === 'PLAYING' && myGameStatus === 'PENDING_PLAYERS') {
                         myGameStatus = 'PLAYING';
                         gameBeginAlert();
@@ -234,6 +234,7 @@
         if (data.gameStatus === 'PLAYING' && data.currentPlayerId === myPlayerId && myPlayerType === 'COMPUTER') {
             insertChip(0, 'insert');
         }
+        getGameData();
     }
 
   </script>
