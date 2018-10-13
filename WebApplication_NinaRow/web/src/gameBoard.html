@@ -87,6 +87,9 @@
     {
         var el = document.getElementById("errorMsgArea");
         el.innerHTML = "<div class=\"callout callout-success\"><h4>Let the Game Begin!</h4><p id=\"gameBeginMsg\"></div>";
+        setTimeout(function() {
+            el.innerHTML = "";
+        }, 3500);
     }
   
 	function checkLogin()
