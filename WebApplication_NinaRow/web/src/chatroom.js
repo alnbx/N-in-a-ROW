@@ -18,7 +18,7 @@ function refreshUsersList(chatUsers) {
         console.log("Adding user #" + index + ": " + user.name );
         //create a new <option> tag with a value in it and
         //appeand it to the #userslist (div with id=userslist) element
-        $('<li>' + user.name + '</li>').appendTo($("#userslist"));
+        $('<li style="list-style-type: square">' + user.name + '</li>').appendTo($("#userslist"));
     });
 }
 
@@ -41,8 +41,9 @@ function appendChatEntry(index, entry){
 }
 
 function createChatEntry (entry){
-    entry.chatString = entry.chatString.replace (":)", "<span class='smiley'></span>");
-    return $("<span class=\"success\">").append(entry.username + "> " + entry.chatString);
+    var chatContent = "<span>" + entry.chatString + "</span>";
+    var userName = "<span class=\"success\">" + "<strong>" + entry.username + ": " + "</strong>" + "</span>";
+    return $(userName + chatContent);
 }
 
 function ajaxUsersList() {
@@ -159,7 +160,7 @@ $(function() {
     myGameId = getUrlParameter('gameId');
     myGameName = decodeURI(getUrlParameter('gameName'));
     document.title = myGameName;
-    $("#chatTitle").html("Chat for the game: " + myGameName);
+    $("#chatTitle").html("Chat: " + myGameName);
     //The users list is refreshed automatically every second
     setInterval(ajaxUsersList, refreshRate);
 
