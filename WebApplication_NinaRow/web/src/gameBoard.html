@@ -81,6 +81,12 @@
 
         setTimeout("location.href = 'gamesList.html';",3500);
     }
+
+    function gameBeginAlert()
+    {
+        var el = document.getElementById("errorMsgArea");
+        el.innerHTML = "<div class=\"callout callout-success\"><h4>Let the Game Begin!</h4><p id=\"gameBeginMsg\"></div>";
+    }
   
 	function checkLogin()
 	{
@@ -193,6 +199,7 @@
                     // after myGameStatus was set to PLAYING it won't change back again to PENDING_PLAYERS
 					if (data['gameStatus'] === 'PLAYING' && myGameStatus === 'PENDING_PLAYERS') {
                         myGameStatus = 'PLAYING';
+                        gameBeginAlert();
                     }
 					
 					//Update game name
