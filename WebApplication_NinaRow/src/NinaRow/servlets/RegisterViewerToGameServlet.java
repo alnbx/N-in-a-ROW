@@ -4,6 +4,7 @@ import NinaRow.constants.Constants;
 import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
+import common.PlayerTypes;
 import common.UserSettings;
 import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
@@ -29,6 +30,7 @@ public class RegisterViewerToGameServlet extends HttpServlet {
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());
                 GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
                 registerUserResponse.gameName = gameListManager.getGameName(gameIdFromParam);
+                registerUserResponse.gameId = gameIdFromParam;
                 synchronized (this) {
                     UserSettings playerSettings = userManager.getUser(usernameFromSession);
                     gameListManager.registerViewerToGame(gameIdFromParam, playerSettings);
@@ -48,9 +50,11 @@ public class RegisterViewerToGameServlet extends HttpServlet {
     }
 
     public class RegisterViewerResponse extends ServeltResponse {
-        String gameName;
+        private String gameName;
+        private int gameId;
 
         public RegisterViewerResponse() {
+            gameId = 0;
             gameName = "";
         }
     }

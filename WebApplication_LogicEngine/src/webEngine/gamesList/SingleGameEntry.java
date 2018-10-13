@@ -222,4 +222,13 @@ public class SingleGameEntry {
     public boolean makeMoveInGame(int col, boolean isPopout) {
         return gameLogic.play(col, isPopout);
     }
+
+    public boolean isUserViewer(String userName) {
+        for (UserSettings user : viewers) {
+            if (user.getName().equalsIgnoreCase(userName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

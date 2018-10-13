@@ -245,11 +245,11 @@
 		    var colOfMove = parseInt(col) + 1;
 			$.post(buildUrlWithContextPath("game/playMove"), { moveCol:colOfMove, moveType:typeOfMove, gameId: myGameId })
 			  .done(function(data) {
-				
-				
+
+
 				if (data.result != true) {
 					tempAlert(data.msg, 1500);
-				} 
+				}
 				else
 				{
 					//if sucess, just update the boardData

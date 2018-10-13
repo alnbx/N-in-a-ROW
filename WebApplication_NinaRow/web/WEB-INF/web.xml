@@ -71,6 +71,10 @@
         <servlet-name>ExitChat</servlet-name>
         <servlet-class>NinaRow.servlets.ExitChatServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RegisterViewer</servlet-name>
+        <servlet-class>NinaRow.servlets.RegisterViewerToGameServlet</servlet-class>
+    </servlet>
 
     <!-- ================================================ -->
 
@@ -141,6 +145,10 @@
     <servlet-mapping>
         <servlet-name>ExitChat</servlet-name>
         <url-pattern>/game/exitChat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterViewer</servlet-name>
+        <url-pattern>/registerViewerToGame</url-pattern>
     </servlet-mapping>
 
 </web-app>

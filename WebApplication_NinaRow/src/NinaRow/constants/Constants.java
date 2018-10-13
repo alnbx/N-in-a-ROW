@@ -27,8 +27,6 @@ public class Constants {
     public static final String PLAYER_ERROR = "It's not your turn yet, please be patient";
     public static final String GAME_NOT_STARTED_ERROR = "The game hasn't started yet, waiting for additional players";
     public static final String INVALID_MOVE_ERROR = "requested move is invalid";
-    public static final String LAST_MOVE = "lastmove";
-    public static final String LAST_MOVE_ERROR = "invalid last move parameter";
     public static final String CHAT_VERSION_PARAMETER = "chatversion";
     public static final String CHAT_VERSION_ERROR = "invalid chat version parameter";
     public static final String CHAT_PARAMETER = "userstring";
@@ -36,4 +34,5 @@ public class Constants {
     public static final String GAME_STATUS = "gameStatus";
     public static final String USER_EXISTS_IN_CAHT_ERROR = "user is already logged in to chat";
     public static final String USER_NOT_IN_CAHT_ERROR = "user is not logged in to chat";
+    public static final String VIEWER_PLAYING_ERROR = "viewers can't make moves";
 }

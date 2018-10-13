@@ -32,60 +32,66 @@ public class PlayMoveServlet extends HttpServlet {
             // get player id
             String userNameFromSession = SessionUtils.getAttribute(request, Constants.USERNAME);
             if (userNameFromSession != null) {
-                if (gamesManager.getGameStatus(gameIdFromParam) == GameStatus.PLAYING) {
-                    Integer playerId = userManager.getPlayerID(userNameFromSession);
-                    if (playerId != null && playerId == gamesManager.getIdOfCurrentPlayer(gameIdFromParam)) {
-                        int colParameter = ServletUtils.getIntParameter(request, Constants.MOVE_COL);
-                        if (colParameter != INT_PARAMETER_ERROR) {
-                            String moveTypeParameter = request.getParameter(Constants.MOVE_TYPE);
-                            MoveType moveType = null;
-                            if (playMoveResponse.getResult()) {
-                                if (moveTypeParameter != null) {
-                                    // get type of move
-                                    if (moveTypeParameter.equalsIgnoreCase("insert")) {
-                                        moveType = MoveType.INSERT;
-                                    } else if (moveTypeParameter.equalsIgnoreCase("popout")) {
-                                        moveType = MoveType.POPOUT;
-                                    } else {
-                                        playMoveResponse.setResult(false);
-                                        playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
-                                    }
+                if (!gamesManager.isUserViewer(gameIdFromParam, userNameFromSession)) {
+                    if (gamesManager.getGameStatus(gameIdFromParam) == GameStatus.PLAYING) {
+                        Integer playerId = userManager.getPlayerID(userNameFromSession);
+                        if (playerId != null && playerId == gamesManager.getIdOfCurrentPlayer(gameIdFromParam)) {
+                            int colParameter = ServletUtils.getIntParameter(request, Constants.MOVE_COL);
+                            if (colParameter != INT_PARAMETER_ERROR) {
+                                String moveTypeParameter = request.getParameter(Constants.MOVE_TYPE);
+                                MoveType moveType = null;
+                                if (playMoveResponse.getResult()) {
+                                    if (moveTypeParameter != null) {
+                                        // get type of move
+                                        if (moveTypeParameter.equalsIgnoreCase("insert")) {
+                                            moveType = MoveType.INSERT;
+                                        } else if (moveTypeParameter.equalsIgnoreCase("popout")) {
+                                            moveType = MoveType.POPOUT;
+                                        } else {
+                                            playMoveResponse.setResult(false);
+                                            playMoveResponse.setMsg(Constants.MOVE_TYPE_ERROR);
+                                        }
 
-                                    if (playMoveResponse.getResult()) {
-                                        synchronized (this) {
-                                            if (gamesManager.makeMoveInGame(gameIdFromParam,
-                                                    colParameter, moveType.equals(MoveType.POPOUT))) {
-                                                gamesManager.setIsTie(gameIdFromParam);
-                                                gamesManager.setWinners(gameIdFromParam);
-                                                if (gamesManager.isGameEnded(gameIdFromParam)) {
-                                                    gamesManager.enableGameForRegistration(gameIdFromParam);
+                                        if (playMoveResponse.getResult()) {
+                                            synchronized (this) {
+                                                if (gamesManager.makeMoveInGame(gameIdFromParam,
+                                                        colParameter, moveType.equals(MoveType.POPOUT))) {
+                                                    gamesManager.setIsTie(gameIdFromParam);
+                                                    gamesManager.setWinners(gameIdFromParam);
+                                                    if (gamesManager.isGameEnded(gameIdFromParam)) {
+                                                        gamesManager.enableGameForRegistration(gameIdFromParam);
+                                                    }
+                                                } else {
+                                                    playMoveResponse.setResult(false);
+                                                    playMoveResponse.setMsg(Constants.INVALID_MOVE_ERROR);
                                                 }
-                                            } else {
-                                                playMoveResponse.setResult(false);
-                                                playMoveResponse.setMsg(Constants.INVALID_MOVE_ERROR);
                                             }
                                         }
                                     }
+                                    else {
+                                        playMoveResponse.setResult(false);
+                                        playMoveResponse.setMsg(Constants.MOVE_TYPE_PARAMETER_ERROR);
+                                    }
                                 }
-                                else {
-                                    playMoveResponse.setResult(false);
-                                    playMoveResponse.setMsg(Constants.MOVE_TYPE_PARAMETER_ERROR);
-                                }
+                            }
+                            else {
+                                playMoveResponse.setResult(false);
+                                playMoveResponse.setMsg(Constants.MOVE_COL_ERROR);
                             }
                         }
                         else {
                             playMoveResponse.setResult(false);
-                            playMoveResponse.setMsg(Constants.MOVE_COL_ERROR);
+                            playMoveResponse.setMsg(Constants.PLAYER_ERROR);
                         }
                     }
                     else {
                         playMoveResponse.setResult(false);
-                        playMoveResponse.setMsg(Constants.PLAYER_ERROR);
+                        playMoveResponse.setMsg(Constants.GAME_NOT_STARTED_ERROR);
                     }
                 }
                 else {
                     playMoveResponse.setResult(false);
-                    playMoveResponse.setMsg(Constants.GAME_NOT_STARTED_ERROR);
+                    playMoveResponse.setMsg(Constants.VIEWER_PLAYING_ERROR);
                 }
             }
             else {

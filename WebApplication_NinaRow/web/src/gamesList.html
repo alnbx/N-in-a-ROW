@@ -111,12 +111,12 @@
 
             if (itm.status === "PLAYING") {
                 markup += "<td><span class=\"label label-success\">On going</span></td>";
-                markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ index +", "+ gameName +");\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
+                markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerViewerToGame("+ index + ", "+ gameName + ");\" \"><i class=\"fa fa-tv\"></i> View</a></td>";
 
             } else {
 
                 markup += "<td><span class=\"label label-warning\">Pending players</span></td>";
-                markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ index +", "+ gameName +");\" \"><i class=\"fa fa-play\"></i> Play</a></td>";
+                markup += "<td><a class=\"btn btn-block btn-success btn-sm\" onclick=\"registerToGame("+ index + ", "+ gameName + ");\" \"><i class=\"fa fa-play\"></i> Play</a></td>";
 
             }
 
@@ -178,7 +178,7 @@
         {
             $(function() {
 
-                var postRequest = $.post(buildUrlWithContextPath("registerPlayerToGame"), { gameId: gID });
+                var postRequest = $.post(buildUrlWithContextPath('registerPlayerToGame'), { gameId: gID });
                 postRequest.done(function(returnedData) {
                     console.log("in settings call back");
                     //jsonStr = JSON.stringify(returnedData);
@@ -192,6 +192,31 @@
                             '&playerId=' + returnedData['playerId'] +
                             '&playerType=' + returnedData['playerType'] +
                             '&gameName=' + returnedData['gameName'];
+
+                        window.location.href = 'gameBoard.html?'+ params;
+                    }
+                });
+                postRequest.fail(function(xhr, status, error) {
+                    tempAlert("Error: " + error, 3000);
+                });
+            });
+        }
+
+        function registerViewerToGame(gID, gName)
+        {
+            $(function() {
+
+                var postRequest = $.post(buildUrlWithContextPath('registerViewerToGame'), { gameId: gID });
+                postRequest.done(function(returnedData) {
+                    console.log("in settings call back");
+                    //jsonStr = JSON.stringify(returnedData);
+                    if (returnedData.result != true) {
+                        tempAlert("Cound't register you to this game", 3000);
+                        console.log("Cound't register you to this game");
+                    }
+                    else {
+                        console.log("sending you to the game | ID:" + gID);
+                        var params = 'gameId=' +  returnedData['gameId'];
 
                         window.location.href = 'gameBoard.html?'+ params;
                     }

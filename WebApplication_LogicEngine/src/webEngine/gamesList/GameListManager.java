@@ -171,4 +171,8 @@ public class GameListManager {
     public boolean makeMoveInGame(int gameId, int col, boolean isPopout) {
         return gameEntriesMap.get(gameId).makeMoveInGame(col, isPopout);
     }
+
+    public boolean isUserViewer(int gameId, String userName) {
+        return gameEntriesMap.get(gameId).isUserViewer(userName);
+    }
 }
