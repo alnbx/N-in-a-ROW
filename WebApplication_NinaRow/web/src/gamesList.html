@@ -99,7 +99,8 @@
             markup += "<td>" + index + "</td>";
             markup += "<td>" + itm.name + "</td>";
             markup += "<td>" + itm.userName + "</td>";
-            markup += "<td>" + boardSize + "</td>";
+            markup += "<td>" + itm.boardRows + "</td>";
+            markup += "<td>" + itm.boardCols + "</td>";
             markup += "<td>" + itm.target + "</td>";
             markup += "<td>" + itm.gameVariant + "</td>";
 
@@ -339,7 +340,8 @@
                                 <th align="center">ID</th>
                                 <th align="center">Game Name</th>
                                 <th align="center">User</th>
-                                <th align="center">Board Size</th>
+                                <th align="center">Rows</th>
+                                <th align="center">Cols</th>
                                 <th align="center">Target</th>
                                 <th align="center">Game Variant</th>
                                 <!-- <th>Progress</th> -->
@@ -350,10 +352,10 @@
                             </thead>
                             <tbody>
                             </tr>
-                            <td colspan="9"><center>Loading Games Data...</center></td>
+                            <td colspan="10"><center>Loading Games Data...</center></td>
                             </tr>
                             <tr>
-                                <td colspan="9"><center><img src="./dist/img/loading.gif"></img></center></td>
+                                <td colspan="10"><center><img src="./dist/img/loading.gif"></img></center></td>
                             <tr>
 
                             </tbody>
