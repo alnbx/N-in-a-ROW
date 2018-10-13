@@ -217,10 +217,10 @@
 					//Update game name
 					$('#gameName').text(data.gameName);
 
-					playComputerMove(data);
-					
 					// Update Players List
 					updateSideBarData(data);
+
+                    playComputerMove(data);
 				}
 			  })
 		});
@@ -358,8 +358,8 @@
             <li class="dropdown messages-menu">
               <!-- Menu toggle button -->
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-envelope-o"></i>
-                <span class="label label-success">0</span>
+                <i id="chat" class="fa fa-envelope-o"></i>
+                <!--<span class="label label-success">0</span>-->
               </a>
 
             <!-- User Account Menu -->
@@ -513,6 +513,19 @@
 
 
         });//end click function
+
+        $("#chat").click(function () {
+            $.post(buildUrlWithContextPath("game/loginToChat"), { gameId: myGameId })
+                .done(function(data) {
+                    var params = '?gameId=' + myGameId;
+                    window.open('chatroom.html' + params,'_blank',"width=200,heigh=150,top=200,left=400",'');
+                })
+                .fail(function(jqxhr, textStatus, errorThrown) {
+                    console.log(errorThrown)
+                })
+
+
+        });//end click function
     });//end ready function
 
 </script>
@@ -536,6 +549,8 @@
             }
         }
     };
+
+
 
     $(function() {
         myGameId = getUrlParameter('gameId');

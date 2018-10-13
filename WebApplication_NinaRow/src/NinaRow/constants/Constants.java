@@ -34,4 +34,6 @@ public class Constants {
     public static final String CHAT_PARAMETER = "userstring";
 
     public static final String GAME_STATUS = "gameStatus";
+    public static final String USER_EXISTS_IN_CAHT_ERROR = "user is already logged in to chat";
+    public static final String USER_NOT_IN_CAHT_ERROR = "user is not logged in to chat";
 }

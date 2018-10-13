@@ -1,5 +1,7 @@
 package webEngine.chat;
 
+import common.UserSettings;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +18,6 @@ public class ChatsManager {
     }
 
     public synchronized void addChatString(int gameId, String chatString, String username) {
-        SingleChatManager singleChatManager = chats.get(gameId);
-
-        if (singleChatManager == null) {
-            chats.put(gameId, new SingleChatManager());
-        }
         chats.get(gameId).addChatString(chatString, username);
     }
 
@@ -30,6 +27,30 @@ public class ChatsManager {
 
     public int getChatVersion(int gameId) {
         return chats.get(gameId).getVersion();
+    }
+
+    public boolean isUserExistsInChat(int gameId, String userName) {
+        if (chats.get(gameId) == null) {
+            return false;
+        }
+
+        return chats.get(gameId).isUserExistsInChat(userName);
+    }
+
+    public synchronized void addUserToChat(int gameId, UserSettings userSettings) {
+        if (chats.get(gameId) == null) {
+            chats.put(gameId, new SingleChatManager());
+        }
+
+        chats.get(gameId).addUserToChat(userSettings);
+    }
+
+    public List<UserSettings> getChatUsers(int gameId) {
+        return chats.get(gameId).getChatUsers();
+    }
+
+    public void removeUserFromChat(int gameId, String userName) {
+        chats.get(gameId).removeUserFromChat(userName);
     }
 }
 

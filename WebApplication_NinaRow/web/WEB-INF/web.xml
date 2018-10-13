@@ -55,6 +55,26 @@
         <servlet-name>CheckLogin</servlet-name>
         <servlet-class>NinaRow.servlets.CheckLoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetChat</servlet-name>
+        <servlet-class>NinaRow.servlets.GetChatServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SendChat</servlet-name>
+        <servlet-class>NinaRow.servlets.SendChatServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoginToChat</servlet-name>
+        <servlet-class>NinaRow.servlets.LoginToChatServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetChatUsers</servlet-name>
+        <servlet-class>NinaRow.servlets.GetChatUsersServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExitChat</servlet-name>
+        <servlet-class>NinaRow.servlets.ExitChatServlet</servlet-class>
+    </servlet>
 
     <!-- ================================================ -->
 
@@ -109,6 +129,26 @@
     <servlet-mapping>
         <servlet-name>CheckLogin</servlet-name>
         <url-pattern>/checkLogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetChat</servlet-name>
+        <url-pattern>/game/getChat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendChat</servlet-name>
+        <url-pattern>/game/sendChat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginToChat</servlet-name>
+        <url-pattern>/game/loginToChat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetChatUsers</servlet-name>
+        <url-pattern>/game/getChatUsers</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExitChat</servlet-name>
+        <url-pattern>/game/exitChat</url-pattern>
     </servlet-mapping>
 
 </web-app>
