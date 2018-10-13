@@ -159,8 +159,20 @@
                       markup += '<span>';
               }
 
-              var playerName = this.userSettings.name;
-              markup += playerName +'</span></a></li>';
+              var playerInfo = this.userSettings.name + ' : ' + this.userSettings.playerType + ' : ' + this.numOfMovesMade;
+              markup += playerInfo +'</span></a></li>';
+          });
+
+          markup += "<li class=\"header\">Viewers</li>";
+
+          $.each(data.viewers, function(i, item) {
+              //console.log("players: "+ item.name);
+
+              markup += '<li><a href="#"><i class="fa fa-circle-o ';
+              markup += ' text-silver"></i> ';
+              markup += '<span>';
+              var viewerName = item.name;
+              markup += viewerName +'</span></a></li>';
           });
 
           // Build last moves
