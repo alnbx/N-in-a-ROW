@@ -138,12 +138,12 @@
                     }
                     else
                     {
-                        $('#gameTable tbody').empty();				//Clear current table data
+                        $('#gameTable tbody').empty();          //Clear current table data
 
 
                         // Go over the game data array
                         $.each(data.games, function(i, item) {
-                            addGameRow(item['gameId'], item);						// add the game to the table
+                            addGameRow(item['gameId'], item);                 // add the game to the table
                             //console.log("addGameRow: "+ item.name)
                         });
                     }
@@ -239,13 +239,15 @@
                 markup += '<li><a href="#"><i class="fa fa-circle-o text-green"></i> <span>'+ item.name +'</span></a></li>';
             });
 
-            $('#gameListSideBarUsers').html(markup);		// Append changes to the page
+            $('#gameListSideBarUsers').html(markup);      // Append changes to the page
         }
     </script>
 
 </head>
-<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
-<body class="hold-transition skin-blue layout-top-nav sidebar-mini" style="background-image: url('./dist/img/background.png')" onload="javascript:checkLogin">
+<!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
+<!-- the fixed layout is not compatible with sidebar-mini -->
+<body class="hold-transition skin-blue fixed sidebar-mini">
+<!-- Site wrapper -->
 <div class="wrapper">
 
     <header class="main-header">
@@ -265,10 +267,10 @@
                         <!-- Messages: style can be found in dropdown.less-->
                         <li class="dropdown messages-menu">
                             <!-- Menu toggle button -->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">-->
-                                <!--<i class="fa fa-envelope-o"></i>-->
-                                <!--<span class="label label-success">41</span>-->
-                            <!--</a>-->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="label label-success">0</span>
+                            </a>
 
                             <!-- User Account Menu -->
                         <li class="dropdown user user-menu">
@@ -302,6 +304,9 @@
         </nav>
     </header>
 
+    <!-- =============================================== -->
+
+    <!-- Left side column. contains the sidebar -->
     <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
@@ -311,94 +316,105 @@
         </section>
         <!-- /.sidebar -->
     </aside>
-    <!-- Full Width Column -->
+
+    <!-- =============================================== -->
+
+    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper" style="background-image: url('./dist/img/background.png')">
-        <div class="container">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <h1>
-                    Games List
-                    <small>Select your game or Upload your own</small>
-                </h1>
-            </section>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Games List
+                <small>Select your game or Upload your own</small>
+            </h1>
+        </section>
+        <br><br>
 
-            <!-- Main content -->
-            <section class="content">
+        <!-- Main content -->
+        <section class="content" >
 
-                <div class="box box-default">
+            <!-- Default box -->
+            <div class="col-md-12">
 
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Upload a new game</h3>
-                    </div>
-                    <div class="box-body">
-
-                        <div class="form-group">
-                            <label for="exampleInputFile">File input</label>
-                            <input type="file" id="exampleInputFile">
-                            <p class="help-block">Upload your game here</p>
-                        </div>
-
-                        <div class="box-footer">
-                            <button class="btn btn-primary" id="uploadFile" name="uploadFile" >Submit</button>
-                        </div>
-
-                    </div>
-                    <!-- /.box-body -->
-
-                </div>
-                <!-- /.box -->
-                <BR>
-
-                <div  id="errorMsgArea">
-
-                </div>
-                <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title">Current Games</h3>
-                    </div>
-
+                <div class="box" style="margin-top:20px">
                     <!-- /.box-header -->
-                    <div id="gameTable"	class="box-body no-padding">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th align="center">ID</th>
-                                <th align="center">Game Name</th>
-                                <th align="center">User</th>
-                                <th align="center">Rows</th>
-                                <th align="center">Cols</th>
-                                <th align="center">Target</th>
-                                <th align="center">Game Variant</th>
-                                <!-- <th>Progress</th> -->
-                                <th align="center">Registered Players</th>
-                                <th align="center">Game Status</th>
-                                <th align="center">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tr>
-                            <td colspan="10"><center>Loading Games Data...</center></td>
-                            </tr>
-                            <tr>
-                                <td colspan="10"><center><img src="./dist/img/loading.gif"></img></center></td>
-                            <tr>
+                    <div class="box-body">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Upload a new game</h3>
+                        </div>
+                        <div class="box-body">
 
-                            </tbody>
-                        </table>
+                            <div class="form-group">
+                                <label for="exampleInputFile">File input</label>
+                                <input type="file" id="exampleInputFile">
+                                <p class="help-block">Upload your game here</p>
+                            </div>
+
+                            <div class="box-footer">
+                                <button class="btn btn-primary" id="uploadFile" name="uploadFile" >Submit</button>
+                            </div>
+
+                        </div>
+                        <!-- /.box-body -->
+
+                        <div  id="errorMsgArea">
+
+                        </div>
                     </div>
-                    <!-- /.box-body -->
                 </div>
+                <div class="box" style="margin-top:20px">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Current Games</h3>
+                        </div>
 
-            </section>
-            <!-- /.content -->
-        </div>
-        <!-- /.container -->
-
+                        <!-- /.box-header -->
+                        <div id="gameTable"    class="box-body no-padding">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th align="center">ID</th>
+                                    <th align="center">Game Name</th>
+                                    <th align="center">User</th>
+                                    <th align="center">Rows</th>
+                                    <th align="center">Cols</th>
+                                    <th align="center">Target</th>
+                                    <th align="center">Game Variant</th>
+                                    <!-- <th>Progress</th> -->
+                                    <th align="center">Registered Players</th>
+                                    <th align="center">Game Status</th>
+                                    <th align="center">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tr>
+                                <td colspan="10"><center>Loading Games Data...</center></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="10"><center><img src="./dist/img/loading.gif"></img></center></td>
+                                <tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
     </div>
-    <!-- /.content-wrapper -->
-    <footer class="main-footer">
-        <strong>NinaRow </strong> By Alon Boxiner & Miri Kogan
-    </footer>
+    <!-- /.box-body -->
+</div>
+<!-- /.box -->
+
+
+</section>
+<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<footer class="main-footer">
+    <strong>NinaRow </strong> By Alon Boxiner & Miri Kogan
+</footer>
+
 </div>
 <!-- ./wrapper -->
 
@@ -476,7 +492,7 @@
 
                 })
                 .fail(function(jqxhr, textStatus, errorThrown) {
-                    console.log(errorThrown)
+                    console.log(errorThrown);
                     setTimeout("location.href = 'register.html';",500);
                 })
 
