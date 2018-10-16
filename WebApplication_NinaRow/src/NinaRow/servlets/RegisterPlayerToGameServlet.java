@@ -35,8 +35,14 @@ public class RegisterPlayerToGameServlet extends HttpServlet {
                 registerPlayerResponse.playerType = userManager.getPlayerType(usernameFromSession);
                 synchronized (this) {
                     if (!gameListManager.isGameActive(gameIdFromParam)) {
-                        UserSettings playerSettings = userManager.getUser(usernameFromSession);
-                        gameListManager.registerPlayerToGame(gameIdFromParam, playerSettings);
+                        if (!gameListManager.isUserRegisteredToGame(gameIdFromParam, usernameFromSession)) {
+                            UserSettings playerSettings = userManager.getUser(usernameFromSession);
+                            gameListManager.registerPlayerToGame(gameIdFromParam, playerSettings);
+                        }
+                        else {
+                            registerPlayerResponse.setResult(false);
+                            registerPlayerResponse.setMsg(Constants.USER_ALREADY_REGISTERED_TO_GAME_ERROR);
+                        }
                     }
                     else {
                         registerPlayerResponse.setResult(false);

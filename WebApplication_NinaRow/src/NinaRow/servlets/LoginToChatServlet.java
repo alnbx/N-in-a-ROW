@@ -5,6 +5,7 @@ import NinaRow.utils.ServeltResponse;
 import NinaRow.utils.ServletUtils;
 import NinaRow.utils.SessionUtils;
 import webEngine.chat.ChatsManager;
+import webEngine.gamesList.GameListManager;
 import webEngine.users.UserManager;
 
 import javax.servlet.ServletException;
@@ -27,13 +28,20 @@ public class LoginToChatServlet extends HttpServlet {
         if (usernameFromSession != null) {
             int gameIdFromParam = ServletUtils.getIntParameter(request, Constants.GAME_ID);
             if (gameIdFromParam != Constants.INT_PARAMETER_ERROR) {
-                synchronized (this) {
-                    if (!chatsManager.isUserExistsInChat(gameIdFromParam, usernameFromSession)) {
-                        chatsManager.addUserToChat(gameIdFromParam, userManager.getUserSettings(usernameFromSession));
-                    } else {
-                        loginToChatResponse.setResult(false);
-                        loginToChatResponse.setMsg(Constants.USER_EXISTS_IN_CAHT_ERROR);
+                GameListManager gameListManager = ServletUtils.getGamesListManager(getServletContext());
+                if (!gameListManager.isUserViewer(gameIdFromParam,usernameFromSession)) {
+                    synchronized (this) {
+                        if (!chatsManager.isUserExistsInChat(gameIdFromParam, usernameFromSession)) {
+                            chatsManager.addUserToChat(gameIdFromParam, userManager.getUserSettings(usernameFromSession));
+                        } else {
+                            loginToChatResponse.setResult(false);
+                            loginToChatResponse.setMsg(Constants.USER_EXISTS_IN_CAHT_ERROR);
+                        }
                     }
+                }
+                else {
+                    loginToChatResponse.setResult(false);
+                    loginToChatResponse.setMsg(Constants.VIEWER_CHAT_ERROR);
                 }
             }
             else {

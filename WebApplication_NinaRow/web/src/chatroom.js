@@ -159,8 +159,7 @@ $(document).ready(function() {
 $(function() {
     myGameId = getUrlParameter('gameId');
     myGameName = decodeURI(getUrlParameter('gameName'));
-    document.title = myGameName;
-    $("#chatTitle").html("Chat: " + myGameName);
+    document.title = 'chat: ' + myGameName;
     //The users list is refreshed automatically every second
     setInterval(ajaxUsersList, refreshRate);
 

@@ -13,6 +13,7 @@ public class Constants {
     public static final String GAME_ID = "gameId";
     public static final String GAME_ID_ERROR = "gameId parameter is not valid";
     public static final String REGISTER_TO_ACTIVE_GAME_ERROR = "game has already started";
+    public static final String USER_ALREADY_REGISTERED_TO_GAME_ERROR = "a user can't register to game more than once";
 
     public static final String NO_USER_SESSION_ERROR = "no user is defined for session";
     public static final String INVALID_SESSION_ERROR = "no session is define";
@@ -34,5 +35,6 @@ public class Constants {
     public static final String GAME_STATUS = "gameStatus";
     public static final String USER_EXISTS_IN_CAHT_ERROR = "user is already logged in to chat";
     public static final String USER_NOT_IN_CAHT_ERROR = "user is not logged in to chat";
+    public static final String VIEWER_CHAT_ERROR = "chat is allowed only for players and not for viewers";
     public static final String VIEWER_PLAYING_ERROR = "viewers can't make moves";
 }

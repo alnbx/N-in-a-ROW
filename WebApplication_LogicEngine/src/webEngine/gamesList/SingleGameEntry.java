@@ -231,4 +231,8 @@ public class SingleGameEntry {
         }
         return false;
     }
+
+    public boolean isUserRegisteredToGame(String username) {
+        return isUserPlayerInGame(username) || isUserViewer(username);
+    }
 }

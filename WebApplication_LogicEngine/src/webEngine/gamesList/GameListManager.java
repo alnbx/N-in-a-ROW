@@ -175,4 +175,8 @@ public class GameListManager {
     public boolean isUserViewer(int gameId, String userName) {
         return gameEntriesMap.get(gameId).isUserViewer(userName);
     }
+
+    public boolean isUserRegisteredToGame(int gameId, String username) {
+        return gameEntriesMap.get(gameId).isUserRegisteredToGame(username);
+    }
 }
