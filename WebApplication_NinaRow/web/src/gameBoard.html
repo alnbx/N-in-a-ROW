@@ -443,7 +443,7 @@
 
 	  <center>
       <!-- Default box -->
-		<div class="col-8" style="text-align:center;margin-left:240px;">
+		<div class="col-8" style="text-align:center;">
 			<!-- MSG area -->
 			<div  id="errorMsgArea">
 				
@@ -525,7 +525,7 @@
             $.post(buildUrlWithContextPath("game/loginToChat"), { gameId: myGameId })
                 .done(function(data) {
                     var params = '?gameId=' + myGameId + "&gameName=" + myGameName;
-                    window.open('chatroom.html' + params,'_blank',"width=200,heigh=150,top=200,left=400",'');
+                    window.open('chatroom.html' + params, '_blank', 'location=no, status=no, menubar=no, width=450, height=450, top=200, left=200');
                 })
                 .fail(function(jqxhr, textStatus, errorThrown) {
                     console.log(errorThrown)
